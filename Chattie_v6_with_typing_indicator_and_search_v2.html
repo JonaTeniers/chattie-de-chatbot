@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Chattie - AI Chatbot met Externe Leerfunctie</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #c6f1ff, #f8fcff);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    #chatbox {
+      width: 100%;
+      max-width: 720px;
+      background: white;
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+    }
+    .emoji {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #messages {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 25px;
+      border: 1px solid #e0e0e0;
+      padding: 20px;
+      border-radius: 15px;
+      background: #fefefe;
+    }
+    .message {
+      margin: 12px 0;
+      padding: 10px 15px;
+      border-radius: 12px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    .user {
+      background-color: #e0f0ff;
+      color: #0b5394;
+      align-self: flex-end;
+      text-align: right;
+      margin-left: auto;
+    }
+    .bot {
+      background-color: #eafbe7;
+      color: #2e7d32;
+      align-self: flex-start;
+      margin-right: auto;
+    }
+    .typing-indicator {
+      font-size: 18px;
+      font-style: italic;
+      color: #ccc;
+      text-align: left;
+      margin-left: 20px;
+      display: none;
+    }
+    #inputSection {
+      display: flex;
+      gap: 12px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 15px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 15px;
+      background-color: #2196f3;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1976d2;
+    }
+  </style>
+</head>
+<body>
+<div id="chatbox">
+  <h2>Hallo! Ik ben Chattie</h2>
+  <div class="emoji">🤖💬</div>
+  <p style="text-align: center; font-size: 16px; margin-top: -10px; margin-bottom: 20px; color: #333;">
+    Begin je gesprek met het woord <strong>"start"</strong> en eindig met <strong>"einde"</strong>. Vergeet op het einde niet om me een beoordeling te geven!
+  </p>
+  <div id="messages"></div>
+  <div id="inputSection">
+    <input type="text" id="userInput" placeholder="Typ 'start' om te beginnen">
+    <button id="sendButton">Verstuur</button>
+  </div>
+  <div id="typingIndicator" class="typing-indicator">Chattie denkt even na...</div>
+</div>
+<script>
+let begrippenlijst = {
+  "ai": "AI is technologie die machines in staat stelt te denken zoals mensen. Voorbeeld: AI helpt bij kankerbehandeling in UZ Leuven. Wat denk jij van AI? Zou jij het gebruiken of vertrouwen? Wat zou je doen in een situatie waarbij AI belangrijk is?",
+  "agi": "AGI is een supervorm van AI die net zo veelzijdig is als een mens. Bestaat nog niet. Wat zou jij doen als AGI echt bestond? Zou je het vertrouwen?",
+  "algoritme": "Algoritme: een set instructies die bepaalt wat een computer doet. Bijvoorbeeld: welke video je ziet op TikTok. Wat vind je van algoritmes die jouw voorkeuren bepalen? Zou jij ze vertrouwen?",
+  "chatbot": "Chatbot: een virtuele assistent waarmee je via tekst of spraak praat. Denk aan Siri of Sam van Samsung. Heb jij al eens met een chatbot gepraat? Wat vind je van het idee dat AI jouw vragen beantwoordt?",
+  "deepfake": "Deepfake: nepvideo’s die er levensecht uitzien. Gemaakt met AI, vaak met GANs. Wat denk jij, zou jij een deepfake kunnen herkennen? Wat zou je doen als je een deepfake tegenkomt?",
+  "gans": "GANs: twee AI-systemen die samenwerken voor realistische beelden. Voorbeeld: wordt gebruikt bij deepfakes. Vind je dat deze technologie een gevaar kan vormen? Of zou het juist voordelen hebben, bijvoorbeeld in de filmindustrie?",
+  "discriminatie": "Discriminatie door AI: wanneer AI bevooroordeeld is, bijvoorbeeld bij sollicitaties. Denk je dat AI discriminatie kan veroorzaken? Wat zou je doen als AI jou benadeelt?",
+  "machine learning": "Machine Learning: AI leert zelf van data. Voorbeeld: spamfilters worden beter naarmate ze meer mails verwerken. Zou je een computer laten beslissen over je schoolprestaties? Waarom wel of niet?",
+  "zelfrijdende auto": "Zelfrijdende auto: voertuig dat zichzelf bestuurt met sensoren en AI. Denk aan Tesla. Zou jij in een zelfrijdende auto stappen? Wat vind jij van het idee dat een auto beslissingen kan nemen zonder menselijke tussenkomst?",
+  "ethiek": "Ethiek: nadenken over wat goed en fout is bij AI. Bijvoorbeeld: wie moet een auto redden bij een ongeval? Denk je dat een computer ethisch kan handelen? Waarom wel of niet?",
+  "filterbubbel": "Filterbubbel: online zie je vooral info die bij je voorkeuren past. AI bepaalt dit met algoritmes. Vind jij het erg dat je alleen dingen ziet die je al leuk vindt? Wat zou je doen om meer variatie te zien?",
+  "health app": "Health app: apps die je gezondheid meten, zoals je hartslag of slaapritme. Denk aan een smartwatch. Gebruik jij een health app? Wat vind je van het idee dat AI je gezondheid kan volgen?",
+  "spamfilter": "Spamfilter: AI die ongewenste of gevaarlijke mails automatisch detecteert en verwijdert. Wat vind jij van spamfilters? Zou je willen dat AI jouw e-mails sorteert?",
+  "prompt": "Prompt: de vraag of opdracht die je aan een taalmodel geeft. Hoe duidelijker, hoe beter het antwoord. Wat zou je vragen aan een AI als je iets belangrijks moest weten?",
+  "smart device": "Smart device: slimme toestellen die AI gebruiken, zoals een slimme thermostaat of een smartwatch. Gebruik jij slimme apparaten? Waarom wel of niet?",
+  "cyberveiligheid": "Cyberveiligheid: bescherming tegen hackers, virussen en digitale aanvallen. Bescherm jij jezelf goed online? Wat zou je doen als jouw persoonlijke gegevens gestolen zouden worden?",
+  "trolleyprobleem": "Trolleyprobleem: ethisch dilemma over wie gered wordt bij een ongeval. Wie zou jij kiezen om te redden, en waarom? Denk je dat AI de juiste keuzes kan maken in zo'n situatie?",
+  "deep learning": "Deep Learning: een type machine learning waarbij AI leert via complexe neurale netwerken. Vertrouw jij deze technologie? Wat zou je doen als AI zelf leert en beslissingen neemt?"
+};
+
+let gesprekActief = false;
+let geleerdData = JSON.parse(localStorage.getItem('learnedData')) || {};
+let memory = {}; // Geheugen voor eerdere gesprekken en antwoorden
+
+// Gebruik Wikipedia API om externe kennis op te slaan (Nederlands)
+async function zoekOpInternet(vraag) {
+  const response = await fetch(`https://nl.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(vraag)}`);
+  if (!response.ok) return null;
+  const data = await response.json();
+  return data.extract || null;
+}
+
+const forbiddenWords = ["fuck", "sukkel", "idioot", "kanker", "racist", "hacker", "stupid", "loser", "dumb", "bitch"];
+const messages = document.getElementById("messages");
+const inputBox = document.getElementById("userInput");
+const sendButton = document.getElementById("sendButton");
+const typingIndicator = document.getElementById("typingIndicator");
+
+sendButton.addEventListener("click", handleInput);
+
+function addMessage(text, sender) {
+  const div = document.createElement("div");
+  div.className = `message ${sender}`;
+  div.innerHTML = `<strong>${sender === 'user' ? 'Jij' : 'Chattie'}:</strong> ${text}`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function vraagTerug(begrip) {
+  return `Wat denk jij van ${begrip}? Zou jij dat gebruiken of vertrouwen? Wat zou je doen in een situatie waarbij ${begrip} belangrijk is?`;
+}
+
+async function handleInput() {
+  const input = inputBox.value.trim().toLowerCase();
+  if (!input) return;
+  
+  addMessage(input, 'user');
+  inputBox.value = "";
+  typingIndicator.style.display = 'block'; // Typindicator aanzetten
+
+  setTimeout(() => {
+    typingIndicator.style.display = 'none'; // Typindicator uitzetten na 2 seconden
+  }, 2000);
+
+  if (forbiddenWords.some(word => input.includes(word))) {
+    addMessage("Gebruik alsjeblieft respectvolle taal. Dit is een leeromgeving.", 'bot');
+    return;
+  }
+
+  if (input.includes("start")) {
+    gesprekActief = true;
+    addMessage("Welkom! Stel mij je vraag over AI, technologie, algoritmes, deepfakes en meer.", 'bot');
+    return;
+  }
+
+  if (!gesprekActief) {
+    addMessage("Typ eerst 'start' om te beginnen.", 'bot');
+    return;
+  }
+
+  if (input.includes("einde")) {
+    gesprekActief = false;
+    addMessage("Bedankt voor het gesprek! Vergeet niet kritisch te blijven denken over AI. Geef je me een score (op 10)?", 'bot');
+    return;
+  }
+
+  // Geheugenfunctie voor begrippen
+  for (const key in begrippenlijst) {
+    if (input.includes(key) && !memory[key]) {
+      memory[key] = begrippenlijst[key];
+      addMessage(begrippenlijst[key], 'bot');
+      addMessage(vraagTerug(key), 'bot');
+      return;
+    }
+    if (input.includes(key) && memory[key]) {
+      addMessage(memory[key], 'bot');
+      addMessage(vraagTerug(key), 'bot');
+      return;
+    }
+  }
+
+  const internetResult = await zoekOpInternet(input);
+  if (internetResult) {
+    addMessage("Volgens Wikipedia: " + internetResult, 'bot');
+    if (!geleerdData[input]) {
+      geleerdData[input] = internetResult;
+      localStorage.setItem('learnedData', JSON.stringify(geleerdData));
+    }
+  } else {
+    addMessage("Ik weet daar nog niet alles over. Wil je dat ik het opzoek via Wikipedia of een voorbeeld geef?", 'bot');
+  }
+}
+</script>
+</body>
+</html>
