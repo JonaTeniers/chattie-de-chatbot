@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <title>Chattie - AI Chatbot met Externe Leerfunctie</title>
+  <title>Chattie - AI Chatbot met Meerdere Onderwerpen</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -110,24 +110,16 @@
 </div>
 <script>
 let begrippenlijst = {
-  "ai": "AI is technologie die machines in staat stelt te denken zoals mensen. Voorbeeld: AI helpt bij kankerbehandeling in UZ Leuven. Wat denk jij van AI? Zou jij het gebruiken of vertrouwen? Wat zou je doen in een situatie waarbij AI belangrijk is?",
-  "agi": "AGI is een supervorm van AI die net zo veelzijdig is als een mens. Bestaat nog niet. Wat zou jij doen als AGI echt bestond? Zou je het vertrouwen?",
-  "algoritme": "Algoritme: een set instructies die bepaalt wat een computer doet. Bijvoorbeeld: welke video je ziet op TikTok. Wat vind je van algoritmes die jouw voorkeuren bepalen? Zou jij ze vertrouwen?",
-  "chatbot": "Chatbot: een virtuele assistent waarmee je via tekst of spraak praat. Denk aan Siri of Sam van Samsung. Heb jij al eens met een chatbot gepraat? Wat vind je van het idee dat AI jouw vragen beantwoordt?",
-  "deepfake": "Deepfake: nepvideo’s die er levensecht uitzien. Gemaakt met AI, vaak met GANs. Wat denk jij, zou jij een deepfake kunnen herkennen? Wat zou je doen als je een deepfake tegenkomt?",
-  "gans": "GANs: twee AI-systemen die samenwerken voor realistische beelden. Voorbeeld: wordt gebruikt bij deepfakes. Vind je dat deze technologie een gevaar kan vormen? Of zou het juist voordelen hebben, bijvoorbeeld in de filmindustrie?",
-  "discriminatie": "Discriminatie door AI: wanneer AI bevooroordeeld is, bijvoorbeeld bij sollicitaties. Denk je dat AI discriminatie kan veroorzaken? Wat zou je doen als AI jou benadeelt?",
-  "machine learning": "Machine Learning: AI leert zelf van data. Voorbeeld: spamfilters worden beter naarmate ze meer mails verwerken. Zou je een computer laten beslissen over je schoolprestaties? Waarom wel of niet?",
-  "zelfrijdende auto": "Zelfrijdende auto: voertuig dat zichzelf bestuurt met sensoren en AI. Denk aan Tesla. Zou jij in een zelfrijdende auto stappen? Wat vind jij van het idee dat een auto beslissingen kan nemen zonder menselijke tussenkomst?",
-  "ethiek": "Ethiek: nadenken over wat goed en fout is bij AI. Bijvoorbeeld: wie moet een auto redden bij een ongeval? Denk je dat een computer ethisch kan handelen? Waarom wel of niet?",
-  "filterbubbel": "Filterbubbel: online zie je vooral info die bij je voorkeuren past. AI bepaalt dit met algoritmes. Vind jij het erg dat je alleen dingen ziet die je al leuk vindt? Wat zou je doen om meer variatie te zien?",
-  "health app": "Health app: apps die je gezondheid meten, zoals je hartslag of slaapritme. Denk aan een smartwatch. Gebruik jij een health app? Wat vind je van het idee dat AI je gezondheid kan volgen?",
-  "spamfilter": "Spamfilter: AI die ongewenste of gevaarlijke mails automatisch detecteert en verwijdert. Wat vind jij van spamfilters? Zou je willen dat AI jouw e-mails sorteert?",
-  "prompt": "Prompt: de vraag of opdracht die je aan een taalmodel geeft. Hoe duidelijker, hoe beter het antwoord. Wat zou je vragen aan een AI als je iets belangrijks moest weten?",
-  "smart device": "Smart device: slimme toestellen die AI gebruiken, zoals een slimme thermostaat of een smartwatch. Gebruik jij slimme apparaten? Waarom wel of niet?",
-  "cyberveiligheid": "Cyberveiligheid: bescherming tegen hackers, virussen en digitale aanvallen. Bescherm jij jezelf goed online? Wat zou je doen als jouw persoonlijke gegevens gestolen zouden worden?",
-  "trolleyprobleem": "Trolleyprobleem: ethisch dilemma over wie gered wordt bij een ongeval. Wie zou jij kiezen om te redden, en waarom? Denk je dat AI de juiste keuzes kan maken in zo'n situatie?",
-  "deep learning": "Deep Learning: een type machine learning waarbij AI leert via complexe neurale netwerken. Vertrouw jij deze technologie? Wat zou je doen als AI zelf leert en beslissingen neemt?",
+  // AI-gerelateerde begrippen
+  "ai": "AI is technologie die machines in staat stelt te denken zoals mensen.",
+  "machine learning": "Machine learning is een tak van AI waarin systemen leren van data.",
+  
+  // PAV-gerelateerde begrippen
+  "sociaal welzijn": "Sociaal welzijn betreft de kwaliteit van leven en de mogelijkheid om actief deel te nemen aan de samenleving.",
+  "pedagogisch werk": "Pedagogisch werk gaat over de begeleiding en opvoeding van jongeren in hun ontwikkeling.",
+  "ethiek in het onderwijs": "Ethiek in het onderwijs is het onderzoeken van wat goed en fout is in het onderwijs en het begeleiden van studenten in hun ethische keuzes.",
+  
+  // Extra begrippen
   "synthese": "Samenvoeging van verschillende elementen tot een geheel.",
   "cognitieve vermogens": "Mentale capaciteiten zoals denken, begrijpen en leren.",
   "transfer learning": "Het toepassen van kennis van de ene taak op een andere taak.",
@@ -149,26 +141,44 @@ let begrippenlijst = {
 };
 
 let gesprekActief = false;
-let geleerdData = JSON.parse(localStorage.getItem('learnedData')) || {};
-let memory = {}; // Geheugen voor eerdere gesprekken en antwoorden
+let geheugen = {}; // Geheugen voor eerdere antwoorden en documenten
 
-// Gebruik Wikipedia API om externe kennis op te slaan (Nederlands)
-async function zoekOpInternet(vraag) {
-  const taal = "nl";  // Weer Nederlands voor de zoekfunctie
-  const response = await fetch(`https://${taal}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(vraag)}`);
-  if (!response.ok) return null;
-  const data = await response.json();
-  return data.extract || "Sorry, ik kon geen informatie vinden.";
+// Type-indicator toevoegen
+function showTypingIndicator() {
+  document.getElementById("typingIndicator").style.display = "block";
 }
 
-const forbiddenWords = ["fuck", "sukkel", "idioot", "kanker", "racist", "hacker", "stupid", "loser", "dumb", "bitch"];
+function hideTypingIndicator() {
+  document.getElementById("typingIndicator").style.display = "none";
+}
+
+// Document uploaden en verwerken
+function uploadFile() {
+  const fileInput = document.getElementById('fileInput');
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const content = event.target.result;
+    processDocument(content);
+  };
+  reader.readAsText(file);
+}
+
+function processDocument(content) {
+  // Hier kun je de inhoud van de document verwerken
+  console.log("Bestand Inhoud:", content);
+  addMessage("Ik heb je document ontvangen! Wat wil je ermee doen?", 'bot');
+}
+
 const messages = document.getElementById("messages");
 const inputBox = document.getElementById("userInput");
 const sendButton = document.getElementById("sendButton");
-const typingIndicator = document.getElementById("typingIndicator");
 
 sendButton.addEventListener("click", handleInput);
 
+// Functie om berichten toe te voegen
 function addMessage(text, sender) {
   const div = document.createElement("div");
   div.className = `message ${sender}`;
@@ -177,6 +187,27 @@ function addMessage(text, sender) {
   messages.scrollTop = messages.scrollHeight;
 }
 
+// Zoekfunctie met Wikipedia
+async function zoekOpInternet(vraag) {
+  const taal = "nl"; // Zoeken in het Nederlands
+  const response = await fetch(`https://${taal}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(vraag)}`);
+  if (!response.ok) return null;
+  const data = await response.json();
+  return data.extract || "Sorry, ik kon geen informatie vinden.";
+}
+
+// Geheugen voor vorige antwoorden
+function slaAntwoordOp(begrip, antwoord) {
+  geheugen[begrip] = antwoord;
+  localStorage.setItem('geheugen', JSON.stringify(geheugen));
+}
+
+function laadGeheugen() {
+  const opgeslagenGeheugen = localStorage.getItem('geheugen');
+  if (opgeslagenGeheugen) {
+    geheugen = JSON.parse(opgeslagenGeheugen);
+  }
+}
 
 async function handleInput() {
   const input = inputBox.value.trim().toLowerCase();
@@ -184,20 +215,15 @@ async function handleInput() {
   
   addMessage(input, 'user');
   inputBox.value = "";
-  typingIndicator.style.display = 'block'; // Typindicator aanzetten
+  showTypingIndicator();
 
   setTimeout(() => {
-    typingIndicator.style.display = 'none'; // Typindicator uitzetten na 2 seconden
+    hideTypingIndicator();
   }, 2000);
-
-  if (forbiddenWords.some(word => input.includes(word))) {
-    addMessage("Gebruik alsjeblieft respectvolle taal. Dit is een leeromgeving.", 'bot');
-    return;
-  }
 
   if (input.includes("start")) {
     gesprekActief = true;
-    addMessage("Welkom! Stel mij je vraag, en ik zal  je helpen.", 'bot');
+    addMessage("Welkom! Stel mij je vraag over AI, PAV, of andere onderwerpen.", 'bot');
     return;
   }
 
@@ -208,31 +234,24 @@ async function handleInput() {
 
   if (input.includes("einde")) {
     gesprekActief = false;
-    addMessage("Bedankt voor het gesprek! Geef je me een score (op 10)?", 'bot');
+    addMessage("Bedankt voor het gesprek! Vergeet niet kritisch te blijven denken over AI en PAV. Geef je me een score (op 10)?", 'bot');
     return;
   }
 
-  // Geheugenfunctie voor begrippen
+  // Begrippen zoeken
   for (const key in begrippenlijst) {
-    if (input.includes(key) && !memory[key]) {
-      memory[key] = begrippenlijst[key];
+    if (input.includes(key)) {
       addMessage(begrippenlijst[key], 'bot');
-      addMessage(vraagTerug(key), 'bot');
-      return;
-    }
-    if (input.includes(key) && memory[key]) {
-      addMessage(memory[key], 'bot');
-      addMessage(vraagTerug(key), 'bot');
       return;
     }
   }
 
-  // Zoekfunctie
+  // Zoeken via Wikipedia
   const internetResult = await zoekOpInternet(input);
   if (internetResult) {
     addMessage("Volgens Wikipedia: " + internetResult, 'bot');
   } else {
-    addMessage("Ik weet daar nog niet alles over. Wil je dat ik het opzoek via Wikipedia of een voorbeeld geef?", 'bot');
+    addMessage("Sorry, ik weet daar nog niet alles over. Wil je dat ik het opzoek via Wikipedia?", 'bot');
   }
 }
 </script>
