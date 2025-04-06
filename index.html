@@ -184,13 +184,20 @@ function vraagTerug(begrip) {
 async function handleInput() {
   const input = inputBox.value.trim().toLowerCase();
   if (!input) return;
-  
+
+  function showTypingIndicator() {
+  document.getElementById("typingIndicator").style.display = "block";
+}
+
+function hideTypingIndicator() {
+  document.getElementById("typingIndicator").style.display = "none";
+}
   addMessage(input, 'user');
   inputBox.value = "";
   typingIndicator.style.display = 'block'; // Typindicator aanzetten
 
   setTimeout(() => {
-    typingIndicator.style.display = 'none'; // Typindicator uitzetten na 2 seconden
+    typingIndicator.style.display = 'none'; // Typindicator uitzetten na 3 seconden
   }, 2000);
 
   if (forbiddenWords.some(word => input.includes(word))) {
@@ -200,7 +207,7 @@ async function handleInput() {
 
   if (input.includes("start")) {
     gesprekActief = true;
-    addMessage("Welkom! Stel mij je vraag over AI, technologie, algoritmes, deepfakes en meer.", 'bot');
+    addMessage("Welkom! Stel mij je vraag" 'bot');
     return;
   }
 
@@ -229,6 +236,26 @@ async function handleInput() {
       return;
     }
   }
+function checkUserSentiment(input) {
+  const positiveWords = ["cool", "leuk", "interessant", "geweldig"];
+  const negativeWords = ["saai", "dom", "niet", "slecht"];
+  
+  if (positiveWords.some(word => input.includes(word))) {
+    return "positief";
+  } else if (negativeWords.some(word => input.includes(word))) {
+    return "negatief";
+  } else {
+    return "neutraal";
+  }
+}
+
+function respondToSentiment(sentiment) {
+  if (sentiment === "positief") {
+    addMessage("Leuk dat je het interessant vindt!", "bot");
+  } else if (sentiment === "negatief") {
+    addMessage("Oh, wat jammer. Waarom denk je dat?", "bot");
+  }
+}
 
   const internetResult = await zoekOpInternet(input);
   if (internetResult) {
@@ -238,7 +265,7 @@ async function handleInput() {
       localStorage.setItem('learnedData', JSON.stringify(geleerdData));
     }
   } else {
-    addMessage("Ik weet daar nog niet alles over. Wil je dat ik het opzoek via Wikipedia of een voorbeeld geef?", 'bot');
+    addMessage("Ik weet daar nog niet alles over. Wil je dat ik het opzoek via het internet", 'bot');
   }
 }
 </script>
