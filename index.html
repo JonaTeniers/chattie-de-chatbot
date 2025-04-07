@@ -108,7 +108,6 @@
   </div>
   <div id="typingIndicator" class="typing-indicator">Chattie denkt even na...</div>
 </div>
-
 <script>
 // Begrippenlijst
 let begrippenlijst = {
@@ -148,6 +147,13 @@ let begrippenlijst = {
   "gebruik van ai in gezondheidszorg": "AI wordt gebruikt om medische diagnoses te stellen, behandelingsplannen te maken en zelfs therapieën te bieden via chatbots. Dit kan de efficiëntie en nauwkeurigheid van de gezondheidszorg verbeteren.",
   "toekomst van agi": "Kunstmatige Algemene Intelligentie (AGI) is een toekomstig doel waarbij AI menselijke cognitieve vermogens kan evenaren. Dit kan grote veranderingen teweegbrengen in verschillende sectoren, maar roept ook vragen op over de haalbaarheid en wenselijkheid."
 };
+
+// Verboden woorden
+const forbiddenWords = [
+  "fuck", "sukkel", "idioot", "kanker", "terreur", "rotzak", "mierenneuker", 
+  "lul", "pissige", "kut", "trut", "donderop", "homo", "nigger", "asshole", 
+  "bitch", "shit", "douchebag", "wanker"
+];
 
 let gesprekActief = false;
 
@@ -196,6 +202,12 @@ async function handleInput() {
   setTimeout(() => {
     hideTypingIndicator();
   }, 2000);
+
+  // Scheldwoordencontrole
+  if (forbiddenWords.some(word => input.includes(word))) {
+    addMessage("Gebruik alsjeblieft respectvolle taal. Dit is een leeromgeving.", 'bot');
+    return;
+  }
 
   if (input.includes("start")) {
     gesprekActief = true;
