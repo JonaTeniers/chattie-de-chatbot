@@ -119,6 +119,11 @@ let begrippenlijst = {
   "sociaal welzijn": "Sociaal welzijn betreft de kwaliteit van leven en de mogelijkheid om actief deel te nemen aan de samenleving.",
   "pedagogisch werk": "Pedagogisch werk gaat over de begeleiding en opvoeding van jongeren in hun ontwikkeling.",
   "ethiek in het onderwijs": "Ethiek in het onderwijs is het onderzoeken van wat goed en fout is in het onderwijs en het begeleiden van studenten in hun ethische keuzes.",
+    "natuur": "Weinig tot geen bebouwing, veel natuur, beschermde natuurgebieden, ongerepte natuur.",
+    "industrieel": "Grote verkeerswegen, waterwegen, opslagplaatsen, rokende schoorstenen, fabrieken, havengebied.",
+    "landelijk": "Huizen rond dorpsplein, huizen staan verspreid, bos, landelijk uitzicht, weiden en akkers.",
+    "stedelijk": "Huizen dicht bij elkaar, hoogbouw, druk verkeer, veel mensen bij elkaar, weinig natuurlijk groen, weinig open ruimte.",
+    "toeristisch": "Elementen om toeristen aan te trekken: skigebied, zon, zee, strand, bergen, attracties, pretparken, musea."
   
   // Extra begrippen
   "synthese": "Samenvoeging van verschillende elementen tot een geheel.",
@@ -224,7 +229,7 @@ async function handleInput() {
 
   if (input.includes("start")) {
     gesprekActief = true;
-    addMessage("Welkom! Stel mij je vraag over AI, PAV, of andere onderwerpen.", 'bot');
+    addMessage("Welkom! Stel mij je vraag", 'bot');
     return;
   }
 
