@@ -199,7 +199,7 @@ async function handleInput() {
 
   if (input.includes("start")) {
     gesprekActief = true;
-    addMessage("Welkom! Stel mij je vraag over AI, PAV, of andere onderwerpen.", 'bot');
+    addMessage("Welkom! Stel mij je vraag.", 'bot');
     return;
   }
 
@@ -210,7 +210,7 @@ async function handleInput() {
 
   if (input.includes("einde")) {
     gesprekActief = false;
-    addMessage("Bedankt voor het gesprek! Vergeet niet kritisch te blijven denken over AI en PAV. Geef je me een score (op 10)?", 'bot');
+    addMessage("Bedankt voor het gesprek! Geef je me een score (op 10)?", 'bot');
     return;
   }
 
