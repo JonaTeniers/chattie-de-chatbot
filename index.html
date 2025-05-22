@@ -99,7 +99,7 @@
   <h2>Hallo! Ik ben Chattie</h2>
   <div class="emoji">🤖💬</div>
   <p style="text-align: center; font-size: 16px; margin-top: -10px; margin-bottom: 20px; color: #333;">
-    Begin je gesprek met het woord <strong>"start"</strong> en eindig met <strong>"einde"</strong>. Vergeet op het einde niet om me een beoordeling te geven!
+    Begin je gesprek met het woord <strong>"start"</strong> en eindig met <strong>"einde"</strong>.
   </p>
   <div id="messages"></div>
   <div id="inputSection">
@@ -111,23 +111,16 @@
 <script>
 // Begrippenlijst
 let begrippenlijst = {
-  // AI-gerelateerde begrippen
   "ai": "AI is technologie die machines in staat stelt te denken zoals mensen.",
   "machine learning": "Machine learning is een tak van AI waarin systemen leren van data.",
-  
-  // PAV-gerelateerde begrippen
   "sociaal welzijn": "Sociaal welzijn betreft de kwaliteit van leven en de mogelijkheid om actief deel te nemen aan de samenleving.",
   "pedagogisch werk": "Pedagogisch werk gaat over de begeleiding en opvoeding van jongeren in hun ontwikkeling.",
   "ethiek in het onderwijs": "Ethiek in het onderwijs is het onderzoeken van wat goed en fout is in het onderwijs en het begeleiden van studenten in hun ethische keuzes.",
-  
-  // Begrippen over natuur en milieu
   "natuur": "Weinig tot geen bebouwing, veel natuur, beschermde natuurgebieden, ongerepte natuur.",
   "industrieel": "Grote verkeerswegen, waterwegen, opslagplaatsen, rokende schoorstenen, fabrieken, havengebied.",
   "landelijk": "Huizen rond dorpsplein, huizen staan verspreid, bos, landelijk uitzicht, weiden en akkers.",
   "stedelijk": "Huizen dicht bij elkaar, hoogbouw, druk verkeer, veel mensen bij elkaar, weinig groen, weinig open ruimte.",
   "toeristisch": "Elementen om toeristen aan te trekken: skigebied, zon, zee, strand, bergen, attracties, pretparken, musea.",
-  
-  // Extra begrippen
   "synthese": "Samenvoeging van verschillende elementen tot een geheel.",
   "cognitieve vermogens": "Mentale capaciteiten zoals denken, begrijpen en leren.",
   "transfer learning": "Het toepassen van kennis van de ene taak op een andere taak.",
@@ -139,25 +132,35 @@ let begrippenlijst = {
   "regulering": "Het opstellen van regels en wetten om gedrag te sturen.",
   "deep blue": "Superslimme schaakcomputer.",
   "allen newell en herbert simon": "Ontwikkelden het eerste AI-programma in 1955.",
-  "elon musk": "Medeoprichter van OpenAI en betrokken bij de ontwikkeling van zelfrijdende auto's bij Tesla.",
-  "energieverbruik van ai": "AI-systemen, vooral grote taalmodellen, verbruiken veel energie en water om servers koel te houden. Dit heeft een aanzienlijke impact op het milieu.",
-  "privacy en veiligheid": "AI-systemen verzamelen en verwerken veel persoonlijke gegevens. Het is belangrijk om bewust te zijn van privacykwesties en de veiligheid van persoonlijke informatie.",
-  "ethische dilemma's": "AI kan ethische dilemma's veroorzaken, zoals bij zelfrijdende auto's die beslissingen moeten nemen in noodsituaties. Het is belangrijk om na te denken over de morele implicaties van AI-beslissingen.",
-  "discriminatie door ai": "AI-systemen kunnen onbedoeld discrimineren, zoals bij de sollicitatierobot van Amazon die vrouwen discrimineerde. Dit benadrukt het belang van ethische richtlijnen en toezicht bij het ontwikkelen van AI.",
-  "gebruik van ai in gezondheidszorg": "AI wordt gebruikt om medische diagnoses te stellen, behandelingsplannen te maken en zelfs therapieën te bieden via chatbots. Dit kan de efficiëntie en nauwkeurigheid van de gezondheidszorg verbeteren.",
-  "toekomst van agi": "Kunstmatige Algemene Intelligentie (AGI) is een toekomstig doel waarbij AI menselijke cognitieve vermogens kan evenaren. Dit kan grote veranderingen teweegbrengen in verschillende sectoren, maar roept ook vragen op over de haalbaarheid en wenselijkheid."
+  "energieverbruik van ai": "AI verbruikt veel energie en water, vooral bij het trainen van grote modellen.",
+  "discriminatie door ai": "AI kan onbedoeld discrimineren, zoals bij een sollicitatierobot die vrouwen uitsloot.",
+  "privacy en veiligheid": "AI-systemen verwerken veel persoonsgegevens, daarom is het belangrijk na te denken over privacy en bescherming.",
+  "toekomst van agi": "AGI is AI die op mensen lijkt qua denkvermogen. Het roept veel ethische vragen op."
+  "AVA technologie": "Dit  is een technologie die als een soort scanner een film  of serie kan scannen, en er dan een mooi plaatsje uithaalt voor de thumbnails."
+  
 };
 
-// Verboden woorden
+// LPAK gerichte vragen en antwoorden
+let vragenLPAK = {
+  "wat zegt het artikel over facebook en instagram": "Meta (Facebook & Instagram) wil vanaf 26 juni 2024 je openbare foto’s en berichten gebruiken om hun AI te trainen. Wil je dat niet? Dan moet je bezwaar maken via de instellingen van je account.",
+  "hoe kan je je gegevens beschermen volgens het artikel": "Ga naar je instellingen en dien een bezwaar in via 'recht van bezwaar'. Dat moet vóór 26 juni. Leg daar uit waarom je niet akkoord bent.",
+  "wat is het verband tussen de for you page en het artikel": "Beide gaan over hoe AI op basis van jouw gegevens inhoud personaliseert of traint. De For You Page op TikTok toont video's gebaseerd op gedrag; Meta wil jouw berichten gebruiken om AI slimmer te maken.",
+  "wat is het voordeel van self learning": "Denk goed na: als een AI zichzelf kan verbeteren, wat betekent dat voor snelheid en onafhankelijkheid? Kun je voorbeelden bedenken waarbij dat nuttig zou zijn?",
+  "is het een voordeel of nadeel dat computers zelf leren": "Probeer eerst zelf na te denken: Welke risico’s zie je? Wat zijn mogelijke voordelen? Je mag beide kanten benoemen.",
+  "vertrouw jij ai in een zelfrijdende auto": "Denk aan wat je geleerd hebt over het trolleyprobleem of chatbot Tay. Wat zou jij belangrijk vinden in zo’n beslissing?",
+  "wat zou agi betekenen voor armere landen": "Probeer je voor te stellen: Wat gebeurt er als rijke landen AGI ontwikkelen en armere landen dat niet kunnen? Is dat eerlijk? Wat zou jij voorstellen als oplossing?",
+  "wat doet een webshop met je data": "Probeer na te gaan wat je ziet in je aanbevelingen. Koop je dingen die je net gezien hebt? Denk je dat dat toeval is of gestuurd door AI?"
+  "wat zijn de vijf spelers" : "Kijk goed naar welk logo in de smartphones staat. Je kan dit!!"
+
+};
+
 const forbiddenWords = [
-  "fuck", "sukkel", "idioot", "kanker", "terreur", "rotzak", "mierenneuker", 
-  "lul", "pissige", "kut", "trut", "donderop", "homo", "nigger", "asshole", 
-  "bitch", "shit", "douchebag", "wanker"
+  "fuck", "sukkel", "idioot", "kanker", "terreur", "rotzak", "mierenneuker",
+  "lul", "kut", "trut", "donderop", "nigger", "asshole", "bitch", "shit", "homo"
 ];
 
 let gesprekActief = false;
 
-// Type-indicator toevoegen
 function showTypingIndicator() {
   document.getElementById("typingIndicator").style.display = "block";
 }
@@ -166,7 +169,6 @@ function hideTypingIndicator() {
   document.getElementById("typingIndicator").style.display = "none";
 }
 
-// Functie om berichten toe te voegen
 function addMessage(text, sender) {
   const div = document.createElement("div");
   div.className = `message ${sender}`;
@@ -175,35 +177,24 @@ function addMessage(text, sender) {
   messages.scrollTop = messages.scrollHeight;
 }
 
-// Zoekfunctie met Wikipedia
-async function zoekOpInternet(vraag) {
-  const taal = "nl"; // Zoeken in het Nederlands
-  const response = await fetch(`https://${taal}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(vraag)}`);
-  if (!response.ok) return null;
-  const data = await response.json();
-  return data.extract || "Sorry, ik kon geen informatie vinden.";
-}
-
 const messages = document.getElementById("messages");
 const inputBox = document.getElementById("userInput");
 const sendButton = document.getElementById("sendButton");
 
 sendButton.addEventListener("click", handleInput);
 
-// Het verwerken van de gebruikersinvoer
 async function handleInput() {
   const input = inputBox.value.trim().toLowerCase();
   if (!input) return;
-  
+
   addMessage(input, 'user');
   inputBox.value = "";
   showTypingIndicator();
 
   setTimeout(() => {
     hideTypingIndicator();
-  }, 2000);
+  }, 1000);
 
-  // Scheldwoordencontrole
   if (forbiddenWords.some(word => input.includes(word))) {
     addMessage("Gebruik alsjeblieft respectvolle taal. Dit is een leeromgeving.", 'bot');
     return;
@@ -226,7 +217,6 @@ async function handleInput() {
     return;
   }
 
-  // Begrippen zoeken
   for (const key in begrippenlijst) {
     if (input.includes(key)) {
       addMessage(begrippenlijst[key], 'bot');
@@ -234,13 +224,14 @@ async function handleInput() {
     }
   }
 
-  // Zoeken via Wikipedia
-  const internetResult = await zoekOpInternet(input);
-  if (internetResult) {
-    addMessage("Volgens Wikipedia: " + internetResult, 'bot');
-  } else {
-    addMessage("Sorry, ik weet daar nog niet alles over. Wil je dat ik het opzoek via Wikipedia?", 'bot');
+  for (const key in vragenLPAK) {
+    if (input.includes(key)) {
+      addMessage(vragenLPAK[key], 'bot');
+      return;
+    }
   }
+
+  addMessage("Ik weet hier niet direct het antwoord op. Kan je het anders formuleren of specifieker maken?", 'bot');
 }
 </script>
 </body>
