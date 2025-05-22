@@ -135,9 +135,8 @@ let begrippenlijst = {
   "energieverbruik van ai": "AI verbruikt veel energie en water, vooral bij het trainen van grote modellen.",
   "discriminatie door ai": "AI kan onbedoeld discrimineren, zoals bij een sollicitatierobot die vrouwen uitsloot.",
   "privacy en veiligheid": "AI-systemen verwerken veel persoonsgegevens, daarom is het belangrijk na te denken over privacy en bescherming.",
-  "toekomst van agi": "AGI is AI die op mensen lijkt qua denkvermogen. Het roept veel ethische vragen op."
-  "AVA technologie": "Dit  is een technologie die als een soort scanner een film  of serie kan scannen, en er dan een mooi plaatsje uithaalt voor de thumbnails."
-  
+  "toekomst van agi": "AGI is AI die op mensen lijkt qua denkvermogen. Het roept veel ethische vragen op.",
+  "ava technologie": "Dit is een technologie die als een soort scanner een film of serie analyseert en er een geschikte thumbnail uit haalt."
 };
 
 // LPAK gerichte vragen en antwoorden
@@ -149,9 +148,8 @@ let vragenLPAK = {
   "is het een voordeel of nadeel dat computers zelf leren": "Probeer eerst zelf na te denken: Welke risico’s zie je? Wat zijn mogelijke voordelen? Je mag beide kanten benoemen.",
   "vertrouw jij ai in een zelfrijdende auto": "Denk aan wat je geleerd hebt over het trolleyprobleem of chatbot Tay. Wat zou jij belangrijk vinden in zo’n beslissing?",
   "wat zou agi betekenen voor armere landen": "Probeer je voor te stellen: Wat gebeurt er als rijke landen AGI ontwikkelen en armere landen dat niet kunnen? Is dat eerlijk? Wat zou jij voorstellen als oplossing?",
-  "wat doet een webshop met je data": "Probeer na te gaan wat je ziet in je aanbevelingen. Koop je dingen die je net gezien hebt? Denk je dat dat toeval is of gestuurd door AI?"
-  "wat zijn de vijf spelers" : "Kijk goed naar welk logo in de smartphones staat. Je kan dit!!"
-
+  "wat doet een webshop met je data": "Probeer na te gaan wat je ziet in je aanbevelingen. Koop je dingen die je net gezien hebt? Denk je dat dat toeval is of gestuurd door AI?",
+  "wat zijn de vijf spelers": "Kijk goed naar welk logo in de smartphones staat. Je kan dit!"
 };
 
 const forbiddenWords = [
@@ -182,6 +180,13 @@ const inputBox = document.getElementById("userInput");
 const sendButton = document.getElementById("sendButton");
 
 sendButton.addEventListener("click", handleInput);
+
+// ➕ ENTER-toets functionaliteit
+inputBox.addEventListener("keypress", function (e) {
+  if (e.key === "Enter") {
+    handleInput();
+  }
+});
 
 async function handleInput() {
   const input = inputBox.value.trim().toLowerCase();
