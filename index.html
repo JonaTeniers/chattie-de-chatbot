@@ -3,68 +3,72 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Chattie - AI-leerbuddy (Groen Thema)</title>
+<title>Chattie - AI-leerbuddy (Groen Thema - Scroll Fix)</title>
 <style>
+/* GECORRIGEERDE KLEUREN PALET (GROEN/BEIGE) */
 :root{
-  --bg1:#CFE3D3;
-  --bg2:#F9F8F4;
-  --card:#ffffff;
-  --bot:#eaf7ee;
-  --user:#E7DCC8;
-  --accent:#A9C2A6;
-  --muted:#8B8C89;
-  --chip-bg:#CBBBA0;
-  --chip-text:#3a301a;
-  --status-active-color:#4CAF50;
-  --status-escalation-color:#b45309;
+  --bg1:#CFE3D3;   /* Mist Green */
+  --bg2:#F9F8F4;   /* Off White (Zachte, warme basiswit tint) */
+  --card:#ffffff;   /* Wit voor de hoofdcontainer */
+  --bot:#eaf7ee;   /* Zeer lichtgroen voor bot-bubbels (compatibel met groen thema) */
+  --user:#E7DCC8;   /* Sand Beige voor gebruiker-bubbels */
+  --accent:#A9C2A6; /* Sage Leaf - Hoofd accentkleur (knoppen) */
+  --muted:#8B8C89; /* Stone Grey - Voor gedempte tekst en contrast */
+  --chip-bg:#CBBBA0; /* Dune Beige - Achtergrond voor snelle actie-chips */
+  --chip-text:#3a301a; /* Donkere tekst die goed contrasteert met Dune Beige */
+  --status-active-color:#4CAF50; /* Groen voor actieve status */
+  --status-escalation-color:#b45309; /* Oranje voor escalatie */
 }
 *{box-sizing:border-box}
 body{
-  margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;
-  background:linear-gradient(120deg,var(--bg1),var(--bg2));
-  display:flex;align-items:center;justify-content:center;min-height:100vh;
+  margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  background:linear-gradient(120deg,var(--bg1),var(--bg2));
+  background-color:var(--bg1); 
+  color:#0f172a; 
+  display:flex;
+  align-items:stretch; /* Zorg ervoor dat de container de volle hoogte kan aannemen */
+  justify-content:center;
+  min-height:100vh;
+  padding:0;
 }
 .container{
-  width:100%;
-  height:100vh;
-  background:var(--card);
-  display:grid;
-  grid-template-columns:340px 1fr;
-  overflow:hidden;
+  width:100%; 
+  height:100vh; /* CRUCIAAL: Dwingt volledige hoogte af */
+  background:var(--card);
+  border-radius:0; 
+  box-shadow:none; 
+  display:grid;
+  grid-template-columns:340px 1fr; 
+  overflow:hidden; /* Voorkomt onnodige scrollbalken op de body */
 }
+/* Linker zijbalk */
 .left{
-  padding:20px;
-  border-right:1px solid rgba(0,0,0,0.04);
-  background:linear-gradient(180deg,#fff,var(--bg2));
+  padding:20px;
+  border-right:1px solid rgba(0,0,0,0.04);
+  background:linear-gradient(180deg,#fff,var(--bg2));
 }
 .avatar{
-  width:66px;height:66px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,var(--accent),var(--chip-bg)); 
-  font-size:28px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.05);
+  width:66px;height:66px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--accent),var(--chip-bg)); 
+  font-size:28px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.05);
 }
 .title{font-weight:700;margin-top:6px}
 .subtitle{color:var(--muted);font-size:13px;margin-top:6px}
 .chat{
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  height:100%;
+  padding:18px;
+  display:flex;
+  flex-direction:column; /* Zorgt voor verticale stapeling */
+  gap:12px;
 }
 #messages{
-  flex:1 1 auto;
-  min-height:0;
-  overflow-y: scroll;
-  padding:12px;
-  border-radius:12px;
-  background:linear-gradient(180deg,var(--user),var(--card));
-  border:1px solid rgba(0,0,0,0.04);
+  flex:1; /* CRUCIAAL: Neemt alle verticale ruimte in de flex-container op */
+  overflow-y:auto; /* CRUCIAAL: Voegt scroll toe wanneer inhoud te lang wordt */
+  padding:12px;
+  border-radius:12px;
+  background:var(--bg2); /* Iets neutralere achtergrond */
+  border:1px solid rgba(0,0,0,0.04)
 }
-#messages::-webkit-scrollbar { width:10px; }
-#messages::-webkit-scrollbar-track { background: var(--bg2); border-radius:5px; }
-#messages::-webkit-scrollbar-thumb { background: var(--accent); border-radius:5px; }
-#messages::-webkit-scrollbar-thumb:hover { background: var(--status-active-color); }
 .msg{display:flex;gap:10px;margin:10px 0;align-items:flex-end}
 .msg.bot{justify-content:flex-start}
 .msg.user{justify-content:flex-end}
@@ -72,276 +76,355 @@ body{
 .bubble.bot{background:var(--bot);color:#05341a;border-radius:14px 14px 14px 6px}
 .bubble.user{background:var(--user);color:#3a301a;border-radius:14px 14px 6px 14px;text-align:right}
 .quick{display:flex;gap:8px;flex-wrap:wrap}
+/* Style voor de snelle actie knoppen (chips) */
 .chip-btn{ 
-  background:var(--chip-bg);
-  border-radius:12px;
-  padding:8px 10px;
-  border:1px solid var(--muted); 
-  cursor:pointer;
-  color:var(--chip-text); 
-  font-weight:600;
-  white-space:nowrap;
-  font-size:14px;
+  background:var(--chip-bg);
+  border-radius:12px;
+  padding:8px 10px;
+  border:1px solid var(--muted); 
+  cursor:pointer;
+  color:var(--chip-text); 
+  font-weight:600;
+  white-space:nowrap;
+  font-size:14px;
 }
 .input-row{display:flex;gap:10px}
 .input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);font-size:15px}
 .send-btn{
-  background:var(--accent); 
-  color:#fff;
-  padding:10px 16px;
-  border-radius:12px;
-  border:none;
-  cursor:pointer;
-  font-weight:700
+  background:var(--accent); 
+  color:#fff;
+  padding:10px 16px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  font-weight:700
 }
 .muted{color:var(--muted);font-size:13px}
 h4{font-size:16px; margin: 18px 0 8px 0; font-weight: 700;} 
-.status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.status-row { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 5px; 
+} 
 @media (max-width:880px){
-  .container{
-    grid-template-columns:1fr;
-    border-radius:18px; 
-    height:auto; 
-  }
-  body { padding: 24px; } 
+  .container{
+    grid-template-columns:1fr;
+    border-radius:18px; 
+    height:auto; 
+  }
+  body { padding: 24px; } 
 }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="left">
-    <div style="display:flex;gap:12px;align-items:center">
-      <div class="avatar">🤖</div>
-      <div>
-        <div class="title">Chattie je AI-leerbuddy</div>
-        <div class="subtitle">Begin met "start" eindig met "einde".</div>
-      </div>
-    </div>
+  <div class="left">
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="avatar">🤖</div>
+      <div>
+        <div class="title">Chattie je AI-leerbuddy</div>
+        <div class="subtitle">Begin met "start" eindig met "einde".</div>
+      </div>
+    </div>
 
-    <div style="margin-top:18px">
-      <button id="howBtn" class="send-btn" style="width:100%; text-align:center; padding:10px 16px; font-weight:600;">Hoe werken de lessen?</button>
-      <div class="muted" style="margin-top:10px; font-size:13px;">Gebruik de knoppen onderin de chat voor snelle acties.</div>
-    </div>
+    <div style="margin-top:18px">
+      <button id="howBtn" class="send-btn" style="width:100%; text-align:center; padding:10px 16px; font-weight:600; background:var(--accent); border-radius:12px;">Hoe werken de lessen?</button>
+      <div class="muted" style="margin-top:10px; font-size:13px; color:var(--muted);">Gebruik de knoppen onderin de chat voor snelle acties.</div>
+    </div>
 
-    <div style="margin-top:18px">
-      <h4>Status & instellingen</h4>
-      <div class="muted status-row">
-        <span>Gesprek actief:</span>
-        <span id="statusActive" style="font-weight:700; color:var(--muted);">Nee</span>
-      </div>
-      <div class="muted status-row" style="margin-top:6px;">
-        <span>Escalatie:</span>
-        <span id="escalation" style="font-weight:700;color:var(--status-escalation-color);">0</span>
-      </div>
-      <div class="muted" style="margin-top:8px">Geheugen:</div>
-      <div id="memList" class="muted" style="max-height:90px;overflow:auto;padding-top:6px">Geen</div>
-    </div>
-  </div>
+    <div style="margin-top:18px">
+      <h4>Status & instellingen</h4>
+      <div class="muted status-row">
+        <span>Gesprek actief:</span>
+        <span id="statusActive" style="font-weight:700; color:var(--muted);">Nee</span>
+      </div>
+      <div class="muted status-row" style="margin-top:6px;">
+        <span>Escalatie:</span>
+        <span id="escalation" style="font-weight:700;color:var(--status-escalation-color);">0</span>
+      </div>
+      <div class="muted" style="margin-top:8px">Geheugen:</div>
+      <div id="memList" class="muted" style="max-height:90px;overflow:auto;padding-top:6px">Geen</div>
+    </div>
+  </div>
 
-  <div class="chat">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <strong>Chat</strong>
-      <div id="topRight" class="muted">Chattie is klaar</div>
-    </div>
+  <div class="chat">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong>Chat</strong>
+      <div id="topRight" class="muted">Chattie is klaar</div>
+    </div>
 
-    <div id="messages" aria-live="polite"></div>
+    <div id="messages" aria-live="polite"></div>
 
-    <div class="quick" style="margin-top:10px; margin-bottom: 12px;">
-      <button class="chip-btn" data-action="more">Meer info</button>
-      <button class="chip-btn" data-action="example">Voorbeeld</button>
-      <button class="chip-btn" data-action="dontget">Ik snap het niet</button>
-      <button class="chip-btn" data-action="assignment">Opdracht</button>
-    </div>
+    <div class="quick" style="margin-top:10px; margin-bottom: 12px;">
+      <button class="chip-btn" data-action="more">Meer info</button>
+      <button class="chip-btn" data-action="example">Voorbeeld</button>
+      <button class="chip-btn" data-action="dontget">Ik snap het niet</button>
+      <button class="chip-btn" data-action="assignment">Opdracht</button>
+    </div>
 
-    <div class="input-row" style="margin-top:12px">
-      <input id="userInput" placeholder='Typ "start" om te beginnen of stel een vraag' autocomplete="off" />
-      <button id="sendButton" class="send-btn">Verstuur</button>
-    </div>
-  </div>
+    <div class="input-row" style="margin-top:12px">
+      <input id="userInput" placeholder='Typ "start" om te beginnen of stel een vraag' autocomplete="off" />
+      <button id="sendButton" class="send-btn">Verstuur</button>
+    </div>
+  </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', ()=>{
+/* Fix voor niet-werkende knoppen - compacte, betrouwbare versie */
 
-// --- DOM references ---
+// Config
+const RESET_CODE = "resetchattie2025";
+const ESCALATION_LIMIT = 3;
+const TYPING_MS = 800;
+
+const FORBIDDEN = ["fuck","kut","lul","trut","idioot","kanker","slet","eikel","mongool"];
+
+// Kennis (uitgebreid met Olympische Spelen data uit het document)
+const KNOWLEDGE = {
+  "ai":"AI is technologie die machines in staat stelt te denken en leren zoals mensen.",
+  "machine learning":"Machine learning is een tak van AI waarbij systemen leren van data.",
+  "deep learning":"Een vorm van machine learning met neurale netwerken die complexe patronen herkennen.",
+  "sociaal welzijn":"De mate waarin mensen zich goed voelen en kunnen deelnemen aan de samenleving.",
+  "pedagogisch werk":"Het begeleiden en opvoeden van jongeren in hun ontwikkeling.",
+  "ethiek":"Nadenken over wat goed of fout is in het handelen van mensen (en AI-systemen).",
+  "ethiek in het onderwijs":"Het nadenken over morele keuzes binnen onderwijs en opvoeding.",
+  "natuur":"Weinig of geen bebouwing, veel groen, bossen, velden en dieren.",
+  "industrieel":"Omgeving met fabrieken, transport, opslag en weinig groen.",
+  "landelijk":"Huizen staan verspreid, open ruimte, akkers en weilanden.",
+  "stedelijk":"Huizen dicht bij elkaar, hoogbouw, druk verkeer, weinig natuur.",
+  "toeristisch":"Omgeving met veel attracties, strand, bergen of musea voor bezoekers.",
+  "cognitieve vermogens":"Mentale vaardigheden zoals denken, leren en begrijpen.",
+  "autonoom":"Zelfstandig, zonder menselijke tussenkomst.",
+  "ethisch dilemma":"Een situatie waarbij je moet kiezen tussen twee waarden of principes.",
+  "privacy":"Het recht om persoonlijke informatie geheim te houden.",
+  "deepfake":"Een door AI gemanipuleerde video of foto die echt lijkt, maar nep is.",
+  "discriminatie door ai":"AI kan onbedoeld bevooroordeeld zijn, bijvoorbeeld bij sollicitaties.",
+  "energieverbruik van ai":"Het trainen van AI kost veel energie en water.",
+  "agi":"Artificial General Intelligence — een AI die net zo slim is als mensen.",
+  "ava technologie":"Technologie die automatisch de beste thumbnail kiest voor een video.",
+  "zelfrijdende auto":"Een voertuig dat zonder chauffeur rijdt door sensoren en AI.",
+  "autonome shuttle":"Een klein zelfrijdend busje, zoals in Leuven, dat leert uit zijn omgeving.",
+  "senaat lek": "HLN meldde een ernstig datalek bij de Senaat, waarbij gevoelige info zoals terreurprotocollen en gsm-nummers van politici op straat kwamen door het gelekte wachtwoord van een conciërge.",
+  "infostealer": "Volgens HLN gaat het hier om 'infostealers', kwaadaardige software zoals Lumma Stealer, die ongemerkt alle ingevoerde gegevens stelen om ze door te verkopen aan criminelen.",
+  "multifactorauthenticatie": "HLN benadrukt dat Multifactorauthenticatie (MFA) cruciaal is; dit voegt een extra beveiligingsstap toe, wat het Senaat-lek had kunnen voorkomen.",
+  "wachtwoord hygiëne": "Uit het HLN-artikel blijkt hoe belangrijk goede Wachtwoordhygiëne is: gebruik unieke, lange wachtwoorden voor elke dienst om te voorkomen dat één lek alles compromitteert.",
+  "datingfraude AI": "VRT NWS onthulde hoe malafide datingsites AI gebruiken om kwetsbare singles financieel op te lichten met **deels AI-gegenereerde berichten** en een duur betaalmodel per letter.",
+  "jump4love": "VRT NWS noemt Jump4Love (J4L) als voorbeeld van een louche site met **nepprofielen en gestolen foto's**, waar gebruikers met callcenter-medewerkers of AI chatten zonder kans op een echte date.",
+  "AI en emotie": "Het VRT-onderzoek toonde aan dat AI-modellen emotionele gesprekken simuleren, puur om gebruikers zo lang mogelijk verslaafd te houden aan de chat, waardoor ze duizenden euro's verliezen.",
+  "kwetsbare singles": "VRT NWS waarschuwt dat vooral oudere en eenzame singles een makkelijk doelwit zijn voor deze fraude, omdat ze hopeloos verliefd kunnen worden op een **persoon die niet bestaat**.",
+  "internationale fraude": "Uit het VRT-artikel bleek dat de fraude wordt gerund via postbusfirma's op Cyprus en in Schotland, met intrigerende banden tot in de internationale politiek.",
+  "peter opgelicht crypto": "Volgens HLN werd Peter Van Welden slachtoffer van een georganiseerde oplichting via WhatsApp, waarbij hij door een nep-onderneemster werd verleid tot investeren in een vervalst crypto-platform en zo 300.000 euro verloor.",
+  "pig butchering": "Dit is de naam voor de oplichtingsmethode waarbij fraudeurs, zoals bij Peter, eerst langdurig vertrouwen opbouwen om het slachtoffer emotioneel te binden, waarna ze financieel toeslaan.",
+  "oplichting gevolgen": "Het verhaal van Peter in HLN toont de zware gevolgen van oplichting: hij verloor niet alleen zijn spaargeld, maar ook zijn relatie en zijn zelfvertrouwen, door de schaamte en het zwijgen over de fraude.",
+  "fraude psychologie": "HLN benadrukt dat deze fraudeurs psychologisch getraind zijn om in te spelen op de emoties en het vertrouwen van het slachtoffer, waardoor zelfs slimme mensen denken dat 'zij het zelf wel kunnen oplossen'.",
+  "rode vlaggen fraude": "Volgens Peter zijn de belangrijkste 'rode vlaggen' bij oplichting: berichten van onbekende nummers, het creëren van druk of urgentie, en de eis voor extra stortingen om je geld 'terug te krijgen'.",
+  
+  /* NIEUWE KENNIS VAN HET DOCUMENT OVER HISTORISCH REFERENTIEKADER */
+[cite_start]  "historisch referentie kader":"Een historisch referentiekader is een structuur om historische gebeurtenissen te situeren in **tijd en ruimte** en te linken aan **maatschappelijke domeinen** (Politiek, Sociaal, Cultureel, Economisch)[cite: 127, 145, 151]. [cite_start]In deze les focussen we op de **Moderne tijd en Hedendaagse tijd** (vanaf 1800)[cite: 133].",
+[cite_start]  "voorbeeld historisch referentie kader":"Hier is een voorbeeld van het historisch referentiekader voor de Olympische Spelen[cite: 151, 152]:\n\n" +
+      "Jaar | Plaats | Domeinen | Uitleg\n" +
+      "-----|---------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------\n" +
+      "1896 | Athene | Sociaal, Cultureel | [cite_start]De eerste Spelen: internationale sporters ontmoeten elkaar, start van een mooie traditie met symbolen zoals medailles en ceremonies[cite: 152].\n" +
+      "1916 | Berlijn | Politiek | Geannuleerd door de Eerste Wereldoorlog. [cite_start]Door macht bepalen landen of deelname kan[cite: 152].\n" +
+      "1936 | Berlijn | Politiek, Cultureel | Nazi-Duitsland gebruikte de Spelen voor propaganda en om hun ideologie te verspreiden. [cite_start]Opkomst van fascisme en nazisme[cite: 152].\n" +
+      "1972 | München | Politiek, Sociaal | [cite_start]Terrorisme (Palestijnse terroristen gijzelen Israëlische sporters) had wereldwijde impact op de beveiliging[cite: 152].\n" +
+      "1980 | Moskou | Politiek | [cite_start]Boycot door zo'n 40 landen (o.a. VS) uit protest tegen de inval van de Sovjet-Unie in Afghanistan (Koude Oorlog)[cite: 152].\n" +
+      "2020/2021 | Tokio | Sociaal, Economisch | Coronacrisis zorgde voor uitstel/aangepaste organisatie. [cite_start]Enorme kosten door uitstel en verlies van toerisme/sponsoring[cite: 152]."
+};
+
+
+const ASSIGNMENTS = [
+  "Bedenk een ethisch dilemma rond een zelfrijdende auto.",
+  "Zoek een voorbeeld van deepfake en leg uit waarom het gevaarlijk kan zijn.",
+  "Noem de vier maatschappelijke domeinen die we in de les hebben behandeld.",
+  "Geef een voorbeeld van hoe politiek de Olympische Spelen heeft beïnvloed na 1970."
+];
+
+// State
+let isChatActive = false;
+let escalation = Number(localStorage.getItem('chattie_escalation') || 0);
+let memory = JSON.parse(localStorage.getItem('chattie_memory') || '{}');
+let isDisabled = localStorage.getItem('chattie_disabled') === '1';
+
+// DOM refs
 const messagesEl = document.getElementById('messages');
 const inputEl = document.getElementById('userInput');
 const sendBtn = document.getElementById('sendButton');
-const chips = document.querySelectorAll('.chip-btn[data-action]');
+const chips = document.querySelectorAll('.chip-btn[data-action]'); 
 const howBtn = document.getElementById('howBtn');
 const statusActiveEl = document.getElementById('statusActive');
 const escalationEl = document.getElementById('escalation');
 const memListEl = document.getElementById('memList');
 const topRightEl = document.getElementById('topRight');
 
-// --- Config ---
-const RESET_CODE = "resetchattie2025";
-const ESCALATION_LIMIT = 3;
-const TYPING_MS = 800;
-const FORBIDDEN = ["fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet","eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris","pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak","schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke","tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"];
-const KNOWLEDGE = {
-  "ai":"AI is technologie die machines in staat stelt te denken en leren zoals mensen.",
-  "machine learning":"Machine learning is een tak van AI waarbij systemen leren van data.",
-  "deep learning":"Een vorm van machine learning met neurale netwerken die complexe patronen herkennen.",
-  "sociaal welzijn":"De mate waarin mensen zich goed voelen en kunnen deelnemen aan de samenleving.",
-  "pedagogisch werk":"Het begeleiden en opvoeden van jongeren in hun ontwikkeling.",
-  "ethiek":"Nadenken over wat goed of fout is in het handelen van mensen (en AI-systemen).",
-  "ethiek in het onderwijs":"Het nadenken over morele keuzes binnen onderwijs en opvoeding.",
-  "natuur":"Weinig of geen bebouwing, veel groen, bossen, velden en dieren.",
-  "industrieel":"Omgeving met fabrieken, transport, opslag en weinig groen.",
-  "landelijk":"Huizen staan verspreid, open ruimte, akkers en weilanden.",
-  "stedelijk":"Huizen dicht bij elkaar, hoogbouw, druk verkeer, weinig natuur.",
-  "toeristisch":"Omgeving met veel attracties, strand, bergen of musea voor bezoekers.",
-  "cognitieve vermogens":"Mentale vaardigheden zoals denken, leren en begrijpen.",
-  "autonoom":"Zelfstandig, zonder menselijke tussenkomst.",
-  "ethisch dilemma":"Een situatie waarbij je moet kiezen tussen twee waarden of principes.",
-  "privacy":"Het recht om persoonlijke informatie geheim te houden.",
-  "deepfake":"Een door AI gemanipuleerde video of foto die echt lijkt, maar nep is.",
-  "discriminatie door ai":"AI kan onbedoeld bevooroordeeld zijn, bijvoorbeeld bij sollicitaties.",
-  "energieverbruik van ai":"Het trainen van AI kost veel energie en water.",
-  "agi":"Artificial General Intelligence — een AI die net zo slim is als mensen.",
-  "ava technologie":"Technologie die automatisch de beste thumbnail kiest voor een video.",
-  "zelfrijdende auto":"Een voertuig dat zonder chauffeur rijdt door sensoren en AI.",
-  "autonome shuttle":"Een klein zelfrijdend busje, zoals in Leuven, dat leert uit zijn omgeving."
-
-  // NIEUW TOEGEVOEGDE VZNS VAN HET ARTIKEL:
-  "senaat lek": "HLN meldde een ernstig datalek bij de Senaat, waarbij gevoelige info zoals terreurprotocollen en gsm-nummers van politici op straat kwamen door het gelekte wachtwoord van een conciërge.",
-  "infostealer": "Volgens HLN gaat het hier om 'infostealers', kwaadaardige software zoals Lumma Stealer, die ongemerkt alle ingevoerde gegevens stelen om ze door te verkopen aan criminelen.",
-  "multifactorauthenticatie": "HLN benadrukt dat Multifactorauthenticatie (MFA) cruciaal is; dit voegt een extra beveiligingsstap toe, wat het Senaat-lek had kunnen voorkomen.",
-  "wachtwoord hygiëne": "Uit het HLN-artikel blijkt hoe belangrijk goede Wachtwoordhygiëne is: gebruik unieke, lange wachtwoorden voor elke dienst om te voorkomen dat één lek alles compromitteert.",
-  "datingfraude AI": "VRT NWS onthulde hoe malafide datingsites AI gebruiken om kwetsbare singles financieel op te lichten met **deels AI-gegenereerde berichten** en een duur betaalmodel per letter.",
-  "jump4love": "VRT NWS noemt Jump4Love (J4L) als voorbeeld van een louche site met **nepprofielen en gestolen foto's**, waar gebruikers met callcenter-medewerkers of AI chatten zonder kans op een echte date.",
-  "AI en emotie": "Het VRT-onderzoek toonde aan dat AI-modellen emotionele gesprekken simuleren, puur om gebruikers zo lang mogelijk verslaafd te houden aan de chat, waardoor ze duizenden euro's verliezen.",
-  "kwetsbare singles": "VRT NWS waarschuwt dat vooral oudere en eenzame singles een makkelijk doelwit zijn voor deze fraude, omdat ze hopeloos verliefd kunnen worden op een **persoon die niet bestaat**.",
-  "internationale fraude": "Uit het VRT-artikel bleek dat de fraude wordt gerund via postbusfirma's op Cyprus en in Schotland, met intrigerende banden tot in de internationale politiek.",
-  "peter opgelicht crypto": "Volgens HLN werd Peter Van Welden slachtoffer van een georganiseerde oplichting via WhatsApp, waarbij hij door een nep-onderneemster werd verleid tot investeren in een vervalst crypto-platform en zo 300.000 euro verloor.",
-  "pig butchering": "Dit is de naam voor de oplichtingsmethode waarbij fraudeurs, zoals bij Peter, eerst langdurig vertrouwen opbouwen om het slachtoffer emotioneel te binden, waarna ze financieel toeslaan.",
-  "oplichting gevolgen": "Het verhaal van Peter in HLN toont de zware gevolgen van oplichting: hij verloor niet alleen zijn spaargeld, maar ook zijn relatie en zijn zelfvertrouwen, door de schaamte en het zwijgen over de fraude.",
-  "fraude psychologie": "HLN benadrukt dat deze fraudeurs psychologisch getraind zijn om in te spelen op de emoties en het vertrouwen van het slachtoffer, waardoor zelfs slimme mensen denken dat 'zij het zelf wel kunnen oplossen'.",
-  "rode vlaggen fraude": "Volgens Peter zijn de belangrijkste 'rode vlaggen' bij oplichting: berichten van onbekende nummers, het creëren van druk of urgentie, en de eis voor extra stortingen om je geld 'terug te krijgen'."
-};
-
-  
-};
-const ASSIGNMENTS = [
- "Bedenk een ethisch dilemma rond een zelfrijdende auto.",
- "Zoek een voorbeeld van deepfake en leg uit waarom het gevaarlijk kan zijn."
-];
-
-// --- State ---
-let isChatActive = false;
-let escalation = Number(localStorage.getItem('chattie_escalation') || 0);
-let memory = JSON.parse(localStorage.getItem('chattie_memory') || '{}');
-let isDisabled = localStorage.getItem('chattie_disabled') === '1';
-
-// --- Helpers ---
-function safeText(text){ const div=document.createElement('div'); div.textContent=text; return div.innerHTML;}
-function scrollChat(){ messagesEl.scrollTop = messagesEl.scrollHeight;}
-function saveState(){
- localStorage.setItem('chattie_escalation', String(escalation));
- localStorage.setItem('chattie_memory', JSON.stringify(memory));
- localStorage.setItem('chattie_disabled', isDisabled?'1':'0');
-}
-function updateUI(){
- statusActiveEl.textContent = isChatActive?'Ja':'Nee';
- statusActiveEl.style.color = isChatActive?'var(--status-active-color)':'var(--muted)';
- escalationEl.textContent = escalation;
- escalationEl.style.color = escalation>=ESCALATION_LIMIT?'red':'var(--status-escalation-color)';
- memListEl.textContent = Object.keys(memory).length?Object.keys(memory).slice(-6).join(", "):"Geen";
- topRightEl.textContent = isDisabled?'Chattie is uitgeschakeld':'Chattie is klaar';
- document.body.style.filter = isDisabled?'grayscale(70%)':'none';
+// Helpers
+function safeText(text){ 
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 function appendMessage(text, who='bot'){
- const el=document.createElement('div');
- el.className='msg '+who;
- const bubble=document.createElement('div');
- bubble.className='bubble '+who;
- bubble.innerHTML=safeText(text);
- el.appendChild(bubble);
- messagesEl.appendChild(el);
- scrollChat();
+  const el = document.createElement('div');
+  el.className = 'msg ' + who;
+  const b = document.createElement('div');
+  b.className = 'bubble ' + who;
+  b.innerHTML = safeText(text).replace(/\n/g, '<br>'); // Vervang \n door <br> voor leesbaarheid van tabellen
+  el.appendChild(b);
+  messagesEl.appendChild(el);
+  messagesEl.scrollTop = messagesEl.scrollHeight; // Scroll naar de nieuwste boodschap
 }
+function updateUI(){
+  statusActiveEl.textContent = isChatActive ? 'Ja' : 'Nee';
+  statusActiveEl.style.color = isChatActive ? 'var(--status-active-color)' : 'var(--muted)';
+  escalationEl.textContent = escalation;
+  escalationEl.style.color = escalation >= ESCALATION_LIMIT ? 'red' : 'var(--status-escalation-color)';
+  memListEl.textContent = Object.keys(memory).length ? Object.keys(memory).slice(-6).join(", ") : "Geen";
+  topRightEl.textContent = isDisabled ? 'Chattie is uitgeschakeld' : 'Chattie is klaar';
+  document.body.style.filter = isDisabled ? 'grayscale(70%)' : 'none';
+}
+function saveState(){
+  localStorage.setItem('chattie_escalation', String(escalation));
+  localStorage.setItem('chattie_memory', JSON.stringify(memory));
+  localStorage.setItem('chattie_disabled', isDisabled ? '1' : '0');
+}
+function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+// Typing indicator
 async function showTyping(){
- appendMessage("Chattie denkt even na...",'bot');
- await new Promise(r=>setTimeout(r,TYPING_MS));
- const last=messagesEl.lastElementChild;
- if(last && last.querySelector('.bubble').textContent.includes('denkt even na')) last.remove();
+  appendMessage("Chattie denkt even na...", 'bot');
+  await sleep(TYPING_MS);
+  const last = messagesEl.lastElementChild;
+  if (last && last.querySelector('.bubble') && last.querySelector('.bubble').textContent.includes('denkt even na')) {
+    last.remove();
+  }
 }
 
-// --- Core logic ---
+// Core responder
 async function chattieAnswer(rawInput){
- if(isDisabled) return;
- const input=rawInput.toLowerCase().trim();
- if(!input) return;
+  if (isDisabled) return;
 
- // Forbidden words
- if(FORBIDDEN.some(w=>input.includes(w))){
-   escalation++; saveState(); updateUI();
-   appendMessage("Gebruik alsjeblieft respectvolle taal.");
-   if(escalation>=ESCALATION_LIMIT){ appendMessage("🚫 Chattie schakelt zichzelf uit wegens ongepast gedrag."); isDisabled=true; saveState(); updateUI();}
-   return;
- }
+  const input = String(rawInput || '').toLowerCase().trim();
+  if (!input) return;
 
- // Commands
- if(input==='start'||input==='begin'){ isChatActive=true; updateUI(); appendMessage("Welkom! 👋 Ik ben Chattie — stel me vragen."); return;}
- if(!isChatActive){ appendMessage("Typ eerst 'start' om te beginnen."); return;}
- if(input==='einde'||input==='stop'){ isChatActive=false; updateUI(); appendMessage("Bedankt voor het gesprek! 💬"); return;}
- if(input==='help'||input.includes('help')){ appendMessage("Voorbeelden: 'Wat is AI?', 'Geef een voorbeeld', of gebruik de knoppen."); return;}
- if(input==='opdracht'||input.includes('opdracht')||input.includes('oefening')){
-   const a=ASSIGNMENTS[Math.floor(Math.random()*ASSIGNMENTS.length)];
-   appendMessage("Opdracht: "+a);
-   return;
- }
+  if (FORBIDDEN.some(w => input.includes(w))) {
+    escalation++;
+    saveState();
+    updateUI();
+    appendMessage("Gebruik alsjeblieft respectvolle taal.");
+    if (escalation >= ESCALATION_LIMIT) {
+      appendMessage("🚫 Chattie schakelt zichzelf uit wegens herhaald ongepast gedrag.");
+      isDisabled = true;
+      saveState();
+      updateUI();
+    }
+    return;
+  }
 
- // Knowledge lookup
- for(const key of Object.keys(KNOWLEDGE)){
-   if(input.includes(key)){ memory[key]=KNOWLEDGE[key]; saveState(); updateUI(); appendMessage(KNOWLEDGE[key]); appendMessage(`Wat vind jij van "${key}"?`); return;}
- }
+  if (input === 'start' || input === 'begin') {
+    isChatActive = true; updateUI();
+    appendMessage("Welkom! 👋 Ik ben Chattie — stel me vragen over AI, PAV of natuur. Typ 'help' voor suggesties. Je kunt nu ook vragen: 'wat is historisch referentie kader' of 'voorbeeld historisch referentie kader'!");
+    return;
+  }
+  if (!isChatActive) {
+    appendMessage("Typ eerst 'start' om te beginnen.");
+    return;
+  }
+  if (input === 'einde' || input === 'stop') {
+    isChatActive = false; updateUI();
+    appendMessage("Bedankt voor het gesprek! 💬");
+    return;
+  }
+  if (input === 'help' || input.includes('help')) {
+    appendMessage("Voorbeelden: 'Wat is AI?', 'voorbeeld historisch referentie kader', of gebruik de knoppen: Meer info / Voorbeeld / Ik snap het niet / Opdracht.");
+    return;
+  }
+  if (input === 'opdracht' || input.includes('opdracht') || input.includes('oefening')) {
+    const a = ASSIGNMENTS[Math.floor(Math.random() * ASSIGNMENTS.length)];
+    appendMessage("Opdracht: " + a);
+    return;
+  }
 
- appendMessage("Daar weet ik niet direct het antwoord op 🤔. Wil je dat ik het opzoek of een voorbeeld geef?");
+  for (const key of Object.keys(KNOWLEDGE)) {
+    if (input.includes(key)) {
+      memory[key] = KNOWLEDGE[key];
+      saveState();
+      updateUI();
+      appendMessage(KNOWLEDGE[key]);
+      appendMessage(`Wat vind jij van "${key}"? Zou je het vertrouwen of gebruiken?`);
+      return;
+    }
+  }
+
+  appendMessage("Daar weet ik niet direct het antwoord op 🤔. Wil je dat ik het opzoek (Wikipedia) of een voorbeeld geef?");
 }
 
-// --- Input handling ---
-async function handleInput(rawInput){
- const input=rawInput.trim();
- if(!input) return;
+// UI interactions
+async function onSend(){
+  const raw = inputEl.value || '';
+  const trimmed = raw.trim();
+  if (!trimmed) return;
 
- // Disabled check
- if(isDisabled){
-   if(input.toLowerCase()===RESET_CODE){ isDisabled=false; escalation=0; memory={}; saveState(); updateUI(); appendMessage("✅ Chattie is opnieuw geactiveerd."); }
-   else{ appendMessage("🚫 Chattie is uitgeschakeld. Gebruik de resetcode."); }
-   inputEl.value=''; return;
- }
+  if (isDisabled) {
+    if (trimmed.toLowerCase() === RESET_CODE) {
+      isDisabled = false; escalation = 0; memory = {}; saveState(); updateUI();
+      appendMessage("✅ Beveiligingscode geaccepteerd. Chattie is opnieuw geactiveerd.");
+    } else {
+      appendMessage("🚫 Chattie is uitgeschakeld. Gebruik de leerkrachtcode om hem opnieuw te activeren.");
+    }
+    inputEl.value = '';
+    return;
+  }
 
- appendMessage(input,'user'); inputEl.value='';
- await showTyping();
- await chattieAnswer(input);
+  appendMessage(trimmed, 'user');
+  inputEl.value = '';
+
+  await showTyping();
+  await chattieAnswer(trimmed);
 }
 
-// --- Chips ---
-function handleChip(action){
- if(!isChatActive){ appendMessage("Typ eerst 'start' om snelle acties te gebruiken."); return;}
- appendMessage(action,'user');
- showTyping().then(()=>{
-   if(action==='more'){ appendMessage("Wil je meer info over het laatst besproken onderwerp?");}
-   else if(action==='example'){ appendMessage("Geef een onderwerp en ik zoek een praktijkvoorbeeld.");}
-   else if(action==='dontget'){ appendMessage("Geen probleem! Welk concept moet ik eenvoudiger uitleggen?");}
-   else if(action==='assignment'){ const a=ASSIGNMENTS[Math.floor(Math.random()*ASSIGNMENTS.length)]; appendMessage("Opdracht: "+a);}
-   else{ appendMessage("Actie onbekend.");}
- });
+// Quick chip handler
+function handleQuickIntent(action){
+  if (!isChatActive) {
+    appendMessage("Typ eerst 'start' om te beginnen voordat je snelle acties gebruikt.");
+    return;
+  }
+  if (action === 'more') { appendMessage("Wil je meer info over het laatst besproken onderwerp of een nieuw begrip?"); }
+  else if (action === 'example') { appendMessage("Geef een onderwerp en ik zoek een praktijkvoorbeeld. Bijvoorbeeld: 'voorbeeld van deepfake' of 'voorbeeld historisch referentie kader'."); }
+  else if (action === 'dontget') { appendMessage("Geen probleem! Welk concept moet ik eenvoudiger uitleggen?"); }
+  else if (action === 'assignment') { const a = ASSIGNMENTS[Math.floor(Math.random()*ASSIGNMENTS.length)]; appendMessage("Opdracht: " + a); }
+  else { appendMessage("Actie onbekend."); }
 }
 
-// --- Event listeners ---
-sendBtn.addEventListener('click', ()=>handleInput(inputEl.value));
-inputEl.addEventListener('keydown',(e)=>{ if(e.key==='Enter') handleInput(inputEl.value); });
-chips.forEach(ch=>ch.addEventListener('click',()=>handleChip(ch.dataset.action)));
-howBtn.addEventListener('click',()=>appendMessage("In deze lessen leer je wat AI is en welke ethische vragen erbij horen."));
+// Event wiring (robust)
+function attachEvents(){
+  sendBtn.addEventListener('click', onSend);
+  inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') onSend(); });
 
-// --- Init ---
-updateUI();
-if(isDisabled) appendMessage("Chattie is uitgeschakeld. Gebruik de resetcode om opnieuw te starten.");
-else appendMessage("Type 'start' om te beginnen. Je kan ook zeggen: 'ik snap het niet' of 'einde'.");
-});
+  chips.forEach(ch => {
+    ch.addEventListener('click', (ev) => {
+      const action = ch.getAttribute('data-action');
+      appendMessage(ch.textContent, 'user');
+      showTyping().then(() => handleQuickIntent(action));
+    });
+  });
+
+  howBtn.addEventListener('click', () => {
+    appendMessage("In deze lessen leer je wat AI is, waar je het tegenkomt en welke ethische vragen erbij horen. Gebruik Chattie als vraagbaak.");
+  });
+}
+
+// init
+function init(){
+  updateUI();
+  if (isDisabled) { setTimeout(()=>{ appendMessage("Chattie is uitgeschakeld. Vraag je leerkracht om de resetcode."); }, 200); }
+  else appendMessage("Type 'start' om te beginnen. Je kan nu ook vragen: 'wat is historisch referentie kader'.");
+  attachEvents();
+
+  window.addEventListener('error', (e) => console.error("JS error:", e.error || e.message));
+}
+
+init();
 </script>
 </body>
 </html>
