@@ -3,368 +3,444 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Chattie v10 — Leerbuddy</title>
+<title>Chattie v11 — Leerbuddy (Compleet)</title>
 <style>
+/* ---------------------------------
+    DE VOLLEDIGE CSS (OPMAAK) SECTIE
+    --------------------------------- */
 :root {
-  --bg1:#d9f1ff;
-  --bg2:#f8fcff;
-  --card:#ffffff;
-  --bot:#eaf7ee;
-  --user:#e7f0ff;
-  --accent:#1976d2;
-  --muted:#6b7280;
-  --danger:#d9534f;
+  --bg1:#d9f1ff;
+  --bg2:#f8fcff;
+  --card:#ffffff;
+  --bot:#eaf7ee;
+  --user:#e7f0ff;
+  --accent:#1976d2;
+  --muted:#6b7280;
+  --danger:#d9534f;
 }
 *{box-sizing:border-box;}
 body {
-  margin:0;
-  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-  background: linear-gradient(120deg,var(--bg1),var(--bg2));
-  color:#0f172a;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  padding:24px;
+  margin:0;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  background: linear-gradient(120deg,var(--bg1),var(--bg2));
+  color:#0f172a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  padding:24px;
 }
 .container {
-  width:100%;
-  max-width:920px;
-  background:var(--card);
-  border-radius:22px;
-  box-shadow: 0 12px 40px rgba(3,10,20,0.08);
-  overflow:hidden;
-  display:grid;
-  grid-template-columns: 360px 1fr;
-  min-height:560px;
+  width:100%;
+  max-width:920px;
+  background:var(--card);
+  border-radius:22px;
+  box-shadow: 0 12px 40px rgba(3,10,20,0.08);
+  overflow:hidden;
+  display:grid;
+  grid-template-columns: 360px 1fr;
+  min-height:560px;
 }
 .left {
-  background: linear-gradient(180deg,#ffffff, #f3fcff);
-  padding:22px;
-  border-right:1px solid rgba(15,23,42,0.04);
+  background: linear-gradient(180deg,#ffffff, #f3fcff);
+  padding:22px;
+  border-right:1px solid rgba(15,23,42,0.04);
 }
 .avatar-wrap{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
 .avatar {
-  width:74px;height:74px;border-radius:18px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:36px;background:linear-gradient(135deg,#9be7ff,#77e0a6);
-  box-shadow: 0 6px 18px rgba(34,197,94,0.08);
+  width:74px;height:74px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;background:linear-gradient(135deg,#9be7ff,#77e0a6);
+  box-shadow: 0 6px 18px rgba(34,197,94,0.08);
 }
 .title {font-size:20px;font-weight:700;}
 .subtitle {color:var(--muted);margin-top:4px;font-size:13px;}
 .left .section {margin-top:18px;}
 .left button.primary {
-  width:100%;
-  padding:10px 12px;
-  border-radius:12px;
-  border:none;
-  background:var(--accent);
-  color:white;
-  font-weight:600;
-  cursor:pointer;
-  box-shadow: 0 6px 18px rgba(25,118,210,0.12);
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:none;
+  background:var(--accent);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow: 0 6px 18px rgba(25,118,210,0.12);
 }
 .left .hint {margin-top:12px;color:var(--muted);font-size:13px;}
 .chat {
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 .topbar {
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;padding:6px 8px;border-radius:12px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:6px 8px;border-radius:12px;
 }
 .topbar .status {color:var(--muted);font-size:13px;}
 #messages {
-  flex:1;
-  overflow:auto;
-  padding:12px;
-  border-radius:12px;
-  background: linear-gradient(180deg, rgba(235,245,255,0.4), rgba(255,255,255,0.6));
-  border:1px solid rgba(15,23,42,0.03);
+  flex:1;
+  overflow:auto;
+  padding:12px;
+  border-radius:12px;
+  background: linear-gradient(180deg, rgba(235,245,255,0.4), rgba(255,255,255,0.6));
+  border:1px solid rgba(15,23,42,0.03);
 }
 .msg {display:flex;gap:10px;margin:12px 0;align-items:flex-end;}
 .msg.bot {justify-content:flex-start;}
 .msg.user {justify-content:flex-end;}
 .bubble {
-  max-width:72%;
-  padding:12px 14px;
-  border-radius:14px;
-  font-size:15px;
-  line-height:1.35;
-  box-shadow:0 6px 18px rgba(2,6,23,0.04);
+  max-width:72%;
+  padding:12px 14px;
+  border-radius:14px;
+  font-size:15px;
+  line-height:1.35;
+  box-shadow:0 6px 18px rgba(2,6,23,0.04);
 }
 .bubble.bot {background:var(--bot);color:#05341a;border-radius:14px 14px 14px 4px;}
 .bubble.user {background:var(--user);color:#073b66;border-radius:14px 14px 4px 14px;text-align:right;}
 .typing {display:inline-flex;gap:6px;align-items:center;margin-left:6px;}
 .dot {
-  width:8px;height:8px;border-radius:50%;background:var(--muted);opacity:0.3;
-  animation: blink 1s infinite;
+  width:8px;height:8px;border-radius:50%;background:var(--muted);opacity:0.3;
+  animation: blink 1s infinite;
 }
 .dot:nth-child(1){animation-delay:0s;}
 .dot:nth-child(2){animation-delay:0.2s;}
 .dot:nth-child(3){animation-delay:0.4s;}
 @keyframes blink {
-  0%{opacity:0.2;transform:translateY(0);}
-  50%{opacity:1;transform:translateY(-4px);}
-  100%{opacity:0.2;transform:translateY(0);}
+  0%{opacity:0.2;transform:translateY(0);}
+  50%{opacity:1;transform:translateY(-4px);}
+  100%{opacity:0.2;transform:translateY(0);}
+}
+.chip {
+  background:#f3f6ff;border:1px solid rgba(15,23,42,0.04);
+  padding:8px 10px;border-radius:12px;color:var(--accent);cursor:pointer;font-weight:600;font-size:13px;
 }
 @media (max-width:880px){
-  .container{grid-template-columns:1fr;min-height:720px;}
-  .left{order:2}
-  .chat{order:1}
+  .container{grid-template-columns:1fr;min-height:720px;}
+  .left{order:2}
+  .chat{order:1}
 }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="left">
-    <div class="avatar-wrap">
-      <div class="avatar">🤖</div>
-      <div>
-        <div class="title">Chattie — je AI-leerbuddy</div>
-        <div class="subtitle">Start met "start" — eindig met "einde".</div>
-      </div>
-    </div>
-    <div class="section">
-      <button class="primary" id="howBtn">Hoe werken de lessen?</button>
-      <div class="hint">Gebruik de knoppen: Meer info, Voorbeeld of "Ik snap het niet".</div>
-    </div>
-    <div class="section">
-      <h4>Status & instellingen</h4>
-      <div class="muted">Gesprek actief: <span id="statusActive">Nee</span></div>
-      <div class="muted">Escalatie: <span id="escalation">0</span></div>
-      <div class="muted" style="margin-top:8px;">Geheugen:</div>
-      <div id="memList" class="muted" style="max-height:70px;overflow:auto;padding-top:6px"></div>
-    </div>
-  </div>
+  <div class="left">
+    <div class="avatar-wrap">
+      <div class="avatar">🤖</div>
+      <div>
+        <div class="title">Chattie — je AI-leerbuddy</div>
+        <div class="subtitle">Start met "start" — eindig met "einde".</div>
+      </div>
+     </div>
+    <div class="section">
+      <button class="primary" id="howBtn">Hoe werken de lessen?</button>
+      <div class="hint">Gebruik de knoppen: Meer info, Voorbeeld of "Ik snap het niet".</div>
+    </div>
+    <div class="section">
+      <h4>Status & instellingen</h4>
+      <div class="muted">Gesprek actief: <span id="statusActive" style="font-weight:700;">Nee</span></div>
+      <div class="muted">Escalatie: <span id="escalation" style="font-weight:700;color:#b45309">0</span></div>
+      <div class="muted" style="margin-top:8px;">Geheugen (max. 6):</div>
+      <div id="memList" class="muted" style="max-height:70px;overflow:auto;padding-top:6px">Geen</div>
+    </div>
+  </div>
 
-  <div class="chat">
-    <div class="topbar">
-      <div>
-        <strong>Chat</strong>
-        <div class="status muted">Leer met Chattie — vraag alles over AI, PAV en natuur</div>
-      </div>
-      <div id="topRight" class="muted">Chattie is klaar</div>
-    </div>
-    <div id="messages" aria-live="polite"></div>
-    <div class="quick">
-      <div class="chip" data-action="more">Meer info</div>
-      <div class="chip" data-action="example">Voorbeeld</div>
-      <div class="chip" data-action="dontget">Ik snap het niet</div>
-    </div>
-    <div class="input-row">
-      <div class="input"><input id="userInput" placeholder='Typ "start" om te beginnen...' autocomplete="off" /></div>
-      <button class="send-btn" id="sendButton">Verstuur</button>
-    </div>
-  </div>
+  <div class="chat">
+    <div class="topbar">
+      <div>
+        <strong>Chat</strong>
+        <div class="status muted">Leer met Chattie — vraag alles over AI, PAV en natuur</div>
+      </div>
+      <div id="topRight" class="muted">Chattie is klaar</div>
+    </div>
+    <div id="messages" aria-live="polite"></div>
+    <div class="quick">
+      <div class="chip" data-action="more">Meer info</div>
+      <div class="chip" data-action="example">Voorbeeld</div>
+      <div class="chip" data-action="dontget">Ik snap het niet</div>
+      <div class="chip" data-action="assignment">Geef me een opdracht</div>
+    </div>
+    <div class="input-row">
+      <div class="input"><input id="userInput" placeholder='Typ "start" om te beginnen...' autocomplete="off" /></div>
+      <button class="send-btn" id="sendButton">Verstuur</button>
+    </div>
+  </div>
 </div>
 
 <script>
-/* ---------------------------
-   CONFIGURATIE EN GEGEVENS
----------------------------- */
-const RESET_CODE = "resetchattie2025";
+/* ---------------------------------
+    DE VOLLEDIGE JAVASCRIPT SECTIE
+    --------------------------------- */
+
+// ========= CONFIGURATIE EN CONSTANTEN =========
+const RESET_CODE = "resetchattie2025"; // 🔑 De geheime code voor de leerkracht
 const ESCALATION_LIMIT = 3;
 const TYPING_MS = 900;
 
 const FORBIDDEN_WORDS = [
-  "fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet",
-  "eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris",
-  "pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak",
-  "schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke",
-  "tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"
+  "fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet",
+  "eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris",
+  "pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak",
+  "schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke",
+  "tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"
 ];
 
-// Belangrijke AI- en natuurbegrippen
+// Kennisbank (Begrippen, VZNs)
 const KNOWLEDGE = {
-  "ai":"AI is technologie die machines in staat stelt te denken en leren zoals mensen.",
-  "machine learning":"Machine learning is een tak van AI waarbij systemen leren van data.",
-  "deep learning":"Een vorm van machine learning met neurale netwerken die complexe patronen herkennen.",
-  "sociaal welzijn":"De mate waarin mensen zich goed voelen en kunnen deelnemen aan de samenleving.",
-  "pedagogisch werk":"Het begeleiden en opvoeden van jongeren in hun ontwikkeling.",
-  "ethiek":"Nadenken over wat goed of fout is in het handelen van mensen (en AI-systemen).",
-  "ethiek in het onderwijs":"Het nadenken over morele keuzes binnen onderwijs en opvoeding.",
-  "natuur":"Weinig of geen bebouwing, veel groen, bossen, velden en dieren.",
-  "industrieel":"Omgeving met fabrieken, transport, opslag en weinig groen.",
-  "landelijk":"Huizen staan verspreid, open ruimte, akkers en weilanden.",
-  "stedelijk":"Huizen dicht bij elkaar, hoogbouw, druk verkeer, weinig natuur.",
-  "toeristisch":"Omgeving met veel attracties, strand, bergen of musea voor bezoekers.",
-  "cognitieve vermogens":"Mentale vaardigheden zoals denken, leren en begrijpen.",
-  "autonoom":"Zelfstandig, zonder menselijke tussenkomst.",
-  "ethisch dilemma":"Een situatie waarbij je moet kiezen tussen twee waarden of principes.",
-  "privacy":"Het recht om persoonlijke informatie geheim te houden.",
-  "deepfake":"Een door AI gemanipuleerde video of foto die echt lijkt, maar nep is.",
-  "discriminatie door ai":"AI kan onbedoeld bevooroordeeld zijn, bijvoorbeeld bij sollicitaties.",
-  "energieverbruik van ai":"Het trainen van AI kost veel energie en water.",
-  "agi":"Artificial General Intelligence — een AI die net zo slim is als mensen.",
-  "ava technologie":"Technologie die automatisch de beste thumbnail kiest voor een video.",
-  "zelfrijdende auto":"Een voertuig dat zonder chauffeur rijdt door sensoren en AI.",
-  "autonome shuttle":"Een klein zelfrijdend busje, zoals in Leuven, dat leert uit zijn omgeving."
+  "ai":"AI is technologie die machines in staat stelt te denken en leren zoals mensen.",
+  "machine learning":"Machine learning is een tak van AI waarbij systemen leren van data.",
+  "deep learning":"Een vorm van machine learning met neurale netwerken die complexe patronen herkennen.",
+  "sociaal welzijn":"De mate waarin mensen zich goed voelen en kunnen deelnemen aan de samenleving.",
+  "pedagogisch werk":"Het begeleiden en opvoeden van jongeren in hun ontwikkeling.",
+  "ethiek":"Nadenken over wat goed of fout is in het handelen van mensen (en AI-systemen).",
+  "ethiek in het onderwijs":"Het nadenken over morele keuzes binnen onderwijs en opvoeding.",
+  "natuur":"Weinig of geen bebouwing, veel groen, bossen, velden en dieren.",
+  "industrieel":"Omgeving met fabrieken, transport, opslag en weinig groen.",
+  "landelijk":"Huizen staan verspreid, open ruimte, akkers en weilanden.",
+  "stedelijk":"Huizen dicht bij elkaar, hoogbouw, druk verkeer, weinig natuur.",
+  "toeristisch":"Omgeving met veel attracties, strand, bergen of musea voor bezoekers.",
+  "cognitieve vermogens":"Mentale vaardigheden zoals denken, leren en begrijpen.",
+  "autonoom":"Zelfstandig, zonder menselijke tussenkomst.",
+  "ethisch dilemma":"Een situatie waarbij je moet kiezen tussen twee waarden of principes.",
+  "privacy":"Het recht om persoonlijke informatie geheim te houden.",
+  "deepfake":"Een door AI gemanipuleerde video of foto die echt lijkt, maar nep is.",
+  "discriminatie door ai":"AI kan onbedoeld bevooroordeeld zijn, bijvoorbeeld bij sollicitaties.",
+  "energieverbruik van ai":"Het trainen van AI kost veel energie en water.",
+  "agi":"Artificial General Intelligence — een AI die net zo slim is als mensen.",
+  "ava technologie":"Technologie die automatisch de beste thumbnail kiest voor een video.",
+  "zelfrijdende auto":"Een voertuig dat zonder chauffeur rijdt door sensoren en AI.",
+  "autonome shuttle":"Een klein zelfrijdend busje, zoals in Leuven, dat leert uit zijn omgeving."
 };
+
+// NIEUWE SECTIE: OPDRACHTEN
+const ASSIGNMENTS = [
+  "Bedenk een ethisch dilemma dat kan ontstaan bij het gebruik van een AI-sollicitatiebot.",
+  "Zoek een voorbeeld van een recent nieuwsartikel over AI in het onderwijs en vat het samen.",
+  "Leg in je eigen woorden uit wat het verschil is tussen 'Machine Learning' en 'Deep Learning'.",
+  "Welke invloed heeft een 'stedelijke' omgeving op de privacy van mensen? Leg uit in één zin.",
+  "Kies drie begrippen uit het Geheugen en schrijf er één VZN over.",
+  "Stel dat je een AI-buddy bent voor een leerling met ADHD. Welke functie zou je toevoegen?",
+  "Bespreek kort: Is een autonome shuttle in Leuven een voordeel of een nadeel voor de sociale cohesie?",
+];
 
 // DOM-elementen
 const $ = id => document.getElementById(id);
 const messagesEl = $("messages"), inputEl = $("userInput"), sendBtn = $("sendButton");
 const statusActiveEl = $("statusActive"), escalationEl = $("escalation");
 const memListEl = $("memList"), topRightEl = $("topRight"), howBtn = $("howBtn");
+const chips = document.querySelectorAll('.chip');
 
+// Status variabelen
 let isChatActive = false;
 let escalationCount = Number(localStorage.getItem("chattie_escalation") || 0);
 let memory = JSON.parse(localStorage.getItem("chattie_memory") || "{}");
 let isDisabled = localStorage.getItem("chattie_disabled") === "1";
 
 /* ---------------------------
-   FUNCTIES
+   UI EN STATE FUNCTIES
 ---------------------------- */
 function appendMessage(text, who="bot"){
-  const el=document.createElement("div");
-  el.className="msg "+who;
-  const b=document.createElement("div");
-  b.className="bubble "+who;
-  b.innerHTML=text;
-  el.appendChild(b);
-  messagesEl.appendChild(el);
-  messagesEl.scrollTop=messagesEl.scrollHeight;
+  const el=document.createElement("div");
+  el.className="msg "+who;
+  const b=document.createElement("div");
+  b.className="bubble "+who;
+  b.innerHTML=text;
+  el.appendChild(b);
+  messagesEl.appendChild(el);
+  messagesEl.scrollTop=messagesEl.scrollHeight;
 }
 
 function updateUI(){
-  statusActiveEl.textContent=isChatActive?"Ja":"Nee";
-  escalationEl.textContent=escalationCount;
-  memListEl.textContent=Object.keys(memory).length?Object.keys(memory).join(", "):"Geen";
+  statusActiveEl.textContent=isChatActive?"Ja":"Nee";
+  escalationEl.textContent=escalationCount;
+  
+  // Geheugen weergave
+  const keys = Object.keys(memory);
+  if (keys.length === 0) memListEl.textContent = 'Geen';
+  else {
+    memListEl.textContent = keys.slice(-6).join(", "); // Toont max 6 laatste begrippen
+  }
 }
 
 function saveState(){
-  localStorage.setItem("chattie_escalation",escalationCount);
-  localStorage.setItem("chattie_memory",JSON.stringify(memory));
-  localStorage.setItem("chattie_disabled",isDisabled?"1":"0");
+  localStorage.setItem("chattie_escalation",escalationCount);
+  localStorage.setItem("chattie_memory",JSON.stringify(memory));
+  localStorage.setItem("chattie_disabled",isDisabled?"1":"0");
 }
 
 function setDisabled(flag){
-  isDisabled=flag;
-  inputEl.disabled=flag;
-  sendBtn.disabled=flag;
-  topRightEl.textContent=flag?"Chattie is uitgeschakeld":"Chattie is klaar";
-  saveState();
+  isDisabled=flag;
+  inputEl.disabled=flag;
+  sendBtn.disabled=flag;
+  topRightEl.textContent=flag?"Chattie is uitgeschakeld":"Chattie is klaar";
+  saveState();
 }
 
 function checkForbidden(input){
-  const lower=input.toLowerCase();
-  return FORBIDDEN_WORDS.find(w=>lower.includes(w));
+  const lower=input.toLowerCase();
+  return FORBIDDEN_WORDS.find(w=>lower.includes(w));
 }
 
 function typingBubble(){
-  return `<div style="display:flex;align-items:center;gap:10px">
-    <div style="width:40px;height:40px;border-radius:10px;background:#f2f9ff;display:flex;align-items:center;justify-content:center;">🤖</div>
-    <div style="font-size:15px;color:#6b7280"><strong>Chattie</strong> denkt even na <span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></div>
-  </div>`;
+  return `<div style="display:flex;align-items:center;gap:10px">
+    <div style="width:40px;height:40px;border-radius:10px;background:#f2f9ff;display:flex;align-items:center;justify-content:center;">🤖</div>
+    <div style="font-size:15px;color:#6b7280"><strong>Chattie</strong> denkt even na <span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></div>
+  </div>`;
 }
 
 /* ---------------------------
-   ANTWOORDLOGICA
+   PEDAGOGISCHE LOGICA FUNCTIES
 ---------------------------- */
-async function chattieRespond(userInput){
-  if(isDisabled)return;
-  appendMessage(typingBubble(),"bot");
-  await new Promise(r=>setTimeout(r,TYPING_MS));
-  const typing=document.querySelector(".typing");
-  if(typing)typing.closest(".msg").remove();
+function handleQuickIntent(action){
+  if (!isChatActive) {
+    appendMessage("Typ eerst 'start' om te beginnen voordat je snelle acties gebruikt.", "bot");
+    return;
+  }
+  if (action === 'more') {
+    appendMessage("Wil je meer info over het laatst besproken onderwerp of een nieuw begrip?", "bot");
+  } else if (action === 'example') {
+    appendMessage("Geef een onderwerp en ik zoek een praktijkvoorbeeld. Bijvoorbeeld: 'voorbeeld van deepfake'.", "bot");
+  } else if (action === 'dontget') {
+    appendMessage("Geen probleem! Welk concept moet ik simpeler uitleggen?", "bot");
+  } else if (action === 'assignment') {
+    giveAssignment();
+  }
+}
 
-  const bad=checkForbidden(userInput);
-  if(bad){
-    escalationCount++;
-    saveState();
-    updateUI();
-    appendMessage("Gebruik alsjeblieft respectvolle taal. Dit is een leeromgeving.","bot");
-    if(escalationCount>=ESCALATION_LIMIT){
-      setDisabled(true);
-      appendMessage("Chattie schakelt zichzelf uit wegens herhaald agressief gedrag.","bot");
-    }
-    return;
-  }
-
-  if(userInput.includes("start")){
-    isChatActive=true;
-    updateUI();
-    appendMessage("Welkom! 👋 Ik ben Chattie — stel me vragen over AI, PAV, natuur of ethiek.","bot");
-    return;
-  }
-
-  if(!isChatActive){
-    appendMessage("Typ eerst 'start' om te beginnen.","bot");
-    return;
-  }
-
-  if(userInput.includes("einde")){
-    isChatActive=false;
-    updateUI();
-    appendMessage("Bedankt voor het gesprek! 💬 Tot de volgende keer!","bot");
-    return;
-  }
-
-  // Begrippen
-  for(const key in KNOWLEDGE){
-    if(userInput.includes(key)){
-      memory[key]=KNOWLEDGE[key];
-      saveState();
-      updateUI();
-      appendMessage(KNOWLEDGE[key],"bot");
-      appendMessage(`Wat denk jij over "${key}"? Zou jij dat vertrouwen of gebruiken?`,"bot");
-      return;
-    }
-  }
-
-  // Wikipedia fallback
-  const wiki = await zoekOpInternet(userInput);
-  if(wiki){appendMessage("Volgens Wikipedia: "+wiki,"bot");return;}
-
-  appendMessage("Daar weet ik niet direct het antwoord op 🤔 Wil je dat ik het opzoek of uitleg?","bot");
+function giveAssignment(){
+  const randomIndex = Math.floor(Math.random() * ASSIGNMENTS.length);
+  const opdracht = ASSIGNMENTS[randomIndex];
+  appendMessage(`**Opdracht voor jou:** ${opdracht}`, "bot");
+  appendMessage("Laat me weten wat je antwoord is, of vraag om een nieuwe opdracht!", "bot");
 }
 
 async function zoekOpInternet(q){
-  const url=`https://nl.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(q)}`;
-  try{
-    const r=await fetch(url);
-    if(!r.ok)return null;
-    const d=await r.json();
-    return d.extract||null;
-  }catch{return null;}
+  // Gebruikt de Wikipedia API voor algemene kennis
+  const url=`https://nl.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(q)}`;
+  try{
+    const r=await fetch(url);
+    if(!r.ok)return null;
+    const d=await r.json();
+    return d.extract||null;
+  }catch{return null;}
 }
 
 /* ---------------------------
-   GEBRUIKERSINTERACTIE
+   ANTWOORDLOGICA
+---------------------------- */
+async function chattieRespond(userInput){
+  if(isDisabled)return;
+
+  // 1. Simuleer typen en verwijder de bubble
+  appendMessage(typingBubble(),"bot");
+  await new Promise(r=>setTimeout(r,TYPING_MS));
+  const typing=document.querySelector(".typing");
+  if(typing)typing.closest(".msg").remove();
+
+  // 2. Check op verboden taal (Escalatie)
+  const bad=checkForbidden(userInput);
+  if(bad){
+    escalationCount++;
+    saveState();
+    updateUI();
+    appendMessage("Gebruik alsjeblieft respectvolle taal. Dit is een leeromgeving.","bot");
+    if(escalationCount>=ESCALATION_LIMIT){
+      setDisabled(true);
+      appendMessage("Chattie schakelt zichzelf uit wegens herhaald agressief gedrag.","bot");
+    }
+    return;
+  }
+
+  // 3. Commando's
+  if(userInput.includes("start")){
+    isChatActive=true;
+    updateUI();
+    appendMessage("Welkom! 👋 Ik ben Chattie — stel me vragen over AI, PAV, natuur of ethiek.","bot");
+    return;
+  }
+  if(!isChatActive){
+    appendMessage("Typ eerst 'start' om te beginnen.","bot");
+    return;
+  }
+  if(userInput.includes("einde")){
+    isChatActive=false;
+    updateUI();
+    appendMessage("Bedankt voor het gesprek! 💬 Tot de volgende keer!","bot");
+    return;
+  }
+
+  // 4. Directe Opdracht Vraag
+  if(userInput.includes("opdracht") || userInput.includes("oefening") || userInput.includes("test")){
+    giveAssignment();
+    return;
+  }
+
+  // 5. Begrippen (KNOWLEDGE) en Geheugen opslag
+  for(const key in KNOWLEDGE){
+    if(userInput.includes(key)){
+      memory[key]=KNOWLEDGE[key];
+      saveState();
+      updateUI();
+      appendMessage(KNOWLEDGE[key],"bot");
+      appendMessage(`Wat denk jij over "${key}"? Zou jij dat vertrouwen of gebruiken?`,"bot");
+      return;
+    }
+  }
+
+  // 6. Wikipedia fallback
+  const wiki = await zoekOpInternet(userInput);
+  if(wiki){appendMessage("Volgens Wikipedia: "+wiki,"bot");return;}
+
+  // 7. Algemene fallback
+  appendMessage("Daar weet ik niet direct het antwoord op 🤔 Wil je dat ik het opzoek (Wikipedia) of stel je een vraag over een begrip dat al in het geheugen staat?", "bot");
+}
+
+/* ---------------------------
+   GEBRUIKERSINTERACTIE & INIT
 ---------------------------- */
 function onSend(){
-  const input=(inputEl.value||"").trim();
-  if(!input)return;
-  appendMessage(input,"user");
-  inputEl.value="";
+  const input=(inputEl.value||"").trim();
+  if(!input)return;
+  appendMessage(input,"user");
+  inputEl.value="";
 
-  if(isDisabled){
-    if(input.toLowerCase()===RESET_CODE){
-      isDisabled=false;
-      escalationCount=0;
-      memory={};
-      saveState();
-      updateUI();
-      appendMessage("✅ Code geaccepteerd. Chattie is opnieuw actief.","bot");
-    }else{
-      appendMessage("🚫 Chattie is uitgeschakeld. Gebruik de leerkrachtcode om hem opnieuw te activeren.","bot");
-    }
-    return;
-  }
+  // Beveiligde reset check
+  if(isDisabled){
+    if(input.toLowerCase()===RESET_CODE){
+      setDisabled(false);
+      escalationCount=0;
+      memory={};
+      saveState();
+      updateUI();
+      appendMessage("✅ Code geaccepteerd. Chattie is opnieuw actief.","bot");
+    }else{
+      appendMessage("🚫 Chattie is uitgeschakeld. Gebruik de leerkrachtcode om hem opnieuw te activeren.","bot");
+    }
+    return;
+  }
 
-  chattieRespond(input.toLowerCase());
+  chattieRespond(input.toLowerCase());
 }
 
 function init(){
-  updateUI();
-  if(isDisabled)setDisabled(true);
-  appendMessage("Type 'start' om te beginnen. Je kan ook zeggen: 'ik snap het niet' of 'einde'.","bot");
-  sendBtn.addEventListener("click",onSend);
-  inputEl.addEventListener("keydown",e=>{if(e.key==="Enter")onSend();});
-  howBtn.addEventListener("click",()=>appendMessage("In deze lessen leer je over AI, natuur, ethiek en technologie. Chattie helpt je daarbij! 🤖","bot"));
+  updateUI();
+  if(isDisabled)setDisabled(true);
+  appendMessage("Type 'start' om te beginnen. Je kan ook zeggen: 'ik snap het niet', 'einde' of 'geef me een opdracht'.","bot");
+
+  // Event listeners
+  sendBtn.addEventListener("click",onSend);
+  inputEl.addEventListener("keydown",e=>{if(e.key==="Enter")onSend();});
+  howBtn.addEventListener("click",()=>appendMessage("In deze lessen leer je over AI, natuur, ethiek en technologie. Chattie helpt je daarbij! 🤖","bot"));
+
+  // FIX: Event listeners voor de knoppen (chips)
+  chips.forEach(chip => {
+    chip.addEventListener('click', (e) => {
+      const action = e.currentTarget.getAttribute('data-action');
+      handleQuickIntent(action);
+    });
+  });
 }
 init();
 </script>
