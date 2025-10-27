@@ -3,31 +3,27 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Chattie - AI-leerbuddy (Groen Thema - Volledig Scherm)</title>
+<title>Chattie - AI-leerbuddy (Groen Thema)</title>
 <style>
-/* KLEUREN PALET (GROEN/BEIGE) */
 :root{
-  --bg1:#CFE3D3;   /* Mist Green */
-  --bg2:#F9F8F4;   /* Off White */
-  --card:#ffffff;   /* Wit voor de hoofdcontainer */
-  --bot:#eaf7ee;   /* Zeer lichtgroen voor bot-bubbels */
-  --user:#E7DCC8;  /* Sand Beige voor gebruiker-bubbels */
-  --accent:#A9C2A6; /* Sage Leaf - Hoofd accentkleur (knoppen) */
-  --muted:#8B8C89; /* Stone Grey - Gedempte tekst */
-  --chip-bg:#CBBBA0; /* Dune Beige - Snelle actie-chips */
-  --chip-text:#3a301a; /* Donkere tekst op chips */
-  --status-active-color:#4CAF50; /* Groen voor actieve status */
-  --status-escalation-color:#b45309; /* Oranje voor escalatie */
+  --bg1:#CFE3D3;
+  --bg2:#F9F8F4;
+  --card:#ffffff;
+  --bot:#eaf7ee;
+  --user:#E7DCC8;
+  --accent:#A9C2A6;
+  --muted:#8B8C89;
+  --chip-bg:#CBBBA0;
+  --chip-text:#3a301a;
+  --status-active-color:#4CAF50;
+  --status-escalation-color:#b45309;
 }
-
 *{box-sizing:border-box}
-
 body{
   margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;
   background:linear-gradient(120deg,var(--bg1),var(--bg2));
   display:flex;align-items:center;justify-content:center;min-height:100vh;
 }
-
 .container{
   width:100%;
   height:100vh;
@@ -36,8 +32,6 @@ body{
   grid-template-columns:340px 1fr;
   overflow:hidden;
 }
-
-/* Linker zijbalk */
 .left{
   padding:20px;
   border-right:1px solid rgba(0,0,0,0.04);
@@ -51,7 +45,6 @@ body{
 }
 .title{font-weight:700;margin-top:6px}
 .subtitle{color:var(--muted);font-size:13px;margin-top:6px}
-
 .chat{
   padding:18px;
   display:flex;
@@ -59,8 +52,6 @@ body{
   gap:12px;
   height:100%;
 }
-
-/* CHAT MESSAGES - Scrollable */
 #messages{
   flex:1 1 auto;
   min-height:0;
@@ -70,21 +61,16 @@ body{
   background:linear-gradient(180deg,var(--user),var(--card));
   border:1px solid rgba(0,0,0,0.04);
 }
-
-/* Scrollbar styling */
 #messages::-webkit-scrollbar { width:10px; }
 #messages::-webkit-scrollbar-track { background: var(--bg2); border-radius:5px; }
 #messages::-webkit-scrollbar-thumb { background: var(--accent); border-radius:5px; }
 #messages::-webkit-scrollbar-thumb:hover { background: var(--status-active-color); }
-
 .msg{display:flex;gap:10px;margin:10px 0;align-items:flex-end}
 .msg.bot{justify-content:flex-start}
 .msg.user{justify-content:flex-end}
-
 .bubble{max-width:76%;padding:12px 14px;border-radius:14px;font-size:15px;line-height:1.35}
 .bubble.bot{background:var(--bot);color:#05341a;border-radius:14px 14px 14px 6px}
 .bubble.user{background:var(--user);color:#3a301a;border-radius:14px 14px 6px 14px;text-align:right}
-
 .quick{display:flex;gap:8px;flex-wrap:wrap}
 .chip-btn{ 
   background:var(--chip-bg);
@@ -97,7 +83,6 @@ body{
   white-space:nowrap;
   font-size:14px;
 }
-
 .input-row{display:flex;gap:10px}
 .input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);font-size:15px}
 .send-btn{
@@ -109,11 +94,9 @@ body{
   cursor:pointer;
   font-weight:700
 }
-
 .muted{color:var(--muted);font-size:13px}
 h4{font-size:16px; margin: 18px 0 8px 0; font-weight: 700;} 
 .status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-
 @media (max-width:880px){
   .container{
     grid-template-columns:1fr;
@@ -136,8 +119,8 @@ h4{font-size:16px; margin: 18px 0 8px 0; font-weight: 700;}
     </div>
 
     <div style="margin-top:18px">
-      <button id="howBtn" class="send-btn" style="width:100%; text-align:center; padding:10px 16px; font-weight:600; background:var(--accent); border-radius:12px;">Hoe werken de lessen?</button>
-      <div class="muted" style="margin-top:10px; font-size:13px; color:var(--muted);">Gebruik de knoppen onderin de chat voor snelle acties.</div>
+      <button id="howBtn" class="send-btn" style="width:100%; text-align:center; padding:10px 16px; font-weight:600;">Hoe werken de lessen?</button>
+      <div class="muted" style="margin-top:10px; font-size:13px;">Gebruik de knoppen onderin de chat voor snelle acties.</div>
     </div>
 
     <div style="margin-top:18px">
@@ -177,23 +160,25 @@ h4{font-size:16px; margin: 18px 0 8px 0; font-weight: 700;}
   </div>
 </div>
 
-
 <script>
-// Config
+document.addEventListener('DOMContentLoaded', ()=>{
+
+// --- DOM references ---
+const messagesEl = document.getElementById('messages');
+const inputEl = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendButton');
+const chips = document.querySelectorAll('.chip-btn[data-action]');
+const howBtn = document.getElementById('howBtn');
+const statusActiveEl = document.getElementById('statusActive');
+const escalationEl = document.getElementById('escalation');
+const memListEl = document.getElementById('memList');
+const topRightEl = document.getElementById('topRight');
+
+// --- Config ---
 const RESET_CODE = "resetchattie2025";
 const ESCALATION_LIMIT = 3;
 const TYPING_MS = 800;
-
-// Verboden woorden
-const FORBIDDEN = [
-  "fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet",
-  "eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris",
-  "pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak",
-  "schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke",
-  "tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"
-];
-
-// Kennis (voorbeelditems)
+const FORBIDDEN = ["fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet","eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris","pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak","schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke","tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"];
 const KNOWLEDGE = {
   "ai":"AI is technologie die machines in staat stelt te denken en leren zoals mensen.",
   "machine learning":"Machine learning is een tak van AI waarbij systemen leren van data.",
@@ -236,203 +221,127 @@ const KNOWLEDGE = {
   "rode vlaggen fraude": "Volgens Peter zijn de belangrijkste 'rode vlaggen' bij oplichting: berichten van onbekende nummers, het creëren van druk of urgentie, en de eis voor extra stortingen om je geld 'terug te krijgen'."
 };
 
+  
 };
-
-// Opdrachten
 const ASSIGNMENTS = [
-  "Bedenk een ethisch dilemma rond een zelfrijdende auto.",
-  "Zoek een voorbeeld van deepfake en leg uit waarom het gevaarlijk kan zijn."
+ "Bedenk een ethisch dilemma rond een zelfrijdende auto.",
+ "Zoek een voorbeeld van deepfake en leg uit waarom het gevaarlijk kan zijn."
 ];
 
-// State
+// --- State ---
 let isChatActive = false;
 let escalation = Number(localStorage.getItem('chattie_escalation') || 0);
 let memory = JSON.parse(localStorage.getItem('chattie_memory') || '{}');
 let isDisabled = localStorage.getItem('chattie_disabled') === '1';
 
-// DOM refs
-const messagesEl = document.getElementById('messages');
-const inputEl = document.getElementById('userInput');
-const sendBtn = document.getElementById('sendButton');
-const chips = document.querySelectorAll('.chip-btn[data-action]');
-const howBtn = document.getElementById('howBtn');
-const statusActiveEl = document.getElementById('statusActive');
-const escalationEl = document.getElementById('escalation');
-const memListEl = document.getElementById('memList');
-const topRightEl = document.getElementById('topRight');
-
-// Helpers
-function safeText(text){ 
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function appendMessage(text, who='bot'){
-  const el = document.createElement('div');
-  el.className = 'msg ' + who;
-  const b = document.createElement('div');
-  b.className = 'bubble ' + who;
-  b.innerHTML = safeText(text);
-  el.appendChild(b);
-  messagesEl.appendChild(el);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-}
-
-function updateUI(){
-  statusActiveEl.textContent = isChatActive ? 'Ja' : 'Nee';
-  statusActiveEl.style.color = isChatActive ? 'var(--status-active-color)' : 'var(--muted)';
-  escalationEl.textContent = escalation;
-  escalationEl.style.color = escalation >= ESCALATION_LIMIT ? 'red' : 'var(--status-escalation-color)';
-  memListEl.textContent = Object.keys(memory).length ? Object.keys(memory).slice(-6).join(", ") : "Geen";
-  topRightEl.textContent = isDisabled ? 'Chattie is uitgeschakeld' : 'Chattie is klaar';
-  document.body.style.filter = isDisabled ? 'grayscale(70%)' : 'none';
-}
-
+// --- Helpers ---
+function safeText(text){ const div=document.createElement('div'); div.textContent=text; return div.innerHTML;}
+function scrollChat(){ messagesEl.scrollTop = messagesEl.scrollHeight;}
 function saveState(){
-  localStorage.setItem('chattie_escalation', String(escalation));
-  localStorage.setItem('chattie_memory', JSON.stringify(memory));
-  localStorage.setItem('chattie_disabled', isDisabled ? '1' : '0');
+ localStorage.setItem('chattie_escalation', String(escalation));
+ localStorage.setItem('chattie_memory', JSON.stringify(memory));
+ localStorage.setItem('chattie_disabled', isDisabled?'1':'0');
 }
-
-function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
-
+function updateUI(){
+ statusActiveEl.textContent = isChatActive?'Ja':'Nee';
+ statusActiveEl.style.color = isChatActive?'var(--status-active-color)':'var(--muted)';
+ escalationEl.textContent = escalation;
+ escalationEl.style.color = escalation>=ESCALATION_LIMIT?'red':'var(--status-escalation-color)';
+ memListEl.textContent = Object.keys(memory).length?Object.keys(memory).slice(-6).join(", "):"Geen";
+ topRightEl.textContent = isDisabled?'Chattie is uitgeschakeld':'Chattie is klaar';
+ document.body.style.filter = isDisabled?'grayscale(70%)':'none';
+}
+function appendMessage(text, who='bot'){
+ const el=document.createElement('div');
+ el.className='msg '+who;
+ const bubble=document.createElement('div');
+ bubble.className='bubble '+who;
+ bubble.innerHTML=safeText(text);
+ el.appendChild(bubble);
+ messagesEl.appendChild(el);
+ scrollChat();
+}
 async function showTyping(){
-  appendMessage("Chattie denkt even na...", 'bot');
-  await sleep(TYPING_MS);
-  const last = messagesEl.lastElementChild;
-  if(last && last.querySelector('.bubble') && last.querySelector('.bubble').textContent.includes('denkt even na')) {
-    last.remove();
-  }
+ appendMessage("Chattie denkt even na...",'bot');
+ await new Promise(r=>setTimeout(r,TYPING_MS));
+ const last=messagesEl.lastElementChild;
+ if(last && last.querySelector('.bubble').textContent.includes('denkt even na')) last.remove();
 }
 
-// Core responder
+// --- Core logic ---
 async function chattieAnswer(rawInput){
-  if(isDisabled) return;
-  const input = String(rawInput || '').toLowerCase().trim();
-  if(!input) return;
+ if(isDisabled) return;
+ const input=rawInput.toLowerCase().trim();
+ if(!input) return;
 
-  if(FORBIDDEN.some(w => input.includes(w))){
-    escalation++;
-    saveState();
-    updateUI();
-    appendMessage("Gebruik alsjeblieft respectvolle taal.");
-    if(escalation >= ESCALATION_LIMIT){
-      appendMessage("🚫 Chattie schakelt zichzelf uit wegens herhaald ongepast gedrag.");
-      isDisabled = true;
-      saveState();
-      updateUI();
-    }
-    return;
-  }
+ // Forbidden words
+ if(FORBIDDEN.some(w=>input.includes(w))){
+   escalation++; saveState(); updateUI();
+   appendMessage("Gebruik alsjeblieft respectvolle taal.");
+   if(escalation>=ESCALATION_LIMIT){ appendMessage("🚫 Chattie schakelt zichzelf uit wegens ongepast gedrag."); isDisabled=true; saveState(); updateUI();}
+   return;
+ }
 
-  if(input === 'start' || input === 'begin'){
-    isChatActive = true; updateUI();
-    appendMessage("Welkom! 👋 Ik ben Chattie — stel me vragen over AI, PAV of natuur. Typ 'help' voor suggesties.");
-    return;
-  }
+ // Commands
+ if(input==='start'||input==='begin'){ isChatActive=true; updateUI(); appendMessage("Welkom! 👋 Ik ben Chattie — stel me vragen."); return;}
+ if(!isChatActive){ appendMessage("Typ eerst 'start' om te beginnen."); return;}
+ if(input==='einde'||input==='stop'){ isChatActive=false; updateUI(); appendMessage("Bedankt voor het gesprek! 💬"); return;}
+ if(input==='help'||input.includes('help')){ appendMessage("Voorbeelden: 'Wat is AI?', 'Geef een voorbeeld', of gebruik de knoppen."); return;}
+ if(input==='opdracht'||input.includes('opdracht')||input.includes('oefening')){
+   const a=ASSIGNMENTS[Math.floor(Math.random()*ASSIGNMENTS.length)];
+   appendMessage("Opdracht: "+a);
+   return;
+ }
 
-  if(!isChatActive){
-    appendMessage("Typ eerst 'start' om te beginnen.");
-    return;
-  }
+ // Knowledge lookup
+ for(const key of Object.keys(KNOWLEDGE)){
+   if(input.includes(key)){ memory[key]=KNOWLEDGE[key]; saveState(); updateUI(); appendMessage(KNOWLEDGE[key]); appendMessage(`Wat vind jij van "${key}"?`); return;}
+ }
 
-  if(input === 'einde' || input === 'stop'){
-    isChatActive = false; updateUI();
-    appendMessage("Bedankt voor het gesprek! 💬");
-    return;
-  }
-
-  if(input === 'help' || input.includes('help')){
-    appendMessage("Voorbeelden: 'Wat is AI?', 'Geef een voorbeeld van deepfake', of gebruik de knoppen: Meer info / Voorbeeld / Ik snap het niet / Opdracht.");
-    return;
-  }
-
-  if(input === 'opdracht' || input.includes('opdracht') || input.includes('oefening')){
-    const a = ASSIGNMENTS[Math.floor(Math.random() * ASSIGNMENTS.length)];
-    appendMessage("Opdracht: " + a);
-    return;
-  }
-
-  // Knowledge lookup
-  for(const key of Object.keys(KNOWLEDGE)){
-    if(input.includes(key)){
-      memory[key] = KNOWLEDGE[key];
-      saveState();
-      updateUI();
-      appendMessage(KNOWLEDGE[key]);
-      appendMessage(`Wat vind jij van "${key}"? Zou je het vertrouwen of gebruiken?`);
-      return;
-    }
-  }
-
-  appendMessage("Daar weet ik niet direct het antwoord op 🤔. Wil je dat ik het opzoek (Wikipedia) of een voorbeeld geef?");
+ appendMessage("Daar weet ik niet direct het antwoord op 🤔. Wil je dat ik het opzoek of een voorbeeld geef?");
 }
 
-// UI interactions
-async function onSend(){
-  const raw = inputEl.value || '';
-  const trimmed = raw.trim();
-  if(!trimmed) return;
+// --- Input handling ---
+async function handleInput(rawInput){
+ const input=rawInput.trim();
+ if(!input) return;
 
-  if(isDisabled){
-    if(trimmed.toLowerCase() === RESET_CODE){
-      isDisabled = false; escalation = 0; memory = {}; saveState(); updateUI();
-      appendMessage("✅ Beveiligingscode geaccepteerd. Chattie is opnieuw geactiveerd.");
-    } else {
-      appendMessage("🚫 Chattie is uitgeschakeld. Gebruik de leerkrachtcode om hem opnieuw te activeren.");
-    }
-    inputEl.value = '';
-    return;
-  }
+ // Disabled check
+ if(isDisabled){
+   if(input.toLowerCase()===RESET_CODE){ isDisabled=false; escalation=0; memory={}; saveState(); updateUI(); appendMessage("✅ Chattie is opnieuw geactiveerd."); }
+   else{ appendMessage("🚫 Chattie is uitgeschakeld. Gebruik de resetcode."); }
+   inputEl.value=''; return;
+ }
 
-  appendMessage(trimmed, 'user');
-  inputEl.value = '';
-  await showTyping();
-  await chattieAnswer(trimmed);
+ appendMessage(input,'user'); inputEl.value='';
+ await showTyping();
+ await chattieAnswer(input);
 }
 
-// Quick chip handler
-function handleQuickIntent(action){
-  if(!isChatActive){
-    appendMessage("Typ eerst 'start' om te beginnen voordat je snelle acties gebruikt.");
-    return;
-  }
-  if(action === 'more'){ appendMessage("Wil je meer info over het laatst besproken onderwerp of een nieuw begrip?"); }
-  else if(action === 'example'){ appendMessage("Geef een onderwerp en ik zoek een praktijkvoorbeeld. Bijvoorbeeld: 'voorbeeld van deepfake'."); }
-  else if(action === 'dontget'){ appendMessage("Geen probleem! Welk concept moet ik eenvoudiger uitleggen?"); }
-  else if(action === 'assignment'){ const a = ASSIGNMENTS[Math.floor(Math.random()*ASSIGNMENTS.length)]; appendMessage("Opdracht: " + a); }
-  else { appendMessage("Actie onbekend."); }
+// --- Chips ---
+function handleChip(action){
+ if(!isChatActive){ appendMessage("Typ eerst 'start' om snelle acties te gebruiken."); return;}
+ appendMessage(action,'user');
+ showTyping().then(()=>{
+   if(action==='more'){ appendMessage("Wil je meer info over het laatst besproken onderwerp?");}
+   else if(action==='example'){ appendMessage("Geef een onderwerp en ik zoek een praktijkvoorbeeld.");}
+   else if(action==='dontget'){ appendMessage("Geen probleem! Welk concept moet ik eenvoudiger uitleggen?");}
+   else if(action==='assignment'){ const a=ASSIGNMENTS[Math.floor(Math.random()*ASSIGNMENTS.length)]; appendMessage("Opdracht: "+a);}
+   else{ appendMessage("Actie onbekend.");}
+ });
 }
 
-// Event wiring
-function attachEvents(){
-  sendBtn.addEventListener('click', onSend);
-  inputEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter') onSend(); });
+// --- Event listeners ---
+sendBtn.addEventListener('click', ()=>handleInput(inputEl.value));
+inputEl.addEventListener('keydown',(e)=>{ if(e.key==='Enter') handleInput(inputEl.value); });
+chips.forEach(ch=>ch.addEventListener('click',()=>handleChip(ch.dataset.action)));
+howBtn.addEventListener('click',()=>appendMessage("In deze lessen leer je wat AI is en welke ethische vragen erbij horen."));
 
-  chips.forEach(ch=>{
-    ch.addEventListener('click', ()=>{
-      const action = ch.getAttribute('data-action');
-      appendMessage(ch.textContent, 'user');
-      showTyping().then(()=>handleQuickIntent(action));
-    });
-  });
-
-  howBtn.addEventListener('click', ()=>{
-    appendMessage("In deze lessen leer je wat AI is, waar je het tegenkomt en welke ethische vragen erbij horen. Gebruik Chattie als vraagbaak.");
-  });
-}
-
-// Init
-function init(){
-  updateUI();
-  if(isDisabled){ setTimeout(()=>{ appendMessage("Chattie is uitgeschakeld. Vraag je leerkracht om de resetcode."); },200); }
-  else appendMessage("Type 'start' om te beginnen. Je kan ook zeggen: 'ik snap het niet' of 'einde'.");
-  attachEvents();
-  window.addEventListener('error', (e)=>console.error("JS error:", e.error||e.message));
-}
-
-init();
+// --- Init ---
+updateUI();
+if(isDisabled) appendMessage("Chattie is uitgeschakeld. Gebruik de resetcode om opnieuw te starten.");
+else appendMessage("Type 'start' om te beginnen. Je kan ook zeggen: 'ik snap het niet' of 'einde'.");
+});
 </script>
 </body>
 </html>
