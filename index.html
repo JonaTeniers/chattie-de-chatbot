@@ -3,40 +3,39 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Chattie je AI-leerbuddy </title>
+<title>Chattie - AI-leerbuddy (Groen Thema - Volledig Scherm)</title>
 <style>
 /* GECORRIGEERDE KLEUREN PALET (GROEN/BEIGE) */
 :root{
   --bg1:#CFE3D3;   /* Mist Green */
-  --bg2:#F9F8F4;   /* Off White */
+  --bg2:#F9F8F4;   /* Off White (Zachte, warme basiswit tint) */
   --card:#ffffff;   /* Wit voor de hoofdcontainer */
   --bot:#eaf7ee;   /* Zeer lichtgroen voor bot-bubbels (compatibel met groen thema) */
   --user:#E7DCC8;   /* Sand Beige voor gebruiker-bubbels */
-  --accent:#A9C2A6; /* Sage Leaf - Hoofd accentkleur voor knoppen/links */
-  --muted:#8B8C89; /* Stone Grey - Voor gedempte tekst */
+  --accent:#A9C2A6; /* Sage Leaf - Hoofd accentkleur (knoppen) */
+  --muted:#8B8C89; /* Stone Grey - Voor gedempte tekst en contrast */
   --chip-bg:#CBBBA0; /* Dune Beige - Achtergrond voor snelle actie-chips */
   --chip-text:#3a301a; /* Donkere tekst die goed contrasteert met Dune Beige */
   --status-active-color:#4CAF50; /* Groen voor actieve status */
-  --status-escalation-color:#b45309; /* Oranje voor escalatie (behouden van origineel) */
+  --status-escalation-color:#b45309; /* Oranje voor escalatie */
 }
 *{box-sizing:border-box}
 body{
   margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;
   background:linear-gradient(120deg,var(--bg1),var(--bg2));
   background-color:var(--bg1); 
-  color:#0f172a; /* Donkerdere tekst voor algemeen gebruik */
+  color:#0f172a; 
   display:flex;align-items:center;justify-content:center;min-height:100vh;
-  padding:0; /* Verwijder padding om volledig scherm te vullen */
+  padding:0; /* Zorgt voor volledig scherm */
 }
 .container{
   width:100%; /* Volledige breedte */
   height:100vh; /* Volledige hoogte */
-  /* max-width:920px; <--- DEZE VERWIJDERD OM HEEL SCHERM TE GEBRUIKEN */
   background:var(--card);
   border-radius:0; /* Geen border-radius voor volledig scherm */
-  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+  box-shadow:none; /* Geen schaduw op volledig scherm */
   display:grid;
-  grid-template-columns:340px 1fr; /* Zijbalk 340px, chat 1fr */
+  grid-template-columns:340px 1fr; /* Zijbalk 340px, chat de rest (1fr) */
   overflow:hidden;
 }
 /* Linker zijbalk */
@@ -47,7 +46,7 @@ body{
 }
 .avatar{
   width:66px;height:66px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,var(--accent),var(--chip-bg)); /* Aangepaste avatar kleuren */
+  background:linear-gradient(135deg,var(--accent),var(--chip-bg)); 
   font-size:28px;
   box-shadow:0 6px 18px rgba(0,0,0,0.05);
 }
@@ -76,7 +75,7 @@ body{
   background:var(--chip-bg);
   border-radius:12px;
   padding:8px 10px;
-  border:1px solid var(--muted); /* Iets donkerdere rand */
+  border:1px solid var(--muted); 
   cursor:pointer;
   color:var(--chip-text); 
   font-weight:600;
@@ -86,7 +85,7 @@ body{
 .input-row{display:flex;gap:10px}
 .input-row input{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);font-size:15px}
 .send-btn{
-  background:var(--accent); /* Gebruik de groene accentkleur */
+  background:var(--accent); 
   color:#fff;
   padding:10px 16px;
   border-radius:12px;
@@ -105,10 +104,10 @@ h4{font-size:16px; margin: 18px 0 8px 0; font-weight: 700;}
 @media (max-width:880px){
   .container{
     grid-template-columns:1fr;
-    border-radius:18px; /* Herstel border-radius op kleinere schermen */
-    height:auto; /* Auto hoogte op kleinere schermen */
+    border-radius:18px; 
+    height:auto; 
   }
-  body { padding: 24px; } /* Herstel padding op kleinere schermen */
+  body { padding: 24px; } 
 }
 </style>
 </head>
@@ -132,7 +131,7 @@ h4{font-size:16px; margin: 18px 0 8px 0; font-weight: 700;}
       <h4>Status & instellingen</h4>
       <div class="muted status-row">
         <span>Gesprek actief:</span>
-        <span id="statusActive" style="font-weight:700; color:var(--status-active-color);">Nee</span>
+        <span id="statusActive" style="font-weight:700; color:var(--muted);">Nee</span>
       </div>
       <div class="muted status-row" style="margin-top:6px;">
         <span>Escalatie:</span>
@@ -259,6 +258,7 @@ function updateUI(){
   statusActiveEl.textContent = isChatActive ? 'Ja' : 'Nee';
   statusActiveEl.style.color = isChatActive ? 'var(--status-active-color)' : 'var(--muted)';
   escalationEl.textContent = escalation;
+  escalationEl.style.color = escalation >= ESCALATION_LIMIT ? 'red' : 'var(--status-escalation-color)';
   memListEl.textContent = Object.keys(memory).length ? Object.keys(memory).slice(-6).join(", ") : "Geen";
   topRightEl.textContent = isDisabled ? 'Chattie is uitgeschakeld' : 'Chattie is klaar';
   document.body.style.filter = isDisabled ? 'grayscale(70%)' : 'none';
