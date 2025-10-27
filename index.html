@@ -116,6 +116,44 @@ body {
 .chip {
   background:#f3f6ff;border:1px solid rgba(15,23,42,0.04);
   padding:8px 10px;border-radius:12px;color:var(--accent);cursor:pointer;font-weight:600;font-size:13px;
+  transition: background 0.2s;
+}
+.chip:hover {
+  background:#e5e9f0;
+}
+.quick {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.input-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.input {
+  flex-grow: 1;
+}
+.input input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  font-size: 16px;
+}
+.send-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.send-btn:hover {
+  background: #1565c0;
 }
 @media (max-width:880px){
   .container{grid-template-columns:1fr;min-height:720px;}
@@ -133,7 +171,7 @@ body {
         <div class="title">Chattie — je AI-leerbuddy</div>
         <div class="subtitle">Start met "start" — eindig met "einde".</div>
       </div>
-     </div>
+    </div>
     <div class="section">
       <button class="primary" id="howBtn">Hoe werken de lessen?</button>
       <div class="hint">Gebruik de knoppen: Meer info, Voorbeeld of "Ik snap het niet".</div>
@@ -156,13 +194,15 @@ body {
       <div id="topRight" class="muted">Chattie is klaar</div>
     </div>
     <div id="messages" aria-live="polite"></div>
-    <div class="quick">
+
+        <div class="quick">
       <div class="chip" data-action="more">Meer info</div>
       <div class="chip" data-action="example">Voorbeeld</div>
       <div class="chip" data-action="dontget">Ik snap het niet</div>
       <div class="chip" data-action="assignment">Geef me een opdracht</div>
     </div>
-    <div class="input-row">
+
+        <div class="input-row">
       <div class="input"><input id="userInput" placeholder='Typ "start" om te beginnen...' autocomplete="off" /></div>
       <button class="send-btn" id="sendButton">Verstuur</button>
     </div>
@@ -212,7 +252,20 @@ const KNOWLEDGE = {
   "ava technologie":"Technologie die automatisch de beste thumbnail kiest voor een video.",
   "zelfrijdende auto":"Een voertuig dat zonder chauffeur rijdt door sensoren en AI.",
   "autonome shuttle":"Een klein zelfrijdend busje, zoals in Leuven, dat leert uit zijn omgeving."
+
+  // NIEUW TOEGEVOEGDE VZNS VAN HET ARTIKEL:
+  // HERZIENDE VZNS MET BRONVERMELDING (HLN Datalek Senaat)
+  "senaat lek": "HLN meldde een ernstig datalek bij de Senaat, waarbij gevoelige info zoals terreurprotocollen en gsm-nummers van politici op straat kwamen door het gelekte wachtwoord van een conciërge.",
+  "infostealer": "Volgens HLN gaat het hier om 'infostealers', kwaadaardige software zoals Lumma Stealer, die ongemerkt alle ingevoerde gegevens stelen om ze door te verkopen aan criminelen.",
+  "multifactorauthenticatie": "HLN benadrukt dat Multifactorauthenticatie (MFA) cruciaal is; dit voegt een extra beveiligingsstap toe, wat het Senaat-lek had kunnen voorkomen.",
+  "wachtwoord hygiëne": "Uit het HLN-artikel blijkt hoe belangrijk goede Wachtwoordhygiëne is: gebruik unieke, lange wachtwoorden voor elke dienst om te voorkomen dat één lek alles compromitteert.",
+  "datingfraude AI": "VRT NWS onthulde hoe malafide datingsites AI gebruiken om kwetsbare singles financieel op te lichten met **deels AI-gegenereerde berichten** en een duur betaalmodel per letter.",
+  "jump4love": "VRT NWS noemt Jump4Love (J4L) als voorbeeld van een louche site met **nepprofielen en gestolen foto's**, waar gebruikers met callcenter-medewerkers of AI chatten zonder kans op een echte date.",
+  "AI en emotie": "Het VRT-onderzoek toonde aan dat AI-modellen emotionele gesprekken simuleren, puur om gebruikers zo lang mogelijk verslaafd te houden aan de chat, waardoor ze duizenden euro's verliezen.",
+  "kwetsbare singles": "VRT NWS waarschuwt dat vooral oudere en eenzame singles een makkelijk doelwit zijn voor deze fraude, omdat ze hopeloos verliefd kunnen worden op een **persoon die niet bestaat**.",
+  "internationale fraude": "Uit het VRT-artikel bleek dat de fraude wordt gerund via postbusfirma's op Cyprus en in Schotland, met intrigerende banden tot in de internationale politiek."
 };
+
 
 // NIEUWE SECTIE: OPDRACHTEN
 const ASSIGNMENTS = [
