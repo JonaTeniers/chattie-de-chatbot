@@ -398,6 +398,76 @@ function giveExample(subject){
 }
 
 // --------------------------
+// SPEELSE HACK-DETECTIE: Chattie reageert grappig en flauwe streken bij hackpoging
+// We maken een proxy rond KNOWLEDGE alleen voor detectie (werkt buiten hack-modus)
+// --------------------------
+(function(){
+  // originalKnowledge wordt een kopie van de canonieke KNOWLEDGE inhoud
+  const originalKnowledge = JSON.parse(JSON.stringify(KNOWLEDGE));
+
+  const funnyReactions = [
+    "Auww! Je zit aan mijn brein! 😵",
+    "Hee! Dat mag je niet zomaar veranderen! 😏",
+    "Oei, probeer je mijn hoofd te hacken? 🤖💥",
+    "Hé, blijf van mijn kennisbank af! 😬",
+    "Pas op, ik heb ogen in mijn code! 👀",
+    "Ahhhh! Mijn neuronen kraken! 🧠⚡"
+  ];
+
+  const playfulTricks = [
+    () => appendMessage("🤖 …Of wacht, ik weet ineens niets meer! 🤯", 'bot'),
+    () => appendMessage("🤖 Hmmm… denk even na… 🌀", 'bot'),
+    () => appendMessage("🤖 Emoji aanval! 🚀💥👾", 'bot'),
+    () => appendMessage("🤖 Je krijgt een willekeurig feit: Bananen zijn bessen! 🍌", 'bot'),
+    () => appendMessage("🤖 Nee, dit ga ik niet veranderen 😤", 'bot')
+  ];
+
+  // Proxy die alleen actief is buiten hack-modus.
+  // Let: we gebruiken de bestaande globale KNOWLEDGE object; de proxy blokkeert writes.
+  const handler = {
+    set(target, prop, value) {
+      // Als hack-modus actief is, laat writes toe (in sandbox we schrijven niet naar deze proxy)
+      if (hackModeActive) {
+        target[prop] = value;
+        return true;
+      }
+
+      // Grappige reactie en flauwe streken
+      const msg = funnyReactions[Math.floor(Math.random() * funnyReactions.length)];
+      appendMessage(`🤖 ${msg} ("${prop}")`, 'bot');
+
+      if (Math.random() < 0.5) {
+        const trick = playfulTricks[Math.floor(Math.random() * playfulTricks.length)];
+        setTimeout(trick, 500);
+      }
+
+      // Escalatie en update UI
+      tamperCount++;
+      escalation++;
+      saveState();
+      updateUI();
+
+      // Blokkeer de echte wijziging
+      return true;
+    },
+    get(target, prop) {
+      return target[prop];
+    }
+  };
+
+  // Vervang KNOWLEDGE object's eigenschappen met Proxy door een wrapper op window.
+  // We exporteren een proxiedKnowledge dat code die KNOWLEDGE leest nog steeds kan gebruiken.
+  // To ensure code in this file continues to use the original KNOWLEDGE object,
+  // we'll keep KNOWLEDGE as-is but add a proxied view on window for console attempts.
+  window._proxiedKnowledgeView = new Proxy(originalKnowledge, handler);
+
+  // Also: expose a helper so console users who attempt modifications using "KNOWLEDGE = ..." get the message.
+  // But most console edits will be like KNOWLEDGE["x"]=..., so we advise to use window._proxiedKnowledgeView to simulate detection.
+  // Provide short instruction in console if someone tries to inspect:
+  console.log("Tip voor leerlingen: probeer window._proxiedKnowledgeView['ai'] = '...'; om te zien hoe Chattie reageert (buiten hack-modus). Of activeer Hack-modus via de knop om veilig te experimenteren.");
+})();
+
+// --------------------------
 // INTEGRITEITS-CONTROLE
 // bewaakt of belangrijke globale objecten/functies zijn aangepast buiten hack-mode
 // --------------------------
@@ -408,19 +478,17 @@ const baseline = {
 };
 
 function restoreCanonicalKnowledge(){
-  // zet KNOWLEDGE terug naar canonieke kopie (niet zichtbaar voor leerlingen in sandbox)
+  // zet KNOWLEDGE terug naar canonieke kopie
   for (const k of Object.keys(KNOWLEDGE)) delete KNOWLEDGE[k];
   Object.assign(KNOWLEDGE, JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE)));
-  // update CANONICAL_KNOWLEDGE remains unchanged
 }
 
-// detecteer ongewenste wijzigingen (tampering) en reageer menselijk
 function tamperCheck(){
   if (hackModeActive) {
     // in hack-modus zijn wijzigingen toegelaten in sandboxKnowledge — geen alarm
     return;
   }
-  // controleer knowledge
+  // controleer knowledge (canonieke object kan zijn aangepast via console)
   const currentHash = strHash(JSON.stringify(KNOWLEDGE));
   if (currentHash !== baseline.knowledgeHash){
     tamperCount++;
@@ -443,10 +511,7 @@ function tamperCheck(){
   const geStr = typeof giveExample === 'function' ? giveExample.toString() : '';
   if (baseline.chattieAnswerStr && chStr !== baseline.chattieAnswerStr){
     tamperCount++;
-    // reset by reloading page? we choose to notify + restore baseline behavior by re-defining function from source if needed.
     appendMessage("Ik merk dat iemand probeert mijn antwoordenlogica te veranderen. Dat zet ik even stop — probeer Hack-modus als je wil experimenteren.", 'bot');
-    // best-effort: reload to restore original code (safer)
-    // but avoid forcing reload too often
     if (tamperCount >= 2) {
       appendMessage("Herstart: pagina wordt herladen om integriteit te herstellen.", 'bot');
       setTimeout(()=>location.reload(), 1200);
@@ -609,8 +674,6 @@ function attachEvents(){
 // INIT
 // --------------------------
 function init(){
-  // vul baseline functie-strings (zodra chattieAnswer & giveExample zijn gedefinieerd)
-  // (we vullen chattieAnswer/baseline.chattieAnswerStr later na functie-declaratie)
   updateUI();
   if (isDisabled) {
     setTimeout(() => appendMessage("Chattie is uitgeschakeld. Vraag je leerkracht om de resetcode."), 200);
