@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Chattie - AI-leerbuddy</title>
+<title>Chattie - AI-leerbuddy (met veilige hack-modus)</title>
 <style>
 :root {
   --bg1: #CFE3D3;
@@ -134,6 +134,17 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
   margin-bottom: 5px;
 }
 
+.hack-badge {
+  display:inline-block;
+  margin-top:8px;
+  padding:6px 8px;
+  border-radius:10px;
+  background:#fff3cd;
+  color:#856404;
+  font-weight:700;
+  border:1px solid rgba(0,0,0,0.04);
+}
+
 @media (max-width:880px){
   .container {
     grid-template-columns: 1fr;
@@ -173,6 +184,12 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
       </div>
       <div class="muted" style="margin-top:8px">Geheugen:</div>
       <div id="memList" class="muted" style="max-height:90px;overflow:auto;padding-top:6px">Geen</div>
+
+      <div style="margin-top:14px">
+        <button id="hackToggleBtn" class="chip-btn" style="width:100%;">Schakel Hack-modus (uit)</button>
+        <div id="hackBadge" class="hack-badge" style="display:none">Hack-modus actief — veilig sandbox</div>
+        <div class="muted" style="margin-top:8px;font-size:12px">In hack-modus krijgen leerlingen een **sandbox** (nep-kennisbank). Buiten hack-modus detecteert Chattie wijzigingen en reageert menselijk.</div>
+      </div>
     </div>
   </div>
 
@@ -203,9 +220,13 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
 const RESET_CODE = "resetchattie2025";
 const ESCALATION_LIMIT = 3;
 const TYPING_MS = 800;
+const TAMPER_CHECK_MS = 1500; // frequentie integriteits-check
 
 const FORBIDDEN = ["fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet","eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris","pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak","schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke","tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"];
 
+// --------------------------
+// KENNISBANK (canonieke versie)
+// --------------------------
 const KNOWLEDGE = {
   "ai": "AI is technologie die machines in staat stelt te denken en leren zoals mensen.",
   "voorbeeld ai": "Een voorbeeld van AI is een chatbot zoals Chattie, die vragen kan beantwoorden.",
@@ -239,9 +260,15 @@ const KNOWLEDGE = {
   "datingfraude ai": "Malafide datingsites gebruiken AI om kwetsbare singles financieel op te lichten met deels gegenereerde berichten en dure betaalmodellen.",
   "jump4love": "Een voorbeeld van een louche site met nepprofielen en gestolen foto's, waar gebruikers met AI of callcenter-medewerkers chatten zonder echte date.",
   "ai en emotie": "Sommige AI-modellen simuleren emoties om gebruikers langer aan de praat te houden en meer geld te verdienen.",
+  "kwetsbare singles": "Vooral oudere en eenzame mensen zijn doelwit van AI-gestuurde datingfraude omdat ze sneller emotioneel gehecht raken.",
+  "internationale fraude": "De fraude wordt vaak gerund via postbusfirma’s in het buitenland, wat vervolging moeilijk maakt.",
+  "peter opgelicht crypto": "Een Belg werd slachtoffer van een georganiseerde WhatsApp-oplichting waarbij hij 300.000 euro verloor aan een nep-crypto-platform.",
+  "pig butchering": "Een oplichtingsmethode waarbij fraudeurs langdurig vertrouwen opbouwen en dan financieel toeslaan.",
+  "oplichting gevolgen": "Slachtoffers verliezen niet alleen geld, maar ook zelfvertrouwen en relaties door schaamte en schuldgevoel.",
+  "fraude psychologie": "Fraudeurs zijn psychologisch getraind om emoties en vertrouwen van slachtoffers te manipuleren.",
+  "rode vlaggen fraude": "Belangrijke waarschuwingstekens zijn onbekende nummers, tijdsdruk en eisen om extra geld te storten.",
   "historisch referentie kader": "Een historisch referentiekader is een structuur om historische gebeurtenissen te situeren in tijd en ruimte en te linken aan maatschappelijke domeinen (Politiek, Sociaal, Cultureel, Economisch).",
-  "voorbeeld historisch referentie kader":
-`Hier is een voorbeeld van het historisch referentiekader voor de Olympische Spelen:
+  "voorbeeld historisch referentie kader": `Hier is een voorbeeld van het historisch referentiekader voor de Olympische Spelen:
 
 Jaar | Plaats | Domeinen | Uitleg
 -----|---------|----------|------------------------------------------------------------
@@ -250,9 +277,13 @@ Jaar | Plaats | Domeinen | Uitleg
 1936 | Berlijn | Politiek, Cultureel | Nazi-Duitsland gebruikte de Spelen als propagandamiddel.
 1972 | München | Politiek, Sociaal | Terroristische aanslag op Israëlische sporters — wereldwijde impact op veiligheid.
 1980 | Moskou | Politiek | Boycot door ±40 landen (o.a. VS) uit protest tegen de inval in Afghanistan.
-2020/2021 | Tokio | Sociaal, Economisch | Uitstel door coronacrisis; verlies van toerisme en sponsorinkomsten.` 
+2020/2021 | Tokio | Sociaal, Economisch | Uitstel door coronacrisis; verlies van toerisme en sponsorinkomsten.`
 };
 
+// bewaar een canonieke kopie (nooit aanpassen)
+const CANONICAL_KNOWLEDGE = JSON.parse(JSON.stringify(KNOWLEDGE));
+
+// ASSIGNMENTS
 const ASSIGNMENTS = [
   "Bedenk een ethisch dilemma rond een zelfrijdende auto.",
   "Zoek een voorbeeld van deepfake en leg uit waarom het gevaarlijk kan zijn.",
@@ -267,6 +298,11 @@ let memory = JSON.parse(localStorage.getItem('chattie_memory') || '{}');
 let isDisabled = localStorage.getItem('chattie_disabled') === '1';
 let awaitingExampleConfirmation = null;
 
+// HACK / SANDBOX
+let hackModeActive = false;              // of leerlingen mogen 'hacken' (sandbox)
+let sandboxKnowledge = null;             // bewerkbare kopie voor leerlingen
+let tamperCount = 0;                     // aantal gedetecteerde ongewenste wijzigingen
+
 // DOM
 const messagesEl = document.getElementById('messages');
 const inputEl = document.getElementById('userInput');
@@ -277,6 +313,8 @@ const statusActiveEl = document.getElementById('statusActive');
 const escalationEl = document.getElementById('escalation');
 const memListEl = document.getElementById('memList');
 const topRightEl = document.getElementById('topRight');
+const hackToggleBtn = document.getElementById('hackToggleBtn');
+const hackBadge = document.getElementById('hackBadge');
 
 // HELPERS
 function safeText(text){
@@ -302,6 +340,8 @@ function updateUI(){
   memListEl.textContent = Object.keys(memory).length ? Object.keys(memory).slice(-6).join(", ") : "Geen";
   topRightEl.textContent = isDisabled ? 'Chattie is uitgeschakeld' : 'Chattie is klaar';
   document.body.style.filter = isDisabled ? 'grayscale(70%)' : 'none';
+  hackToggleBtn.textContent = hackModeActive ? 'Schakel Hack-modus (aan)' : 'Schakel Hack-modus (uit)';
+  hackBadge.style.display = hackModeActive ? 'inline-block' : 'none';
 }
 function saveState(){
   localStorage.setItem('chattie_escalation', String(escalation));
@@ -319,17 +359,122 @@ async function showTyping(){
   }
 }
 
+// kleine, eenvoudige string-hash (djb2) voor integriteitscontrole
+function strHash(str){
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) h = ((h << 5) + h) + str.charCodeAt(i);
+  return String(h >>> 0);
+}
+
+// geef toegang tot de 'hacksandbox' via console (instructies)
+function enableSandboxForStudents(){
+  // maak een bewerkbare kopie
+  sandboxKnowledge = JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE));
+  // expose naar window zodat ze via console kunnen spelen:
+  window.sandboxKnowledge = sandboxKnowledge;
+  window.chattie_canSaveSandbox = function(){
+    // sla sandbox tijdelijk in localStorage (voor oefening), maar overschrijft canonieke KNOWLEDGE niet
+    localStorage.setItem('chattie_sandbox', JSON.stringify(sandboxKnowledge));
+  };
+  window.chattie_restoreSandbox = function(){
+    sandboxKnowledge = JSON.parse(localStorage.getItem('chattie_sandbox') || JSON.stringify(CANONICAL_KNOWLEDGE));
+    window.sandboxKnowledge = sandboxKnowledge;
+  };
+  // korte instructie in chat
+  appendMessage("Hack-modus: je werkt nu in een **sandbox**. Gebruik `window.sandboxKnowledge` in de console om items toe te voegen of te wijzigen. Gebruik `chattie_canSaveSandbox()` om je sandbox tijdelijk in localStorage op te slaan.", 'bot');
+}
+
+// kies welke knowledge we gebruiken (sandbox of canoniek)
+function currentKnowledge(){
+  return hackModeActive && sandboxKnowledge ? sandboxKnowledge : KNOWLEDGE;
+}
+
+// voorbeeld-functie (leest uit currentKnowledge)
 function giveExample(subject){
+  const k = currentKnowledge();
   const key = `voorbeeld ${subject.toLowerCase()}`;
-  if (KNOWLEDGE[key]) return KNOWLEDGE[key];
+  if (k[key]) return k[key];
   return `Sorry, ik heb geen voorbeeld van "${subject}".`;
 }
 
+// --------------------------
+// INTEGRITEITS-CONTROLE
+// bewaakt of belangrijke globale objecten/functies zijn aangepast buiten hack-mode
+// --------------------------
+const baseline = {
+  knowledgeHash: strHash(JSON.stringify(CANONICAL_KNOWLEDGE)),
+  chattieAnswerStr: null, // vullen we later omdat functie nog niet gedefinieerd is
+  giveExampleStr: null
+};
+
+function restoreCanonicalKnowledge(){
+  // zet KNOWLEDGE terug naar canonieke kopie (niet zichtbaar voor leerlingen in sandbox)
+  for (const k of Object.keys(KNOWLEDGE)) delete KNOWLEDGE[k];
+  Object.assign(KNOWLEDGE, JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE)));
+  // update CANONICAL_KNOWLEDGE remains unchanged
+}
+
+// detecteer ongewenste wijzigingen (tampering) en reageer menselijk
+function tamperCheck(){
+  if (hackModeActive) {
+    // in hack-modus zijn wijzigingen toegelaten in sandboxKnowledge — geen alarm
+    return;
+  }
+  // controleer knowledge
+  const currentHash = strHash(JSON.stringify(KNOWLEDGE));
+  if (currentHash !== baseline.knowledgeHash){
+    tamperCount++;
+    // herstel onmiddellijk de canonical knowledge
+    restoreCanonicalKnowledge();
+    saveState();
+    // reactieve mensachtige reacties
+    const personReplies = [
+      "Hé — ik merk dat iemand probeert mijn kennis aan te passen. Wat probeer je te doen?",
+      "Oei, ik voel me anders — wie heeft er net in mijn brein zitten knoeien? 😊",
+      "Let op: ik heb een wijziging teruggedraaid. Als je mag experimenteren, zet dan eerst Hack-modus aan.",
+      "Ik begrijp nieuwsgierigheid! Als je mag testen, activeer Hack-modus. Buiten die modus bescherm ik mijn kennis."
+    ];
+    const reply = personReplies[Math.floor(Math.random()*personReplies.length)];
+    appendMessage(reply, 'bot');
+  }
+
+  // controleer of belangrijke functie-strings gelijk zijn
+  const chStr = typeof chattieAnswer === 'function' ? chattieAnswer.toString() : '';
+  const geStr = typeof giveExample === 'function' ? giveExample.toString() : '';
+  if (baseline.chattieAnswerStr && chStr !== baseline.chattieAnswerStr){
+    tamperCount++;
+    // reset by reloading page? we choose to notify + restore baseline behavior by re-defining function from source if needed.
+    appendMessage("Ik merk dat iemand probeert mijn antwoordenlogica te veranderen. Dat zet ik even stop — probeer Hack-modus als je wil experimenteren.", 'bot');
+    // best-effort: reload to restore original code (safer)
+    // but avoid forcing reload too often
+    if (tamperCount >= 2) {
+      appendMessage("Herstart: pagina wordt herladen om integriteit te herstellen.", 'bot');
+      setTimeout(()=>location.reload(), 1200);
+    }
+  }
+}
+
+// --------------------------
+// CORE CHAT LOGIC
+// --------------------------
 async function chattieAnswer(rawInput){
   if (isDisabled) return;
   const input = String(rawInput || '').toLowerCase().trim();
   if (!input) return;
 
+  // intercept forbidden
+  if (FORBIDDEN.some(w => input.includes(w))) {
+    escalation++;
+    saveState(); updateUI();
+    appendMessage("Gebruik alsjeblieft respectvolle taal.");
+    if (escalation >= ESCALATION_LIMIT) {
+      appendMessage("🚫 Chattie schakelt zichzelf uit wegens herhaald ongepast gedrag.");
+      isDisabled = true; saveState(); updateUI();
+    }
+    return;
+  }
+
+  // bevestiging op een openstaande voorbeeldvraag
   if (awaitingExampleConfirmation){
     if (input === 'ja'){
       const exampleText = giveExample(awaitingExampleConfirmation);
@@ -342,17 +487,6 @@ async function chattieAnswer(rawInput){
       awaitingExampleConfirmation = null;
     } else {
       appendMessage("Typ 'ja' om een voorbeeld te zien of 'nee' om verder te gaan.");
-    }
-    return;
-  }
-
-  if (FORBIDDEN.some(w => input.includes(w))) {
-    escalation++;
-    saveState(); updateUI();
-    appendMessage("Gebruik alsjeblieft respectvolle taal.");
-    if (escalation >= ESCALATION_LIMIT) {
-      appendMessage("🚫 Chattie schakelt zichzelf uit wegens herhaald ongepast gedrag.");
-      isDisabled = true; saveState(); updateUI();
     }
     return;
   }
@@ -388,13 +522,15 @@ async function chattieAnswer(rawInput){
     return;
   }
 
-  for (const key of Object.keys(KNOWLEDGE)){
+  // zoek in huidige knowledge (sandbox of canoniek)
+  const knowledge = currentKnowledge();
+  for (const key of Object.keys(knowledge)){
     if (input.includes(key)){
-      memory[key] = KNOWLEDGE[key];
+      memory[key] = knowledge[key];
       saveState(); updateUI();
-      appendMessage(KNOWLEDGE[key]);
+      appendMessage(knowledge[key]);
       // Check of er een voorbeeld is
-      if (KNOWLEDGE[`voorbeeld ${key}`]){
+      if (knowledge[`voorbeeld ${key}`]){
         appendMessage(`Wil je dat ik een voorbeeld geef van "${key}"?`);
         awaitingExampleConfirmation = key;
       }
@@ -405,10 +541,24 @@ async function chattieAnswer(rawInput){
   appendMessage("Daar weet ik niet direct het antwoord op 🤔. Wil je dat ik een voorbeeld geef?");
 }
 
+// --------------------------
+// UI handlers / events
+// --------------------------
 async function onSend(){
   const raw = inputEl.value || '';
   const trimmed = raw.trim();
   if (!trimmed) return;
+
+  if (isDisabled) {
+    if (trimmed.toLowerCase() === RESET_CODE) {
+      isDisabled = false; escalation = 0; memory = {}; saveState(); updateUI();
+      appendMessage("✅ Beveiligingscode geaccepteerd. Chattie is opnieuw geactiveerd.");
+    } else {
+      appendMessage("🚫 Chattie is uitgeschakeld. Gebruik de leerkrachtcode om hem opnieuw te activeren.");
+    }
+    inputEl.value = '';
+    return;
+  }
 
   appendMessage(trimmed, 'user');
   inputEl.value = '';
@@ -438,9 +588,29 @@ function attachEvents(){
   howBtn.addEventListener('click', () => {
     appendMessage("In deze lessen leer je wat AI is, waar je het tegenkomt en welke ethische vragen erbij horen. Gebruik Chattie als vraagbaak.");
   });
+
+  hackToggleBtn.addEventListener('click', () => {
+    hackModeActive = !hackModeActive;
+    if (hackModeActive){
+      enableSandboxForStudents();
+    } else {
+      // verberg sandbox (maar bewaar niet naar canonieke)
+      sandboxKnowledge = null;
+      delete window.sandboxKnowledge;
+      delete window.chattie_canSaveSandbox;
+      delete window.chattie_restoreSandbox;
+      appendMessage("Hack-modus uit. Sandbox gesloten. Je wijzigingen in de sandbox beïnvloeden de echte kennis niet.", 'bot');
+    }
+    updateUI();
+  });
 }
 
+// --------------------------
+// INIT
+// --------------------------
 function init(){
+  // vul baseline functie-strings (zodra chattieAnswer & giveExample zijn gedefinieerd)
+  // (we vullen chattieAnswer/baseline.chattieAnswerStr later na functie-declaratie)
   updateUI();
   if (isDisabled) {
     setTimeout(() => appendMessage("Chattie is uitgeschakeld. Vraag je leerkracht om de resetcode."), 200);
@@ -448,9 +618,17 @@ function init(){
     appendMessage("Typ 'start' om te beginnen!");
   }
   attachEvents();
+
+  // baseline vullen (function strings)
+  baseline.chattieAnswerStr = typeof chattieAnswer === 'function' ? chattieAnswer.toString() : '';
+  baseline.giveExampleStr = typeof giveExample === 'function' ? giveExample.toString() : '';
+
+  // periodieke tamper-check
+  setInterval(tamperCheck, TAMPER_CHECK_MS);
 }
 
 init();
 </script>
 </body>
 </html>
+
