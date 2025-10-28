@@ -204,10 +204,11 @@ const RESET_CODE = "resetchattie2025";
 const ESCALATION_LIMIT = 3;
 const TYPING_MS = 800;
 
-const FORBIDDEN = ["fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet","eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris",   "pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak","schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke","tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"];
+const FORBIDDEN = ["fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet","eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris","pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak","schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke","tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"];
 
 const KNOWLEDGE = {
   "ai": "AI is technologie die machines in staat stelt te denken en leren zoals mensen.",
+  "voorbeeld ai": "Een voorbeeld van AI is een chatbot zoals Chattie, die vragen kan beantwoorden.",
   "machine learning": "Machine learning is een tak van AI waarbij systemen leren van data.",
   "deep learning": "Een vorm van machine learning met neurale netwerken die complexe patronen herkennen.",
   "sociaal welzijn": "De mate waarin mensen zich goed voelen en kunnen deelnemen aan de samenleving.",
@@ -229,6 +230,7 @@ const KNOWLEDGE = {
   "agi": "Artificial General Intelligence — een AI die net zo slim is als mensen.",
   "ava technologie": "Technologie die automatisch de beste thumbnail kiest voor een video.",
   "zelfrijdende auto": "Een voertuig dat zonder chauffeur rijdt door sensoren en AI.",
+  "voorbeeld zelfrijdende auto": "Een Tesla taxi die in steden rijdt of het kleine autonome busje in Leuven.",
   "autonome shuttle": "Een klein zelfrijdend busje, zoals in Leuven, dat leert uit zijn omgeving.",
   "senaat lek": "Een ernstig datalek bij de Belgische Senaat waarbij gevoelige info, zoals protocollen en gsm-nummers van politici, op straat kwam door een gelekt wachtwoord.",
   "infostealer": "Kwaadaardige software (zoals Lumma Stealer) die ongemerkt ingevoerde gegevens steelt en verkoopt aan criminelen.",
@@ -237,13 +239,6 @@ const KNOWLEDGE = {
   "datingfraude ai": "Malafide datingsites gebruiken AI om kwetsbare singles financieel op te lichten met deels gegenereerde berichten en dure betaalmodellen.",
   "jump4love": "Een voorbeeld van een louche site met nepprofielen en gestolen foto's, waar gebruikers met AI of callcenter-medewerkers chatten zonder echte date.",
   "ai en emotie": "Sommige AI-modellen simuleren emoties om gebruikers langer aan de praat te houden en meer geld te verdienen.",
-  "kwetsbare singles": "Vooral oudere en eenzame mensen zijn doelwit van AI-gestuurde datingfraude omdat ze sneller emotioneel gehecht raken.",
-  "internationale fraude": "De fraude wordt vaak gerund via postbusfirma’s in het buitenland, wat vervolging moeilijk maakt.",
-  "peter opgelicht crypto": "Een Belg werd slachtoffer van een georganiseerde WhatsApp-oplichting waarbij hij 300.000 euro verloor aan een nep-crypto-platform.",
-  "pig butchering": "Een oplichtingsmethode waarbij fraudeurs langdurig vertrouwen opbouwen en dan financieel toeslaan.",
-  "oplichting gevolgen": "Slachtoffers verliezen niet alleen geld, maar ook zelfvertrouwen en relaties door schaamte en schuldgevoel.",
-  "fraude psychologie": "Fraudeurs zijn psychologisch getraind om emoties en vertrouwen van slachtoffers te manipuleren.",
-  "rode vlaggen fraude": "Belangrijke waarschuwingstekens zijn onbekende nummers, tijdsdruk en eisen om extra geld te storten.",
   "historisch referentie kader": "Een historisch referentiekader is een structuur om historische gebeurtenissen te situeren in tijd en ruimte en te linken aan maatschappelijke domeinen (Politiek, Sociaal, Cultureel, Economisch).",
   "voorbeeld historisch referentie kader":
 `Hier is een voorbeeld van het historisch referentiekader voor de Olympische Spelen:
@@ -255,9 +250,8 @@ Jaar | Plaats | Domeinen | Uitleg
 1936 | Berlijn | Politiek, Cultureel | Nazi-Duitsland gebruikte de Spelen als propagandamiddel.
 1972 | München | Politiek, Sociaal | Terroristische aanslag op Israëlische sporters — wereldwijde impact op veiligheid.
 1980 | Moskou | Politiek | Boycot door ±40 landen (o.a. VS) uit protest tegen de inval in Afghanistan.
-2020/2021 | Tokio | Sociaal, Economisch | Uitstel door coronacrisis; verlies van toerisme en sponsorinkomsten.`
+2020/2021 | Tokio | Sociaal, Economisch | Uitstel door coronacrisis; verlies van toerisme en sponsorinkomsten.` 
 };
-
 
 const ASSIGNMENTS = [
   "Bedenk een ethisch dilemma rond een zelfrijdende auto.",
@@ -271,6 +265,7 @@ let isChatActive = false;
 let escalation = Number(localStorage.getItem('chattie_escalation') || 0);
 let memory = JSON.parse(localStorage.getItem('chattie_memory') || '{}');
 let isDisabled = localStorage.getItem('chattie_disabled') === '1';
+let awaitingExampleConfirmation = null;
 
 // DOM
 const messagesEl = document.getElementById('messages');
@@ -324,10 +319,32 @@ async function showTyping(){
   }
 }
 
+function giveExample(subject){
+  const key = `voorbeeld ${subject.toLowerCase()}`;
+  if (KNOWLEDGE[key]) return KNOWLEDGE[key];
+  return `Sorry, ik heb geen voorbeeld van "${subject}".`;
+}
+
 async function chattieAnswer(rawInput){
   if (isDisabled) return;
   const input = String(rawInput || '').toLowerCase().trim();
   if (!input) return;
+
+  if (awaitingExampleConfirmation){
+    if (input === 'ja'){
+      const exampleText = giveExample(awaitingExampleConfirmation);
+      memory[`voorbeeld ${awaitingExampleConfirmation}`] = exampleText;
+      saveState(); updateUI();
+      appendMessage(exampleText);
+      awaitingExampleConfirmation = null;
+    } else if (input === 'nee'){
+      appendMessage("Oké, we slaan het voorbeeld over.");
+      awaitingExampleConfirmation = null;
+    } else {
+      appendMessage("Typ 'ja' om een voorbeeld te zien of 'nee' om verder te gaan.");
+    }
+    return;
+  }
 
   if (FORBIDDEN.some(w => input.includes(w))) {
     escalation++;
@@ -361,12 +378,26 @@ async function chattieAnswer(rawInput){
     return;
   }
 
-  for (const key of Object.keys(KNOWLEDGE)) {
-    if (input.includes(key)) {
+  // Direct voorbeeld opvragen
+  if (input.startsWith('voorbeeld ')){
+    const subject = input.replace('voorbeeld ', '').trim();
+    const exampleText = giveExample(subject);
+    memory[`voorbeeld ${subject}`] = exampleText;
+    saveState(); updateUI();
+    appendMessage(exampleText);
+    return;
+  }
+
+  for (const key of Object.keys(KNOWLEDGE)){
+    if (input.includes(key)){
       memory[key] = KNOWLEDGE[key];
       saveState(); updateUI();
       appendMessage(KNOWLEDGE[key]);
-      appendMessage(`Wat vind jij van "${key}"?`);
+      // Check of er een voorbeeld is
+      if (KNOWLEDGE[`voorbeeld ${key}`]){
+        appendMessage(`Wil je dat ik een voorbeeld geef van "${key}"?`);
+        awaitingExampleConfirmation = key;
+      }
       return;
     }
   }
@@ -378,17 +409,6 @@ async function onSend(){
   const raw = inputEl.value || '';
   const trimmed = raw.trim();
   if (!trimmed) return;
-
-  if (isDisabled) {
-    if (trimmed.toLowerCase() === RESET_CODE) {
-      isDisabled = false; escalation = 0; memory = {}; saveState(); updateUI();
-      appendMessage("✅ Beveiligingscode geaccepteerd. Chattie is opnieuw geactiveerd.");
-    } else {
-      appendMessage("🚫 Chattie is uitgeschakeld. Gebruik de leerkrachtcode om hem opnieuw te activeren.");
-    }
-    inputEl.value = '';
-    return;
-  }
 
   appendMessage(trimmed, 'user');
   inputEl.value = '';
