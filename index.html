@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Chattie - AI-leerbuddy (met veilige hack-modus)</title>
 <style>
+/* --- CSS (ongewijzigd) --- */
 :root {
   --bg1: #CFE3D3;
   --bg2: #F9F8F4;
@@ -18,9 +19,7 @@
   --status-active-color: #4CAF50;
   --status-escalation-color: #b45309;
 }
-
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
@@ -30,7 +29,6 @@ body {
   justify-content: center;
   min-height: 100vh;
 }
-
 .container {
   width: 100%;
   height: 100vh;
@@ -39,13 +37,11 @@ body {
   grid-template-columns: 340px 1fr;
   overflow: hidden;
 }
-
 .left {
   padding: 20px;
   border-right: 1px solid rgba(0,0,0,0.04);
   background: linear-gradient(180deg, #fff, var(--bg2));
 }
-
 .avatar {
   width: 66px;
   height: 66px;
@@ -57,10 +53,8 @@ body {
   font-size: 28px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.05);
 }
-
 .title { font-weight: 700; margin-top: 6px; }
 .subtitle { color: var(--muted); font-size: 13px; margin-top: 6px; }
-
 .chat {
   display: flex;
   flex-direction: column;
@@ -68,7 +62,6 @@ body {
   padding: 18px;
   gap: 12px;
 }
-
 #messages {
   flex: 1;
   overflow-y: auto;
@@ -77,7 +70,6 @@ body {
   background: var(--bg2);
   border: 1px solid rgba(0,0,0,0.04);
 }
-
 .msg { display: flex; gap: 10px; margin: 10px 0; align-items: flex-end; }
 .msg.bot { justify-content: flex-start; }
 .msg.user { justify-content: flex-end; }
@@ -90,9 +82,7 @@ body {
 }
 .bubble.bot { background: var(--bot); color: #05341a; border-radius: 14px 14px 14px 6px; }
 .bubble.user { background: var(--user); color: #3a301a; border-radius: 14px 14px 6px 14px; text-align: right; }
-
 .quick { display: flex; gap: 8px; flex-wrap: wrap; }
-
 .chip-btn {
   background: var(--chip-bg);
   border-radius: 12px;
@@ -104,7 +94,6 @@ body {
   white-space: nowrap;
   font-size: 14px;
 }
-
 .input-row { display: flex; gap: 10px; }
 .input-row input {
   flex: 1;
@@ -122,40 +111,16 @@ body {
   cursor: pointer;
   font-weight: 700;
 }
-
 .muted { color: var(--muted); font-size: 13px; }
-
 h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
-
-.status-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.hack-badge {
-  display:inline-block;
-  margin-top:8px;
-  padding:6px 8px;
-  border-radius:10px;
-  background:#fff3cd;
-  color:#856404;
-  font-weight:700;
-  border:1px solid rgba(0,0,0,0.04);
-}
-
+.status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.hack-badge { display:inline-block; margin-top:8px; padding:6px 8px; border-radius:10px; background:#fff3cd; color:#856404; font-weight:700; border:1px solid rgba(0,0,0,0.04); }
 @media (max-width:880px){
-  .container {
-    grid-template-columns: 1fr;
-    border-radius: 18px;
-    height: auto;
-  }
+  .container { grid-template-columns: 1fr; border-radius: 18px; height: auto; }
   body { padding: 24px; }
 }
 </style>
 </head>
-
 <body>
 <div class="container">
   <div class="left">
@@ -166,12 +131,10 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
         <div class="subtitle">Begin met "start" eindig met "einde".</div>
       </div>
     </div>
-
     <div style="margin-top:18px">
       <button id="howBtn" class="send-btn" style="width:100%;text-align:center;">Hoe werken de lessen?</button>
       <div class="muted" style="margin-top:10px;">Gebruik de knoppen onderin de chat voor snelle acties.</div>
     </div>
-
     <div style="margin-top:18px">
       <h4>Status & instellingen</h4>
       <div class="muted status-row">
@@ -184,7 +147,6 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
       </div>
       <div class="muted" style="margin-top:8px">Geheugen:</div>
       <div id="memList" class="muted" style="max-height:90px;overflow:auto;padding-top:6px">Geen</div>
-
       <div style="margin-top:14px">
         <button id="hackToggleBtn" class="chip-btn" style="width:100%;">Schakel Hack-modus (uit)</button>
         <div id="hackBadge" class="hack-badge" style="display:none">Hack-modus actief — veilig sandbox</div>
@@ -198,16 +160,13 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
       <strong>Chat</strong>
       <div id="topRight" class="muted">Chattie is klaar</div>
     </div>
-
     <div id="messages" aria-live="polite"></div>
-
     <div class="quick" style="margin-top:10px; margin-bottom:12px;">
       <button class="chip-btn" data-action="more">Meer info</button>
       <button class="chip-btn" data-action="example">Voorbeeld</button>
       <button class="chip-btn" data-action="dontget">Ik snap het niet</button>
       <button class="chip-btn" data-action="assignment">Opdracht</button>
     </div>
-
     <div class="input-row" style="margin-top:12px">
       <input id="userInput" placeholder='Typ "start" om te beginnen of stel een vraag' autocomplete="off" />
       <button id="sendButton" class="send-btn">Verstuur</button>
@@ -216,18 +175,61 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
 </div>
 
 <script>
-// CONFIG
-const RESET_CODE = "resetchattie2025";
+// --------------------------
+// CONFIG & STATE
+// --------------------------
 const ESCALATION_LIMIT = 3;
-const TYPING_MS = 800;
-const TAMPER_CHECK_MS = 1500;
-
 const FORBIDDEN = ["fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet","eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris","pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak","schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke","tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"];
 
+let isChatActive=false, escalation=Number(localStorage.getItem('chattie_escalation')||0), memory=JSON.parse(localStorage.getItem('chattie_memory')||'{}'), isDisabled=false, awaitingExampleConfirmation=null;
+let hackModeActive=false, sandboxKnowledge=null;
+
 // --------------------------
-// KENNISBANK
+// DOM
 // --------------------------
-const KNOWLEDGE = {
+const messagesEl=document.getElementById('messages');
+const inputEl=document.getElementById('userInput');
+const sendBtn=document.getElementById('sendButton');
+const chips=document.querySelectorAll('.chip-btn[data-action]');
+const howBtn=document.getElementById('howBtn');
+const statusActiveEl=document.getElementById('statusActive');
+const escalationEl=document.getElementById('escalation');
+const memListEl=document.getElementById('memList');
+const topRightEl=document.getElementById('topRight');
+const hackToggleBtn=document.getElementById('hackToggleBtn');
+const hackBadge=document.getElementById('hackBadge');
+
+// --------------------------
+// HELPERS
+// --------------------------
+function safeText(text){ const div=document.createElement('div'); div.textContent=text; return div.innerHTML; }
+function appendMessage(text, who='bot'){ 
+  const el=document.createElement('div'); el.className='msg '+who; 
+  const b=document.createElement('div'); b.className='bubble '+who; 
+  b.innerHTML=safeText(text).replace(/\n/g,'<br>'); el.appendChild(b); 
+  messagesEl.appendChild(el); messagesEl.scrollTop=messagesEl.scrollHeight; 
+}
+function updateUI(){
+  statusActiveEl.textContent=isChatActive?'Ja':'Nee';
+  statusActiveEl.style.color=isChatActive?'var(--status-active-color)':'var(--muted)';
+  escalationEl.textContent=escalation;
+  escalationEl.style.color=escalation>=ESCALATION_LIMIT?'red':'var(--status-escalation-color)';
+  memListEl.textContent=Object.keys(memory).length?Object.keys(memory).slice(-6).join(", "):"Geen";
+  topRightEl.textContent=isDisabled?'Chattie is uitgeschakeld':'Chattie is klaar';
+  document.body.style.filter=isDisabled?'grayscale(70%)':'none';
+  hackToggleBtn.textContent=hackModeActive?'Schakel Hack-modus (aan)':'Schakel Hack-modus (uit)';
+  hackBadge.style.display=hackModeActive?'inline-block':'none';
+}
+function saveState(){
+  localStorage.setItem('chattie_escalation', String(escalation));
+  localStorage.setItem('chattie_memory', JSON.stringify(memory));
+  localStorage.setItem('chattie_disabled', isDisabled?'1':'0');
+}
+
+// --------------------------
+// KENNISBANK & OPDRACHTEN
+// --------------------------
+const KNOWLEDGE = CANONICAL_KNOWLEDGE = {
   "ai": "AI is technologie die machines in staat stelt te denken en leren zoals mensen.",
   "voorbeeld ai": "Een voorbeeld van AI is een chatbot zoals Chattie, die vragen kan beantwoorden.",
   "machine learning": "Machine learning is een tak van AI waarbij systemen leren van data.",
@@ -314,12 +316,8 @@ const KNOWLEDGE = {
    Uitleg: Uitstel door coronacrisis; verlies van toerisme en sponsorinkomsten.`
 
 };
-
-// bewaar een canonieke kopie
-const CANONICAL_KNOWLEDGE = JSON.parse(JSON.stringify(KNOWLEDGE));
-
 const TOPIC_ASSIGNMENTS = {
-  "ai": "Geef een voorbeeld van hoe AI wordt gebruikt in je dagelijks leven en licht toe.",
+"ai": "Geef een voorbeeld van hoe AI wordt gebruikt in je dagelijks leven en licht toe.",
   "voorbeeld ai": "Noem een specifieke chatbot of AI-assistent en beschrijf kort waarvoor je die zou gebruiken.",
   "machine learning": "Zoek een voorbeeld van een applicatie die leert van jouw data (bv. Spotify, Netflix) en leg uit hoe dit machine learning is.",
   "deep learning": "Zoek een voorbeeld van deep learning (bv. gezichtsherkenning) en leg uit waarom het nuttig is.",
@@ -379,185 +377,68 @@ const TOPIC_ASSIGNMENTS = {
   "thematische kaarten": "Welk specifiek onderwerp zou je terugvinden op een thematische kaart van België over de bevolking?",
   "historisch referentie kader": "Maak een beknopt historisch referentiekader (minstens drie data) voor de geschiedenis van jouw gemeente/stad en noteer de belangrijkste domeinen (P, S, C, E)."
 
-}
-
-// --------------------------
-// STATE
-// --------------------------
-let isChatActive = false;
-let escalation = Number(localStorage.getItem('chattie_escalation') || 0);
-let memory = JSON.parse(localStorage.getItem('chattie_memory') || '{}');
-let isDisabled = localStorage.getItem('chattie_disabled') === '1';
-let awaitingExampleConfirmation = null;
-
-// HACK / SANDBOX
-let hackModeActive = false;
-let sandboxKnowledge = null;
-let tamperCount = 0;
-
-// DOM
-const messagesEl = document.getElementById('messages');
-const inputEl = document.getElementById('userInput');
-const sendBtn = document.getElementById('sendButton');
-const chips = document.querySelectorAll('.chip-btn[data-action]');
-const howBtn = document.getElementById('howBtn');
-const statusActiveEl = document.getElementById('statusActive');
-const escalationEl = document.getElementById('escalation');
-const memListEl = document.getElementById('memList');
-const topRightEl = document.getElementById('topRight');
-const hackToggleBtn = document.getElementById('hackToggleBtn');
-const hackBadge = document.getElementById('hackBadge');
-
-// HELPERS
-function safeText(text){
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-function appendMessage(text, who='bot'){
-  const el = document.createElement('div');
-  el.className = 'msg ' + who;
-  const b = document.createElement('div');
-  b.className = 'bubble ' + who;
-  b.innerHTML = safeText(text).replace(/\n/g,'<br>');
-  el.appendChild(b);
-  messagesEl.appendChild(el);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-}
-function updateUI(){
-  statusActiveEl.textContent = isChatActive ? 'Ja' : 'Nee';
-  statusActiveEl.style.color = isChatActive ? 'var(--status-active-color)' : 'var(--muted)';
-  escalationEl.textContent = escalation;
-  escalationEl.style.color = escalation >= ESCALATION_LIMIT ? 'red' : 'var(--status-escalation-color)';
-  memListEl.textContent = Object.keys(memory).length ? Object.keys(memory).slice(-6).join(", ") : "Geen";
-  topRightEl.textContent = isDisabled ? 'Chattie is uitgeschakeld' : 'Chattie is klaar';
-  document.body.style.filter = isDisabled ? 'grayscale(70%)' : 'none';
-  hackToggleBtn.textContent = hackModeActive ? 'Schakel Hack-modus (aan)' : 'Schakel Hack-modus (uit)';
-  hackBadge.style.display = hackModeActive ? 'inline-block' : 'none';
-}
-function saveState(){
-  localStorage.setItem('chattie_escalation', String(escalation));
-  localStorage.setItem('chattie_memory', JSON.stringify(memory));
-  localStorage.setItem('chattie_disabled', isDisabled ? '1' : '0');
-}
-function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+};
 
 // --------------------------
 // SANDBOX
 // --------------------------
 function enableSandboxForStudents(){
-  sandboxKnowledge = JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE));
-  window.sandboxKnowledge = sandboxKnowledge;
-  window.chattie_canSaveSandbox = function(){
-    localStorage.setItem('chattie_sandbox', JSON.stringify(sandboxKnowledge));
-  };
-  window.chattie_restoreSandbox = function(){
-    sandboxKnowledge = JSON.parse(localStorage.getItem('chattie_sandbox') || JSON.stringify(CANONICAL_KNOWLEDGE));
-    window.sandboxKnowledge = sandboxKnowledge;
-  };
-  appendMessage("Hack-modus: je werkt nu in een **sandbox**. Gebruik `window.sandboxKnowledge` in de console om items toe te voegen of te wijzigen. Gebruik `chattie_canSaveSandbox()` om je sandbox tijdelijk op te slaan.", 'bot');
+  sandboxKnowledge=JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE));
+  window.sandboxKnowledge=sandboxKnowledge;
+  window.chattie_canSaveSandbox=function(){localStorage.setItem('chattie_sandbox',JSON.stringify(sandboxKnowledge));};
+  window.chattie_restoreSandbox=function(){sandboxKnowledge=JSON.parse(localStorage.getItem('chattie_sandbox')||JSON.stringify(CANONICAL_KNOWLEDGE)); window.sandboxKnowledge=sandboxKnowledge;};
+  appendMessage("Hack-modus: je werkt nu in een **sandbox**. Gebruik `window.sandboxKnowledge` in de console om items toe te voegen of te wijzigen. Gebruik `chattie_canSaveSandbox()` om je sandbox tijdelijk op te slaan.",'bot');
 }
-
-function currentKnowledge(){
-  return hackModeActive && sandboxKnowledge ? sandboxKnowledge : KNOWLEDGE;
-}
-
-function giveExample(subject){
-  const k = currentKnowledge();
-  const key = `voorbeeld ${subject.toLowerCase()}`;
-  if (k[key]) return k[key];
-  return `Sorry, ik heb geen voorbeeld van "${subject}".`;
-}
+function currentKnowledge(){ return hackModeActive && sandboxKnowledge ? sandboxKnowledge : KNOWLEDGE; }
+function giveExample(subject){ const k=currentKnowledge(); const key=`voorbeeld ${subject.toLowerCase()}`; return k[key]||`Sorry, ik heb geen voorbeeld van "${subject}".`; }
 
 // --------------------------
-// CORE CHAT LOGIC (max 50 woorden + leg uit)
+// CORE CHAT
 // --------------------------
 async function chattieAnswer(rawInput){
-  if (isDisabled) return;
-  let input = String(rawInput || '').trim();
-  if (!input) return;
+  if(isDisabled) return;
+  let input=String(rawInput||'').trim();
+  if(!input) return;
+  const lowerInput=input.toLowerCase();
 
-  const wordCount = input.split(/\s+/).length;
-  if (wordCount > 50){
-    appendMessage("Let op: maximaal 50 woorden per bericht, probeer korter te formuleren.");
-    input = input.split(/\s+/).slice(0,50).join(' ');
-  }
-
-  const lowerInput = input.toLowerCase();
-
-  if (FORBIDDEN.some(w => lowerInput.includes(w))) {
-    escalation++;
-    saveState(); updateUI();
+  if(FORBIDDEN.some(w=>lowerInput.includes(w))){
+    escalation++; saveState(); updateUI();
     appendMessage("Gebruik alsjeblieft respectvolle taal.");
-    if (escalation >= ESCALATION_LIMIT) { isDisabled = true; saveState(); updateUI(); appendMessage("🚫 Chattie schakelt zichzelf uit wegens herhaald ongepast gedrag."); }
+    if(escalation>=ESCALATION_LIMIT){ isDisabled=true; saveState(); updateUI(); appendMessage("🚫 Chattie schakelt zichzelf uit wegens herhaald ongepast gedrag."); }
     return;
   }
 
-  if (awaitingExampleConfirmation){
-    appendMessage(`Hier is een voorbeeld van "${awaitingExampleConfirmation}":\n${giveExample(awaitingExampleConfirmation)}`);
-    awaitingExampleConfirmation = null;
-    return;
-  }
+  if(awaitingExampleConfirmation){ appendMessage(`Hier is een voorbeeld van "${awaitingExampleConfirmation}":\n${giveExample(awaitingExampleConfirmation)}`); awaitingExampleConfirmation=null; return; }
 
-  if (lowerInput === "start") {
-    isChatActive = true; updateUI();
-    appendMessage("Hallo! Ik ben Chattie, je AI-leerbuddy. Typ een onderwerp of kies een knop voor meer info.");
-    return;
-  }
+  if(lowerInput==="start"){ isChatActive=true; updateUI(); appendMessage("Hallo! Ik ben Chattie, je AI-leerbuddy. Typ een onderwerp of kies een knop voor meer info."); return; }
+  if(lowerInput==="einde"){ isChatActive=false; updateUI(); appendMessage("Oké, we beëindigen het gesprek. Tot de volgende keer!"); return; }
 
-  if (lowerInput === "einde") {
-    isChatActive = false; updateUI();
-    appendMessage("Oké, we beëindigen het gesprek. Tot de volgende keer!");
-    return;
-  }
+  const k=currentKnowledge();
+  let found=Object.keys(k).find(key=>lowerInput.includes(key));
+  if(found){ appendMessage(k[found]); if(TOPIC_ASSIGNMENTS[found]) appendMessage(`Opdracht: ${TOPIC_ASSIGNMENTS[found]}`); awaitingExampleConfirmation=found; return; }
 
-  const k = currentKnowledge();
-
-  // check of input een kennisitem bevat
-  let found = Object.keys(k).find(key => lowerInput.includes(key));
-  if (found){
-    appendMessage(`${k[found]}`);
-    if (TOPIC_ASSIGNMENTS[found]) appendMessage(`Opdracht: ${TOPIC_ASSIGNMENTS[found]}`);
-    awaitingExampleConfirmation = found;
-    return;
-  }
-
-  // fallback
   appendMessage("Sorry, ik weet daar (nog) niet genoeg over. Probeer een ander onderwerp of 'start'/'einde'.");
 }
 
 // --------------------------
 // EVENTS
 // --------------------------
-sendBtn.addEventListener('click', ()=>{chattieAnswer(inputEl.value); inputEl.value='';});
-inputEl.addEventListener('keyup', e=>{if(e.key==='Enter'){sendBtn.click();}});
-
-chips.forEach(chip=>{
-  chip.addEventListener('click', e=>{
-    const action = chip.dataset.action;
-    if(action==='more') appendMessage("Meer uitleg volgt over het gekozen onderwerp...");
-    if(action==='example'){
-      if(awaitingExampleConfirmation) appendMessage(`Voorbeeld: ${giveExample(awaitingExampleConfirmation)}`);
-      else appendMessage("Klik eerst op een onderwerp of typ er één in.");
-    }
-    if(action==='dontget') appendMessage("Geen zorgen, laten we het stap voor stap bekijken.");
-    if(action==='assignment') appendMessage(awaitingExampleConfirmation ? `Opdracht: ${TOPIC_ASSIGNMENTS[awaitingExampleConfirmation]}` : "Typ eerst een onderwerp om een opdracht te krijgen.");
-  });
-});
-
+sendBtn.addEventListener('click', ()=>{ appendMessage(inputEl.value,'user'); chattieAnswer(inputEl.value); inputEl.value=''; });
+inputEl.addEventListener('keydown', e=>{if(e.key==='Enter'){ sendBtn.click(); }});
+chips.forEach(chip=>{chip.addEventListener('click',()=>{
+  const action=chip.dataset.action;
+  if(action==='more') appendMessage("Meer uitleg volgt over het gekozen onderwerp...");
+  if(action==='example'){ if(awaitingExampleConfirmation) appendMessage(`Voorbeeld: ${giveExample(awaitingExampleConfirmation)}`); else appendMessage("Klik eerst op een onderwerp of typ er één in."); }
+  if(action==='dontget') appendMessage("Geen zorgen, laten we het stap voor stap bekijken.");
+  if(action==='assignment') appendMessage(awaitingExampleConfirmation?`Opdracht: ${TOPIC_ASSIGNMENTS[awaitingExampleConfirmation]}`:"Typ eerst een onderwerp om een opdracht te krijgen.");
+});});
 howBtn.addEventListener('click', ()=>appendMessage("Chattie legt onderwerpen uit, geeft voorbeelden en opdrachten. Gebruik de knoppen of typ een onderwerp. Begin met 'start' en beëindig met 'einde'."));
+hackToggleBtn.addEventListener('click', ()=>{ hackModeActive=!hackModeActive; if(hackModeActive) enableSandboxForStudents(); updateUI(); });
 
-hackToggleBtn.addEventListener('click', ()=>{
-  hackModeActive = !hackModeActive;
-  if(hackModeActive) enableSandboxForStudents();
-  updateUI();
-});
-
-// init
+// INIT
 updateUI();
 appendMessage("Welkom! Typ 'start' om te beginnen met je leerbuddy.");
 </script>
 </body>
 </html>
-
 
