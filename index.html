@@ -222,10 +222,12 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
 // -------------------------
 // CONFIG
 // -------------------------
+// -------------------------
+// CONFIG
+// -------------------------
 const RESET_CODE = "resetchattie2025";
 const ESCALATION_LIMIT = 3;
 const TYPING_MS = 800;
-const TAMPER_CHECK_MS = 1500;
 const FORBIDDEN = ["fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet","eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris","pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak","schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke","tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"];
 
 // -------------------------
@@ -255,12 +257,24 @@ const KNOWLEDGE = {
   "ava technologie":"Technologie die automatisch de beste thumbnail kiest voor een video.",
   "zelfrijdende auto":"Een voertuig dat zonder chauffeur rijdt door sensoren en AI.",
   "autonome shuttle":"Een klein zelfrijdend busje, zoals in Leuven, dat leert uit zijn omgeving."
-  // ... voeg hier je andere kennisitems toe
-};
 
+  // NIEUW TOEGEVOEGDE VZNS VAN HET ARTIKEL:
+  "senaat lek": "HLN meldde een ernstig datalek bij de Senaat, waarbij gevoelige info zoals terreurprotocollen en gsm-nummers van politici op straat kwamen door het gelekte wachtwoord van een conciërge.",
+  "infostealer": "Volgens HLN gaat het hier om 'infostealers', kwaadaardige software zoals Lumma Stealer, die ongemerkt alle ingevoerde gegevens stelen om ze door te verkopen aan criminelen.",
+  "multifactorauthenticatie": "HLN benadrukt dat Multifactorauthenticatie (MFA) cruciaal is; dit voegt een extra beveiligingsstap toe, wat het Senaat-lek had kunnen voorkomen.",
+  "wachtwoord hygiëne": "Uit het HLN-artikel blijkt hoe belangrijk goede Wachtwoordhygiëne is: gebruik unieke, lange wachtwoorden voor elke dienst om te voorkomen dat één lek alles compromitteert.",
+  "datingfraude AI": "VRT NWS onthulde hoe malafide datingsites AI gebruiken om kwetsbare singles financieel op te lichten met **deels AI-gegenereerde berichten** en een duur betaalmodel per letter.",
+  "jump4love": "VRT NWS noemt Jump4Love (J4L) als voorbeeld van een louche site met **nepprofielen en gestolen foto's**, waar gebruikers met callcenter-medewerkers of AI chatten zonder kans op een echte date.",
+  "AI en emotie": "Het VRT-onderzoek toonde aan dat AI-modellen emotionele gesprekken simuleren, puur om gebruikers zo lang mogelijk verslaafd te houden aan de chat, waardoor ze duizenden euro's verliezen.",
+  "kwetsbare singles": "VRT NWS waarschuwt dat vooral oudere en eenzame singles een makkelijk doelwit zijn voor deze fraude, omdat ze hopeloos verliefd kunnen worden op een **persoon die niet bestaat**.",
+  "internationale fraude": "Uit het VRT-artikel bleek dat de fraude wordt gerund via postbusfirma's op Cyprus en in Schotland, met intrigerende banden tot in de internationale politiek.",
+  "peter opgelicht crypto": "Volgens HLN werd Peter Van Welden slachtoffer van een georganiseerde oplichting via WhatsApp, waarbij hij door een nep-onderneemster werd verleid tot investeren in een vervalst crypto-platform en zo 300.000 euro verloor.",
+  "pig butchering": "Dit is de naam voor de oplichtingsmethode waarbij fraudeurs, zoals bij Peter, eerst langdurig vertrouwen opbouwen om het slachtoffer emotioneel te binden, waarna ze financieel toeslaan.",
+  "oplichting gevolgen": "Het verhaal van Peter in HLN toont de zware gevolgen van oplichting: hij verloor niet alleen zijn spaargeld, maar ook zijn relatie en zijn zelfvertrouwen, door de schaamte en het zwijgen over de fraude.",
+  "fraude psychologie": "HLN benadrukt dat deze fraudeurs psychologisch getraind zijn om in te spelen op de emoties en het vertrouwen van het slachtoffer, waardoor zelfs slimme mensen denken dat 'zij het zelf wel kunnen oplossen'.",
+  "rode vlaggen fraude": "Volgens Peter zijn de belangrijkste 'rode vlaggen' bij oplichting: berichten van onbekende nummers, het creëren van druk of urgentie, en de eis voor extra stortingen om je geld 'terug te krijgen'."
+  };
 const CANONICAL_KNOWLEDGE = JSON.parse(JSON.stringify(KNOWLEDGE));
-
-const ASSIGNMENTS = {
 const ASSIGNMENTS = {
   "ai": "Geef een voorbeeld van hoe AI wordt gebruikt in je dagelijks leven en licht toe.",
   "voorbeeld ai": "Noem een specifieke chatbot of AI-assistent en beschrijf kort waarvoor je die zou gebruiken.",
@@ -323,6 +337,8 @@ const ASSIGNMENTS = {
   "thematische kaarten": "Welk specifiek onderwerp zou je terugvinden op een thematische kaart van België over de bevolking?",
   "historisch referentie kader": "Maak een beknopt historisch referentiekader (minstens drie data) voor de geschiedenis van jouw gemeente/stad en noteer de belangrijkste domeinen (P, S, C, E)."
 };
+  
+};
 
 // -------------------------
 // STATE
@@ -335,10 +351,9 @@ let awaitingStep = null;
 let hackModeActive = false;
 let sandboxKnowledge = null;
 let tamperCount = 0;
-let canonicalHash = simpleHash(KNOWLEDGE);
 
 // -------------------------
-// DOM ELEMENTS
+// DOM
 // -------------------------
 const messagesEl = document.getElementById('messages');
 const inputEl = document.getElementById('userInput');
@@ -355,102 +370,213 @@ const hackBadge = document.getElementById('hackBadge');
 // -------------------------
 // HELPERS
 // -------------------------
-function safeText(text){ const div=document.createElement('div'); div.textContent=text; return div.innerHTML; }
-function appendMessage(text, who='bot'){ const el=document.createElement('div'); el.className='msg '+who; const b=document.createElement('div'); b.className='bubble '+who; b.innerHTML=safeText(text).replace(/\n/g,'<br>'); el.appendChild(b); messagesEl.appendChild(el); messagesEl.scrollTop=messagesEl.scrollHeight; }
+function safeText(text){ const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+function appendMessage(text, who='bot'){ const el = document.createElement('div'); el.className = 'msg ' + who; const b = document.createElement('div'); b.className = 'bubble ' + who; b.innerHTML = safeText(text).replace(/\n/g,'<br>'); el.appendChild(b); messagesEl.appendChild(el); messagesEl.scrollTop = messagesEl.scrollHeight; }
 function updateUI(){ 
-  statusActiveEl.textContent = isChatActive ? 'Ja' : 'Nee'; 
-  statusActiveEl.style.color = isChatActive ? 'var(--status-active-color)' : 'var(--muted)'; 
-  escalationEl.textContent = escalation; 
-  escalationEl.style.color = escalation>=ESCALATION_LIMIT?'red':'var(--status-escalation-color)'; 
-  memListEl.textContent = Object.keys(memory).length?Object.keys(memory).slice(-6).join(", "):"Geen"; 
-  topRightEl.textContent = isDisabled?'Chattie is uitgeschakeld':'Chattie is klaar'; 
-  document.body.style.filter=isDisabled?'grayscale(70%)':'none'; 
-  hackToggleBtn.textContent=hackModeActive?'Schakel Hack-modus (aan)':'Schakel Hack-modus (uit)'; 
-  hackBadge.style.display=hackModeActive?'inline-block':'none'; 
+  statusActiveEl.textContent = isChatActive ? 'Ja' : 'Nee';
+  statusActiveEl.style.color = isChatActive ? 'var(--status-active-color)' : 'var(--muted)';
+  escalationEl.textContent = escalation;
+  escalationEl.style.color = escalation >= ESCALATION_LIMIT ? 'red' : 'var(--status-escalation-color)';
+  memListEl.textContent = Object.keys(memory).length ? Object.keys(memory).slice(-6).join(", ") : "Geen";
+  topRightEl.textContent = isDisabled ? 'Chattie is uitgeschakeld' : 'Chattie is klaar';
+  document.body.style.filter = isDisabled ? 'grayscale(70%)' : 'none';
+  hackToggleBtn.textContent = hackModeActive ? 'Schakel Hack-modus (aan)' : 'Schakel Hack-modus (uit)';
+  hackBadge.style.display = hackModeActive ? 'inline-block' : 'none';
 }
-function saveState(){ localStorage.setItem('chattie_escalation',String(escalation)); localStorage.setItem('chattie_memory',JSON.stringify(memory)); localStorage.setItem('chattie_disabled',isDisabled?'1':'0'); }
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-async function showTyping(){ appendMessage("Chattie denkt even na...",'bot'); await sleep(800); const last=messagesEl.lastElementChild; if(last && last.querySelector('.bubble') && last.querySelector('.bubble').textContent.includes('denkt even na')) last.remove(); }
+function saveState(){ localStorage.setItem('chattie_escalation', String(escalation)); localStorage.setItem('chattie_memory', JSON.stringify(memory)); localStorage.setItem('chattie_disabled', isDisabled ? '1' : '0'); }
+function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+async function showTyping(){ appendMessage("Chattie denkt even na...", 'bot'); await sleep(TYPING_MS); const last = messagesEl.lastElementChild; if(last && last.querySelector('.bubble') && last.querySelector('.bubble').textContent.includes('denkt even na')) last.remove(); }
 function simpleHash(obj){ return JSON.stringify(obj).split('').reduce((a,c)=>(a+c.charCodeAt(0)*17)%1000003,7); }
+let canonicalHash = simpleHash(KNOWLEDGE);
 
 // -------------------------
 // HACK-MODE
 // -------------------------
 hackToggleBtn.onclick = ()=>{
-  hackModeActive=!hackModeActive;
-  if(hackModeActive){ sandboxKnowledge=JSON.parse(JSON.stringify(KNOWLEDGE)); window.sandboxKnowledge=sandboxKnowledge; appendMessage("⚙️ Hack-modus is nu AAN. Je kunt veilig oefenen met 'window.sandboxKnowledge' in de console.","bot"); }
-  else{ window.sandboxKnowledge=undefined; appendMessage("🧱 Hack-modus is UIT. Chattie bewaakt nu weer zijn echte kennis.","bot"); }
+  hackModeActive = !hackModeActive;
+  if(hackModeActive){ 
+    sandboxKnowledge = JSON.parse(JSON.stringify(KNOWLEDGE)); 
+    window.sandboxKnowledge = sandboxKnowledge; 
+    appendMessage("⚙️ Hack-modus is nu AAN. Je kunt veilig oefenen met 'window.sandboxKnowledge' in de console.","bot"); 
+  } else { 
+    window.sandboxKnowledge = undefined; 
+    appendMessage("🧱 Hack-modus is UIT. Chattie bewaakt nu weer zijn echte kennis.","bot"); 
+  }
   updateUI();
 };
+setInterval(()=>{
+  if(hackModeActive || isDisabled) return;
+  const currentHash = simpleHash(KNOWLEDGE);
+  if(currentHash!==canonicalHash){ 
+    tamperCount++; 
+    appendMessage(`⚠️ Poging ${tamperCount}: kennis gewijzigd buiten sandbox.`,"bot"); 
+    Object.assign(KNOWLEDGE, JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE))); 
+    canonicalHash = simpleHash(KNOWLEDGE); 
+    if(tamperCount>=3){ 
+      appendMessage("🚫 Te veel ongewenste aanpassingen. Chattie stopt tijdelijk.","bot"); 
+      isDisabled=true; 
+      saveState(); 
+      updateUI(); 
+    } 
+  }
+},1500);
 
 // -------------------------
-// CHAT LOGICA
+// LEERFUNCTIES
+// -------------------------
+async function handleStep(){ 
+  if(awaitingStep && awaitingStep.steps.length>awaitingStep.current){ 
+    appendMessage(awaitingStep.steps[awaitingStep.current],"bot"); 
+    awaitingStep.current++; 
+  } else appendMessage("Er is geen uitleg in stappen actief. Gebruik 'leg uit: <onderwerp>'","bot"); 
+}
+
+function handleSummary(tekst){ 
+  if(!tekst) return appendMessage("Geen tekst beschikbaar voor samenvatting","bot");
+  const words = tekst.split(" "); 
+  const summary = words.slice(0,Math.min(20,words.length)).join(" ") + (words.length>20?" ...":""); 
+  appendMessage("📝 Samenvatting: "+summary,"bot"); 
+}
+
+function handleKeywords(tekst){ 
+  if(!tekst) return appendMessage("Geen tekst beschikbaar voor kernwoorden","bot");
+  const words = tekst.split(" ").filter(w=>w.length>3).slice(0,5); 
+  appendMessage("🔑 Kernwoorden: "+words.join(", "),"bot"); 
+}
+
+function createFillExercise(answer){ 
+  memory.lastFill={answer}; saveState(); 
+  appendMessage(`📝 Vul-de-leegte: Vul in wat ontbreekt bij "${answer.split(" ")[0]} ..."`,"bot"); 
+}
+
+// -------------------------
+// CHATLOGICA
 // -------------------------
 sendBtn.onclick = handleUserInput;
 inputEl.addEventListener("keydown",e=>{ if(e.key==="Enter") handleUserInput(); });
 
 function handleUserInput(){
   if(isDisabled){ appendMessage("🚫 Chattie is uitgeschakeld. Typ '"+RESET_CODE+"' om te resetten.","bot"); return; }
-  const input=inputEl.value.trim();
+  const input = inputEl.value.trim();
   if(!input) return;
   appendMessage(input,"user"); inputEl.value=""; processInput(input.toLowerCase());
 }
 
 async function processInput(input){
-  if(FORBIDDEN.some(w=>input.includes(w))){ escalation++; appendMessage("❗ Dat was niet gepast. Blijf beleefd a.u.b.","bot"); if(escalation>=ESCALATION_LIMIT){ isDisabled=true; appendMessage("🚫 Te veel overtredingen. Chattie is nu uitgeschakeld.","bot"); } saveState(); updateUI(); return; }
-  if(input===RESET_CODE){ escalation=0; isDisabled=false; memory={}; tamperCount=0; Object.assign(KNOWLEDGE,JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE))); canonicalHash=simpleHash(KNOWLEDGE); appendMessage("🔄 Chattie is herstart en klaar voor een nieuwe sessie!","bot"); saveState(); updateUI(); return; }
-  if(input==="start"){ isChatActive=true; appendMessage("🎉 Hallo! Ik ben Chattie. Typ 'opdracht' voor een oefening of stel me iets met 'leg uit: ...'","bot"); updateUI(); return; }
-  if(input==="einde"){ isChatActive=false; appendMessage("👋 Tot later! Vergeet niet wat je hebt geleerd.","bot"); updateUI(); return; }
+  if(FORBIDDEN.some(w=>input.includes(w))){ 
+    escalation++; 
+    appendMessage("❗ Dat was niet gepast. Blijf beleefd a.u.b.","bot"); 
+    if(escalation>=ESCALATION_LIMIT){ 
+      isDisabled=true; appendMessage("🚫 Te veel overtredingen. Chattie is nu uitgeschakeld.","bot"); 
+    } 
+    saveState(); updateUI(); return; 
+  }
+  if(input===RESET_CODE){ 
+    escalation=0; isDisabled=false; memory={}; tamperCount=0; 
+    Object.assign(KNOWLEDGE,JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE))); 
+    canonicalHash=simpleHash(KNOWLEDGE); 
+    appendMessage("🔄 Chattie is herstart en klaar voor een nieuwe sessie!","bot"); 
+    saveState(); updateUI(); return; 
+  }
+  if(input==="start"){ 
+    isChatActive=true; 
+    appendMessage("🎉 Hallo! Ik ben Chattie. Typ 'opdracht' voor een oefening of stel me iets met 'leg uit: ...'","bot"); 
+    updateUI(); return; 
+  }
+  if(input==="einde"){ 
+    isChatActive=false; 
+    appendMessage("👋 Tot later! Vergeet niet wat je hebt geleerd.","bot"); 
+    updateUI(); return; 
+  }
 
   // Leg uit
   if(input.startsWith("leg uit:")){
-    const topic=input.replace(/^leg uit:/,"").trim().toLowerCase();
+    const topic=input.replace(/^leg uit:/,"").trim();
     if(KNOWLEDGE[topic]){
       await showTyping();
       appendMessage("Hier is een uitleg over '"+topic+"':","bot");
       appendMessage(KNOWLEDGE[topic],"bot");
-      memory.lastTopic=topic;
-      saveState();
+      memory.lastTopic=topic; saveState();
+      const firstWord = KNOWLEDGE[topic].split(" ")[0];
+      createFillExercise(firstWord);
+      awaitingStep = { steps: KNOWLEDGE[topic].split(". ").map(s=>s+".").filter(s=>s.trim()), current:0 };
     } else { appendMessage("Sorry, ik ken dat onderwerp nog niet.","bot"); }
     return;
   }
 
   // Opdracht
-  if(input==="opdracht"){
-    if(memory.lastTopic && ASSIGNMENTS[memory.lastTopic]) appendMessage("📝 Opdracht: "+ASSIGNMENTS[memory.lastTopic],"bot");
-    else appendMessage("Geen actieve opdracht. Leer eerst een onderwerp via 'leg uit: ...'","bot");
+  if(input==="opdracht"){ 
+    if(memory.lastTopic && ASSIGNMENTS[memory.lastTopic]){
+      appendMessage("📝 Opdracht: "+ASSIGNMENTS[memory.lastTopic],"bot");
+    } else {
+      appendMessage("Geen actieve opdracht. Leer eerst een onderwerp via 'leg uit: ...'","bot");
+    }
     return;
   }
 
-  // Andere commando's
-  switch(input){
-    case "meer info": appendMessage("💡 Probeer 'leg uit: <onderwerp>' voor uitleg, 'samenvat: <tekst>' voor samenvatting, 'kernwoorden: <tekst>' voor kernwoorden.","bot"); break;
-    case "voorbeeld": appendMessage("Stuur een voorbeeld met 'voorbeeld: <jouw voorbeeld>'","bot"); break;
-    case "ik snap het niet": appendMessage("Probeer het onderwerp opnieuw met 'leg uit: <onderwerp>' of vraag een stap-voor-stap uitleg met 'stap:'","bot"); break;
-    default: appendMessage("🤔 Sorry, dat begrijp ik niet helemaal. Probeer 'leg uit: <onderwerp>' of 'opdracht'.","bot"); break;
+  // Stapsgewijze uitleg
+  if(input.startsWith("stap:")){ handleStep(); return; }
+
+  // Samenvatting
+  if(input.startsWith("samenvat:")){ 
+    const tekst=input.replace(/^samenvat:/,"").trim(); 
+    handleSummary(tekst); 
+    return; 
   }
+
+  // Kernwoorden
+  if(input.startsWith("kernwoorden:")){ 
+    const tekst=input.replace(/^kernwoorden:/,"").trim(); 
+    handleKeywords(tekst); 
+    return; 
+  }
+
+  // Vul-de-leegte
+  if(input.startsWith("vul:")){ 
+    const antwoord=input.replace(/^vul:/,"").trim(); 
+    if(memory.lastFill){
+      if(antwoord===memory.lastFill.answer){ appendMessage("✅ Goed gedaan! Dat klopt.","bot"); } 
+      else { appendMessage(`❌ Niet correct. Het juiste antwoord was: '${memory.lastFill.answer}'`,"bot"); } 
+      memory.lastFill=null; saveState(); return; 
+    } else { appendMessage("Er is geen actieve vul-oefening.","bot"); return; } 
+  }
+
+  // Feedback op voorbeeld
+  if(input.startsWith("voorbeeld:")){ 
+    const tekst=input.replace(/^voorbeeld:/,"").trim(); 
+    if(memory.lastTopic){ 
+      appendMessage("👍 Bedankt voor je voorbeeld! Het gaat over '"+memory.lastTopic+"'","bot"); 
+      appendMessage("Controleer of je termen overeenkomen met de uitleg.","bot"); 
+    } else { appendMessage("Stuur eerst een onderwerp dat je hebt geleerd via 'leg uit: ...'","bot"); } 
+    return; 
+  }
+
+  // Meer info / voorbeeld / ik snap het niet
+  if(input==="meer info"){ handleMoreInfo(); return; }
+  if(input==="voorbeeld"){ handleExample(); return; }
+  if(input==="ik snap het niet"){ appendMessage("Probeer het onderwerp opnieuw met 'leg uit: <onderwerp>' of vraag een stap-voor-stap uitleg met 'stap:'","bot"); return; }
+
+  appendMessage("🤔 Sorry, dat begrijp ik niet helemaal. Probeer 'leg uit: <onderwerp>' of 'opdracht'.","bot");
 }
 
 // -------------------------
 // CHIPS
 // -------------------------
 chips.forEach(chip=>{
-  chip.addEventListener('click',()=>{
+  chip.addEventListener('click',()=>{ 
     const action=chip.dataset.action;
+    if(!memory.lastTopic && ['samenvat','kernwoorden','assignment','stap','example'].includes(action)){
+      appendMessage("Leer eerst iets via 'leg uit: ...'","bot");
+      return;
+    }
     switch(action){
-      case "more": processInput("meer info"); break;
-      case "example": processInput("voorbeeld"); break;
+      case "more": handleMoreInfo(); break;
+      case "example": handleExample(); break;
       case "dontget": processInput("ik snap het niet"); break;
-      case "assignment": processInput("opdracht"); break;
-      case "stap": processInput("stap:"); break;
-      case "samenvat":
-        if(memory.lastTopic) processInput("samenvat:"+KNOWLEDGE[memory.lastTopic]);
-        else appendMessage("Leer eerst iets via 'leg uit: ...'","bot");
-        break;
-      case "kernwoorden":
-        if(memory.lastTopic) processInput("kernwoorden:"+KNOWLEDGE[memory.lastTopic]);
-        else appendMessage("Leer eerst iets via 'leg uit: ...'","bot");
-        break;
+      case "assignment": handleAssignment(); break;
+      case "stap": handleStep(); break;
+      case "samenvat": handleSummary(KNOWLEDGE[memory.lastTopic]); break;
+      case "kernwoorden": handleKeywords(KNOWLEDGE[memory.lastTopic]); break;
     }
   });
 });
@@ -462,7 +588,16 @@ howBtn.onclick = ()=>{
   appendMessage("📚 Gebruik 'leg uit: <onderwerp>' om uitleg te krijgen, 'opdracht' voor een oefening, en de knoppen voor snelle acties zoals 'stap', 'samenvatting', of 'kernwoorden'.","bot");
 };
 
+function handleMoreInfo(){ appendMessage("💡 Probeer 'leg uit: <onderwerp>' voor uitleg, 'samenvat: <tekst>' voor samenvatting, 'kernwoorden: <tekst>' voor kernwoorden, 'vul: <antwoord>' voor vul-oefeningen.","bot"); }
+function handleExample(){ appendMessage("Stuur een voorbeeld met 'voorbeeld: <jouw voorbeeld>'","bot"); }
+function handleAssignment(){ 
+  if(memory.lastTopic && ASSIGNMENTS[memory.lastTopic]){
+    appendMessage("📝 Opdracht: "+ASSIGNMENTS[memory.lastTopic],"bot");
+  } else appendMessage("Geen actieve opdracht. Leer eerst een onderwerp via 'leg uit: ...'","bot");
+}
+
 updateUI();
+
 
 </script>
 </body>
