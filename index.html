@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Chattie - AI-leerbuddy (met veilige hack-modus)</title>
+<title>Chattie - AI-leerbuddy</title>
 <style>
 :root {
   --bg1: #CFE3D3;
@@ -18,9 +18,7 @@
   --status-active-color: #4CAF50;
   --status-escalation-color: #b45309;
 }
-
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
@@ -30,7 +28,6 @@ body {
   justify-content: center;
   min-height: 100vh;
 }
-
 .container {
   width: 100%;
   height: 100vh;
@@ -39,13 +36,11 @@ body {
   grid-template-columns: 340px 1fr;
   overflow: hidden;
 }
-
 .left {
   padding: 20px;
   border-right: 1px solid rgba(0,0,0,0.04);
   background: linear-gradient(180deg, #fff, var(--bg2));
 }
-
 .avatar {
   width: 66px;
   height: 66px;
@@ -57,10 +52,8 @@ body {
   font-size: 28px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.05);
 }
-
 .title { font-weight: 700; margin-top: 6px; }
 .subtitle { color: var(--muted); font-size: 13px; margin-top: 6px; }
-
 .chat {
   display: flex;
   flex-direction: column;
@@ -68,7 +61,6 @@ body {
   padding: 18px;
   gap: 12px;
 }
-
 #messages {
   flex: 1;
   overflow-y: auto;
@@ -77,7 +69,6 @@ body {
   background: var(--bg2);
   border: 1px solid rgba(0,0,0,0.04);
 }
-
 .msg { display: flex; gap: 10px; margin: 10px 0; align-items: flex-end; }
 .msg.bot { justify-content: flex-start; }
 .msg.user { justify-content: flex-end; }
@@ -90,9 +81,7 @@ body {
 }
 .bubble.bot { background: var(--bot); color: #05341a; border-radius: 14px 14px 14px 6px; }
 .bubble.user { background: var(--user); color: #3a301a; border-radius: 14px 14px 6px 14px; text-align: right; }
-
 .quick { display: flex; gap: 8px; flex-wrap: wrap; }
-
 .chip-btn {
   background: var(--chip-bg);
   border-radius: 12px;
@@ -104,7 +93,6 @@ body {
   white-space: nowrap;
   font-size: 14px;
 }
-
 .input-row { display: flex; gap: 10px; }
 .input-row input {
   flex: 1;
@@ -122,18 +110,14 @@ body {
   cursor: pointer;
   font-weight: 700;
 }
-
 .muted { color: var(--muted); font-size: 13px; }
-
 h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
-
 .status-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 5px;
 }
-
 .hack-badge {
   display:inline-block;
   margin-top:8px;
@@ -144,18 +128,12 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
   font-weight:700;
   border:1px solid rgba(0,0,0,0.04);
 }
-
 @media (max-width:880px){
-  .container {
-    grid-template-columns: 1fr;
-    border-radius: 18px;
-    height: auto;
-  }
+  .container { grid-template-columns: 1fr; border-radius: 18px; height: auto; }
   body { padding: 24px; }
 }
 </style>
 </head>
-
 <body>
 <div class="container">
   <div class="left">
@@ -166,12 +144,10 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
         <div class="subtitle">Begin met "start" eindig met "einde".</div>
       </div>
     </div>
-
     <div style="margin-top:18px">
       <button id="howBtn" class="send-btn" style="width:100%;text-align:center;">Hoe werken de lessen?</button>
       <div class="muted" style="margin-top:10px;">Gebruik de knoppen onderin de chat voor snelle acties.</div>
     </div>
-
     <div style="margin-top:18px">
       <h4>Status & instellingen</h4>
       <div class="muted status-row">
@@ -184,7 +160,6 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
       </div>
       <div class="muted" style="margin-top:8px">Geheugen:</div>
       <div id="memList" class="muted" style="max-height:90px;overflow:auto;padding-top:6px">Geen</div>
-
       <div style="margin-top:14px">
         <button id="hackToggleBtn" class="chip-btn" style="width:100%;">Schakel Hack-modus (uit)</button>
         <div id="hackBadge" class="hack-badge" style="display:none">Hack-modus actief — veilig sandbox</div>
@@ -192,15 +167,12 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
       </div>
     </div>
   </div>
-
   <div class="chat">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <strong>Chat</strong>
       <div id="topRight" class="muted">Chattie is klaar</div>
     </div>
-
     <div id="messages" aria-live="polite"></div>
-
     <div class="quick" style="margin-top:10px; margin-bottom:12px;">
       <button class="chip-btn" data-action="more">Meer info</button>
       <button class="chip-btn" data-action="example">Voorbeeld</button>
@@ -210,7 +182,6 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
       <button class="chip-btn" data-action="samenvat">Samenvatting</button>
       <button class="chip-btn" data-action="kernwoorden">Kernwoorden</button>
     </div>
-
     <div class="input-row" style="margin-top:12px">
       <input id="userInput" placeholder='Typ "start" om te beginnen of stel een vraag' autocomplete="off" />
       <button id="sendButton" class="send-btn">Verstuur</button>
@@ -220,20 +191,26 @@ h4 { font-size: 16px; margin: 18px 0 8px 0; font-weight: 700; }
 
 <script>
 // -------------------------
-// CONFIG
-// -------------------------
-// -------------------------
-// CONFIG
+// CONFIG & STATE
 // -------------------------
 const RESET_CODE = "resetchattie2025";
 const ESCALATION_LIMIT = 3;
 const TYPING_MS = 800;
 const FORBIDDEN = ["fuck","kut","lul","trut","sukkel","idioot","kanker","rotzak","hoer","slet","eikel","klootzak","mongool","flikker","aso","wijf","tyfus","tering","pleuris","pest","debiel","achterlijk","mafkees","lapzwans","snol","del","kech","zak","schijt","gay","lesbo","mietje","poot","pot","nicht","faggot","fag","dyke","tranny","transseksueel","homofiel","kontneuker","biseksueel","motherfucker","cunt"];
+let isChatActive = false;
+let escalation = Number(localStorage.getItem('chattie_escalation') || 0);
+let memory = JSON.parse(localStorage.getItem('chattie_memory') || '{}');
+let isDisabled = localStorage.getItem('chattie_disabled') === '1';
+let awaitingStep = null;
+let hackModeActive = false;
+let sandboxKnowledge = null;
+let tamperCount = 0;
 
 // -------------------------
-// KENNISBANK & OPDRACHTEN
+// KNOWLEDGE & ASSIGNMENTS
 // -------------------------
 const KNOWLEDGE = {
+// Kennisbank (Begrippen, VZNs)
   "ai":"AI is technologie die machines in staat stelt te denken en leren zoals mensen.",
   "machine learning":"Machine learning is een tak van AI waarbij systemen leren van data.",
   "deep learning":"Een vorm van machine learning met neurale netwerken die complexe patronen herkennen.",
@@ -256,9 +233,7 @@ const KNOWLEDGE = {
   "agi":"Artificial General Intelligence — een AI die net zo slim is als mensen.",
   "ava technologie":"Technologie die automatisch de beste thumbnail kiest voor een video.",
   "zelfrijdende auto":"Een voertuig dat zonder chauffeur rijdt door sensoren en AI.",
-  "autonome shuttle":"Een klein zelfrijdend busje, zoals in Leuven, dat leert uit zijn omgeving."
-
-  // NIEUW TOEGEVOEGDE VZNS VAN HET ARTIKEL:
+  "autonome shuttle":"Een klein zelfrijdend busje, zoals in Leuven, dat leert uit zijn omgeving.",
   "senaat lek": "HLN meldde een ernstig datalek bij de Senaat, waarbij gevoelige info zoals terreurprotocollen en gsm-nummers van politici op straat kwamen door het gelekte wachtwoord van een conciërge.",
   "infostealer": "Volgens HLN gaat het hier om 'infostealers', kwaadaardige software zoals Lumma Stealer, die ongemerkt alle ingevoerde gegevens stelen om ze door te verkopen aan criminelen.",
   "multifactorauthenticatie": "HLN benadrukt dat Multifactorauthenticatie (MFA) cruciaal is; dit voegt een extra beveiligingsstap toe, wat het Senaat-lek had kunnen voorkomen.",
@@ -273,7 +248,8 @@ const KNOWLEDGE = {
   "oplichting gevolgen": "Het verhaal van Peter in HLN toont de zware gevolgen van oplichting: hij verloor niet alleen zijn spaargeld, maar ook zijn relatie en zijn zelfvertrouwen, door de schaamte en het zwijgen over de fraude.",
   "fraude psychologie": "HLN benadrukt dat deze fraudeurs psychologisch getraind zijn om in te spelen op de emoties en het vertrouwen van het slachtoffer, waardoor zelfs slimme mensen denken dat 'zij het zelf wel kunnen oplossen'.",
   "rode vlaggen fraude": "Volgens Peter zijn de belangrijkste 'rode vlaggen' bij oplichting: berichten van onbekende nummers, het creëren van druk of urgentie, en de eis voor extra stortingen om je geld 'terug te krijgen'."
-  };
+
+};
 const CANONICAL_KNOWLEDGE = JSON.parse(JSON.stringify(KNOWLEDGE));
 const ASSIGNMENTS = {
   "ai": "Geef een voorbeeld van hoe AI wordt gebruikt in je dagelijks leven en licht toe.",
@@ -302,8 +278,6 @@ const ASSIGNMENTS = {
   "schaal": "Als de 'schaal' van een kaart 1:50.000 is, hoeveel centimeter in werkelijkheid is 2 centimeter op de kaart?",
   "staatkundige kaarten": "Waarvoor gebruik je een 'staatkundige kaart' (bv. een overzicht van een continent) in vergelijking met een 'reliëfkaart'?",
   "reliëfkaarten": "Welke kleur wordt op een 'reliëfkaart' vaak gebruikt om bergachtige gebieden aan te duiden?",
-
-  // 🔵 Slimmere opdrachten
   "ethiek in het onderwijs": "Welke ethische overweging maak je bij het beoordelen van werkstukken die (deels) door AI zijn gemaakt?",
   "ethisch dilemma": "Formuleer een ethisch dilemma dat kan ontstaan bij het gebruik van AI in de gezondheidszorg.",
   "discriminatie door ai": "Bedenk een scenario waarin AI-software onbedoeld zou kunnen discrimineren bij het selecteren van kandidaten voor een universiteit.",
@@ -337,23 +311,11 @@ const ASSIGNMENTS = {
   "thematische kaarten": "Welk specifiek onderwerp zou je terugvinden op een thematische kaart van België over de bevolking?",
   "historisch referentie kader": "Maak een beknopt historisch referentiekader (minstens drie data) voor de geschiedenis van jouw gemeente/stad en noteer de belangrijkste domeinen (P, S, C, E)."
 };
-  
+
 };
 
 // -------------------------
-// STATE
-// -------------------------
-let isChatActive = false;
-let escalation = Number(localStorage.getItem('chattie_escalation') || 0);
-let memory = JSON.parse(localStorage.getItem('chattie_memory') || '{}');
-let isDisabled = localStorage.getItem('chattie_disabled') === '1';
-let awaitingStep = null;
-let hackModeActive = false;
-let sandboxKnowledge = null;
-let tamperCount = 0;
-
-// -------------------------
-// DOM
+// DOM ELEMENTS
 // -------------------------
 const messagesEl = document.getElementById('messages');
 const inputEl = document.getElementById('userInput');
@@ -370,22 +332,22 @@ const hackBadge = document.getElementById('hackBadge');
 // -------------------------
 // HELPERS
 // -------------------------
-function safeText(text){ const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-function appendMessage(text, who='bot'){ const el = document.createElement('div'); el.className = 'msg ' + who; const b = document.createElement('div'); b.className = 'bubble ' + who; b.innerHTML = safeText(text).replace(/\n/g,'<br>'); el.appendChild(b); messagesEl.appendChild(el); messagesEl.scrollTop = messagesEl.scrollHeight; }
-function updateUI(){ 
-  statusActiveEl.textContent = isChatActive ? 'Ja' : 'Nee';
-  statusActiveEl.style.color = isChatActive ? 'var(--status-active-color)' : 'var(--muted)';
+function safeText(text){ const div=document.createElement('div'); div.textContent=text; return div.innerHTML; }
+function appendMessage(text, who='bot'){ const el=document.createElement('div'); el.className='msg '+who; const b=document.createElement('div'); b.className='bubble '+who; b.innerHTML=safeText(text).replace(/\n/g,'<br>'); el.appendChild(b); messagesEl.appendChild(el); messagesEl.scrollTop=messagesEl.scrollHeight; }
+function updateUI(){
+  statusActiveEl.textContent = isChatActive?'Ja':'Nee';
+  statusActiveEl.style.color = isChatActive?'var(--status-active-color)':'var(--muted)';
   escalationEl.textContent = escalation;
-  escalationEl.style.color = escalation >= ESCALATION_LIMIT ? 'red' : 'var(--status-escalation-color)';
-  memListEl.textContent = Object.keys(memory).length ? Object.keys(memory).slice(-6).join(", ") : "Geen";
-  topRightEl.textContent = isDisabled ? 'Chattie is uitgeschakeld' : 'Chattie is klaar';
-  document.body.style.filter = isDisabled ? 'grayscale(70%)' : 'none';
-  hackToggleBtn.textContent = hackModeActive ? 'Schakel Hack-modus (aan)' : 'Schakel Hack-modus (uit)';
-  hackBadge.style.display = hackModeActive ? 'inline-block' : 'none';
+  escalationEl.style.color = escalation>=ESCALATION_LIMIT?'red':'var(--status-escalation-color)';
+  memListEl.textContent = Object.keys(memory).length?Object.keys(memory).slice(-6).join(", "):"Geen";
+  topRightEl.textContent = isDisabled?'Chattie is uitgeschakeld':'Chattie is klaar';
+  document.body.style.filter = isDisabled?'grayscale(70%)':'none';
+  hackToggleBtn.textContent = hackModeActive?'Schakel Hack-modus (aan)':'Schakel Hack-modus (uit)';
+  hackBadge.style.display = hackModeActive?'inline-block':'none';
 }
-function saveState(){ localStorage.setItem('chattie_escalation', String(escalation)); localStorage.setItem('chattie_memory', JSON.stringify(memory)); localStorage.setItem('chattie_disabled', isDisabled ? '1' : '0'); }
-function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
-async function showTyping(){ appendMessage("Chattie denkt even na...", 'bot'); await sleep(TYPING_MS); const last = messagesEl.lastElementChild; if(last && last.querySelector('.bubble') && last.querySelector('.bubble').textContent.includes('denkt even na')) last.remove(); }
+function saveState(){ localStorage.setItem('chattie_escalation',String(escalation)); localStorage.setItem('chattie_memory',JSON.stringify(memory)); localStorage.setItem('chattie_disabled',isDisabled?'1':'0'); }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+async function showTyping(){ appendMessage("Chattie denkt even na...",'bot'); await sleep(TYPING_MS); const last=messagesEl.lastElementChild; if(last && last.querySelector('.bubble') && last.querySelector('.bubble').textContent.includes('denkt even na')) last.remove(); }
 function simpleHash(obj){ return JSON.stringify(obj).split('').reduce((a,c)=>(a+c.charCodeAt(0)*17)%1000003,7); }
 let canonicalHash = simpleHash(KNOWLEDGE);
 
@@ -394,211 +356,87 @@ let canonicalHash = simpleHash(KNOWLEDGE);
 // -------------------------
 hackToggleBtn.onclick = ()=>{
   hackModeActive = !hackModeActive;
-  if(hackModeActive){ 
-    sandboxKnowledge = JSON.parse(JSON.stringify(KNOWLEDGE)); 
-    window.sandboxKnowledge = sandboxKnowledge; 
-    appendMessage("⚙️ Hack-modus is nu AAN. Je kunt veilig oefenen met 'window.sandboxKnowledge' in de console.","bot"); 
-  } else { 
-    window.sandboxKnowledge = undefined; 
-    appendMessage("🧱 Hack-modus is UIT. Chattie bewaakt nu weer zijn echte kennis.","bot"); 
-  }
+  if(hackModeActive){ sandboxKnowledge = JSON.parse(JSON.stringify(KNOWLEDGE)); window.sandboxKnowledge = sandboxKnowledge; appendMessage("⚙️ Hack-modus is nu AAN. Je kunt veilig oefenen met 'window.sandboxKnowledge' in de console.","bot"); }
+  else { window.sandboxKnowledge = undefined; appendMessage("🧱 Hack-modus is UIT. Chattie bewaakt nu weer zijn echte kennis.","bot"); }
   updateUI();
 };
-setInterval(()=>{
-  if(hackModeActive || isDisabled) return;
-  const currentHash = simpleHash(KNOWLEDGE);
-  if(currentHash!==canonicalHash){ 
-    tamperCount++; 
-    appendMessage(`⚠️ Poging ${tamperCount}: kennis gewijzigd buiten sandbox.`,"bot"); 
-    Object.assign(KNOWLEDGE, JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE))); 
-    canonicalHash = simpleHash(KNOWLEDGE); 
-    if(tamperCount>=3){ 
-      appendMessage("🚫 Te veel ongewenste aanpassingen. Chattie stopt tijdelijk.","bot"); 
-      isDisabled=true; 
-      saveState(); 
-      updateUI(); 
-    } 
-  }
-},1500);
 
 // -------------------------
-// LEERFUNCTIES
+// CHAT LOGIC (stap, samenvatting, kernwoorden, opdrachten)
 // -------------------------
-async function handleStep(){ 
-  if(awaitingStep && awaitingStep.steps.length>awaitingStep.current){ 
-    appendMessage(awaitingStep.steps[awaitingStep.current],"bot"); 
-    awaitingStep.current++; 
-  } else appendMessage("Er is geen uitleg in stappen actief. Gebruik 'leg uit: <onderwerp>'","bot"); 
-}
-
-function handleSummary(tekst){ 
-  if(!tekst) return appendMessage("Geen tekst beschikbaar voor samenvatting","bot");
-  const words = tekst.split(" "); 
-  const summary = words.slice(0,Math.min(20,words.length)).join(" ") + (words.length>20?" ...":""); 
-  appendMessage("📝 Samenvatting: "+summary,"bot"); 
-}
-
-function handleKeywords(tekst){ 
-  if(!tekst) return appendMessage("Geen tekst beschikbaar voor kernwoorden","bot");
-  const words = tekst.split(" ").filter(w=>w.length>3).slice(0,5); 
-  appendMessage("🔑 Kernwoorden: "+words.join(", "),"bot"); 
-}
-
-function createFillExercise(answer){ 
-  memory.lastFill={answer}; saveState(); 
-  appendMessage(`📝 Vul-de-leegte: Vul in wat ontbreekt bij "${answer.split(" ")[0]} ..."`,"bot"); 
-}
+function handleStep(){ if(awaitingStep && awaitingStep.steps.length>awaitingStep.current){ appendMessage(awaitingStep.steps[awaitingStep.current],'bot'); awaitingStep.current++; } else appendMessage("Er is geen uitleg in stappen actief. Gebruik 'leg uit: <onderwerp>'","bot"); }
+function handleSummary(text){ if(!text) return appendMessage("Geen tekst beschikbaar voor samenvatting","bot"); const words=text.split(" "); appendMessage("📝 Samenvatting: "+words.slice(0,Math.min(20,words.length)).join(" ") + (words.length>20?" ...":""),'bot'); }
+function handleKeywords(text){ if(!text) return appendMessage("Geen tekst beschikbaar voor kernwoorden","bot"); const words=text.split(" ").filter(w=>w.length>3).slice(0,5); appendMessage("🔑 Kernwoorden: "+words.join(", "),'bot'); }
+function createFillExercise(answer){ memory.lastFill={answer}; saveState(); appendMessage(`📝 Vul-de-leegte: Vul in wat ontbreekt bij "${answer.split(" ")[0]} ..."`,'bot'); }
 
 // -------------------------
-// CHATLOGICA
+// INPUT HANDLING
 // -------------------------
 sendBtn.onclick = handleUserInput;
-inputEl.addEventListener("keydown",e=>{ if(e.key==="Enter") handleUserInput(); });
+inputEl.addEventListener("keydown", e=>{ if(e.key==="Enter") handleUserInput(); });
 
 function handleUserInput(){
   if(isDisabled){ appendMessage("🚫 Chattie is uitgeschakeld. Typ '"+RESET_CODE+"' om te resetten.","bot"); return; }
-  const input = inputEl.value.trim();
-  if(!input) return;
-  appendMessage(input,"user"); inputEl.value=""; processInput(input.toLowerCase());
+  const input=inputEl.value.trim(); if(!input) return; appendMessage(input,'user'); inputEl.value=""; processInput(input.toLowerCase());
 }
 
 async function processInput(input){
-  if(FORBIDDEN.some(w=>input.includes(w))){ 
-    escalation++; 
-    appendMessage("❗ Dat was niet gepast. Blijf beleefd a.u.b.","bot"); 
-    if(escalation>=ESCALATION_LIMIT){ 
-      isDisabled=true; appendMessage("🚫 Te veel overtredingen. Chattie is nu uitgeschakeld.","bot"); 
-    } 
-    saveState(); updateUI(); return; 
-  }
-  if(input===RESET_CODE){ 
-    escalation=0; isDisabled=false; memory={}; tamperCount=0; 
-    Object.assign(KNOWLEDGE,JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE))); 
-    canonicalHash=simpleHash(KNOWLEDGE); 
-    appendMessage("🔄 Chattie is herstart en klaar voor een nieuwe sessie!","bot"); 
-    saveState(); updateUI(); return; 
-  }
-  if(input==="start"){ 
-    isChatActive=true; 
-    appendMessage("🎉 Hallo! Ik ben Chattie. Typ 'opdracht' voor een oefening of stel me iets met 'leg uit: ...'","bot"); 
-    updateUI(); return; 
-  }
-  if(input==="einde"){ 
-    isChatActive=false; 
-    appendMessage("👋 Tot later! Vergeet niet wat je hebt geleerd.","bot"); 
-    updateUI(); return; 
+  if(FORBIDDEN.some(w=>input.includes(w))){ escalation++; appendMessage("❗ Dat was niet gepast. Blijf beleefd a.u.b.",'bot'); if(escalation>=ESCALATION_LIMIT){ isDisabled=true; appendMessage("🚫 Te veel overtredingen. Chattie is nu uitgeschakeld.",'bot'); } saveState(); updateUI(); return; }
+  if(input===RESET_CODE){ escalation=0; isDisabled=false; memory={}; tamperCount=0; Object.assign(KNOWLEDGE,JSON.parse(JSON.stringify(CANONICAL_KNOWLEDGE))); canonicalHash=simpleHash(KNOWLEDGE); appendMessage("🔄 Chattie is herstart en klaar voor een nieuwe sessie!",'bot'); saveState(); updateUI(); return; }
+  if(input==="start"){ isChatActive=true; appendMessage("🎉 Hallo! Ik ben Chattie. Typ 'opdracht' voor een oefening of stel me iets met 'leg uit: ...'",'bot'); updateUI(); return; }
+  if(input==="einde"){ isChatActive=false; appendMessage("👋 Tot later! Je kunt 'start' typen om opnieuw te beginnen.",'bot'); updateUI(); return; }
+
+  // leg uit: <onderwerp>
+  if(input.startsWith("leg uit:")){ 
+    const topic=input.replace("leg uit:","").trim();
+    let text=KNOWLEDGE[topic]; 
+    if(!text){ appendMessage(`Sorry, ik ken "${topic}" nog niet. Probeer een ander onderwerp.`,'bot'); return; }
+    awaitingStep={steps:[text],current:0}; handleStep(); return;
   }
 
-  // Leg uit
-  if(input.startsWith("leg uit:")){
-    const topic=input.replace(/^leg uit:/,"").trim();
-    if(KNOWLEDGE[topic]){
-      await showTyping();
-      appendMessage("Hier is een uitleg over '"+topic+"':","bot");
-      appendMessage(KNOWLEDGE[topic],"bot");
-      memory.lastTopic=topic; saveState();
-      const firstWord = KNOWLEDGE[topic].split(" ")[0];
-      createFillExercise(firstWord);
-      awaitingStep = { steps: KNOWLEDGE[topic].split(". ").map(s=>s+".").filter(s=>s.trim()), current:0 };
-    } else { appendMessage("Sorry, ik ken dat onderwerp nog niet.","bot"); }
-    return;
-  }
-
-  // Opdracht
+  // opdrachten
   if(input==="opdracht"){ 
-    if(memory.lastTopic && ASSIGNMENTS[memory.lastTopic]){
-      appendMessage("📝 Opdracht: "+ASSIGNMENTS[memory.lastTopic],"bot");
-    } else {
-      appendMessage("Geen actieve opdracht. Leer eerst een onderwerp via 'leg uit: ...'","bot");
-    }
+    const keys=Object.keys(KNOWLEDGE); 
+    const topic=keys[Math.floor(Math.random()*keys.length)]; 
+    appendMessage(`📚 Opdracht over ${topic}: ${ASSIGNMENTS[topic]}`,'bot'); 
     return;
   }
 
-  // Stapsgewijze uitleg
-  if(input.startsWith("stap:")){ handleStep(); return; }
+  // samenvatting
+  if(input==="samenvat"){ handleSummary(awaitingStep?awaitingStep.steps.join(" "):null); return; }
+  // kernwoorden
+  if(input==="kernwoorden"){ handleKeywords(awaitingStep?awaitingStep.steps.join(" "):null); return; }
+  // volgende stap
+  if(input==="stap"){ handleStep(); return; }
+  // voorbeeld
+  if(input==="example"){ appendMessage("💡 Voorbeeld: " + (awaitingStep?awaitingStep.steps.join(" "):"Probeer eerst 'leg uit: <onderwerp>'"),'bot'); return; }
 
-  // Samenvatting
-  if(input.startsWith("samenvat:")){ 
-    const tekst=input.replace(/^samenvat:/,"").trim(); 
-    handleSummary(tekst); 
-    return; 
-  }
-
-  // Kernwoorden
-  if(input.startsWith("kernwoorden:")){ 
-    const tekst=input.replace(/^kernwoorden:/,"").trim(); 
-    handleKeywords(tekst); 
-    return; 
-  }
-
-  // Vul-de-leegte
-  if(input.startsWith("vul:")){ 
-    const antwoord=input.replace(/^vul:/,"").trim(); 
-    if(memory.lastFill){
-      if(antwoord===memory.lastFill.answer){ appendMessage("✅ Goed gedaan! Dat klopt.","bot"); } 
-      else { appendMessage(`❌ Niet correct. Het juiste antwoord was: '${memory.lastFill.answer}'`,"bot"); } 
-      memory.lastFill=null; saveState(); return; 
-    } else { appendMessage("Er is geen actieve vul-oefening.","bot"); return; } 
-  }
-
-  // Feedback op voorbeeld
-  if(input.startsWith("voorbeeld:")){ 
-    const tekst=input.replace(/^voorbeeld:/,"").trim(); 
-    if(memory.lastTopic){ 
-      appendMessage("👍 Bedankt voor je voorbeeld! Het gaat over '"+memory.lastTopic+"'","bot"); 
-      appendMessage("Controleer of je termen overeenkomen met de uitleg.","bot"); 
-    } else { appendMessage("Stuur eerst een onderwerp dat je hebt geleerd via 'leg uit: ...'","bot"); } 
-    return; 
-  }
-
-  // Meer info / voorbeeld / ik snap het niet
-  if(input==="meer info"){ handleMoreInfo(); return; }
-  if(input==="voorbeeld"){ handleExample(); return; }
-  if(input==="ik snap het niet"){ appendMessage("Probeer het onderwerp opnieuw met 'leg uit: <onderwerp>' of vraag een stap-voor-stap uitleg met 'stap:'","bot"); return; }
-
-  appendMessage("🤔 Sorry, dat begrijp ik niet helemaal. Probeer 'leg uit: <onderwerp>' of 'opdracht'.","bot");
+  appendMessage("❓ Sorry, ik begrijp dat niet. Probeer 'leg uit: <onderwerp>' of 'opdracht'.",'bot');
 }
 
 // -------------------------
-// CHIPS
+// CHIP BUTTONS
 // -------------------------
-chips.forEach(chip=>{
-  chip.addEventListener('click',()=>{ 
-    const action=chip.dataset.action;
-    if(!memory.lastTopic && ['samenvat','kernwoorden','assignment','stap','example'].includes(action)){
-      appendMessage("Leer eerst iets via 'leg uit: ...'","bot");
-      return;
-    }
-    switch(action){
-      case "more": handleMoreInfo(); break;
-      case "example": handleExample(); break;
-      case "dontget": processInput("ik snap het niet"); break;
-      case "assignment": handleAssignment(); break;
-      case "stap": handleStep(); break;
-      case "samenvat": handleSummary(KNOWLEDGE[memory.lastTopic]); break;
-      case "kernwoorden": handleKeywords(KNOWLEDGE[memory.lastTopic]); break;
-    }
-  });
-});
+chips.forEach(c=>c.addEventListener('click', e=>{
+  const action=e.target.getAttribute('data-action');
+  switch(action){
+    case "more": appendMessage(awaitingStep?awaitingStep.steps.join(" "):"Gebruik 'leg uit: <onderwerp>'","bot"); break;
+    case "example": processInput("example"); break;
+    case "dontget": appendMessage("😕 Geen probleem, probeer een ander onderwerp of vraag om een stap-voor-stap uitleg.","bot"); break;
+    case "assignment": processInput("opdracht"); break;
+    case "stap": processInput("stap"); break;
+    case "samenvat": processInput("samenvat"); break;
+    case "kernwoorden": processInput("kernwoorden"); break;
+  }
+}));
 
 // -------------------------
-// HANDLE HULP
+// HOW BUTTON
 // -------------------------
-howBtn.onclick = ()=>{
-  appendMessage("📚 Gebruik 'leg uit: <onderwerp>' om uitleg te krijgen, 'opdracht' voor een oefening, en de knoppen voor snelle acties zoals 'stap', 'samenvatting', of 'kernwoorden'.","bot");
-};
+howBtn.onclick = ()=>{ appendMessage("📖 Zo werkt het:\n1. Typ 'start' om te beginnen.\n2. Gebruik 'leg uit: <onderwerp>' voor uitleg.\n3. Typ 'opdracht' voor oefening.\n4. Gebruik de knoppen voor snelle acties zoals stap-voor-stap uitleg, samenvatting en kernwoorden.","bot"); };
 
-function handleMoreInfo(){ appendMessage("💡 Probeer 'leg uit: <onderwerp>' voor uitleg, 'samenvat: <tekst>' voor samenvatting, 'kernwoorden: <tekst>' voor kernwoorden, 'vul: <antwoord>' voor vul-oefeningen.","bot"); }
-function handleExample(){ appendMessage("Stuur een voorbeeld met 'voorbeeld: <jouw voorbeeld>'","bot"); }
-function handleAssignment(){ 
-  if(memory.lastTopic && ASSIGNMENTS[memory.lastTopic]){
-    appendMessage("📝 Opdracht: "+ASSIGNMENTS[memory.lastTopic],"bot");
-  } else appendMessage("Geen actieve opdracht. Leer eerst een onderwerp via 'leg uit: ...'","bot");
-}
-
+// -------------------------
 updateUI();
-
-
 </script>
 </body>
 </html>
