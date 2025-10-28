@@ -318,14 +318,72 @@ const KNOWLEDGE = {
 // bewaar een canonieke kopie
 const CANONICAL_KNOWLEDGE = JSON.parse(JSON.stringify(KNOWLEDGE));
 
-const ASSIGNMENTS = [
-  "Bedenk een ethisch dilemma rond een zelfrijdende auto.",
-  "Zoek een voorbeeld van deepfake en leg uit waarom het gevaarlijk kan zijn.",
-  "Noem de vier maatschappelijke domeinen die we in de les hebben behandeld.",
-  "Geef een voorbeeld van hoe politiek de Olympische Spelen heeft beïnvloed na 1970."
-];
+const TOPIC_ASSIGNMENTS = {
+  "ai": "Geef een voorbeeld van hoe AI wordt gebruikt in je dagelijks leven en licht toe.",
+  "voorbeeld ai": "Noem een specifieke chatbot of AI-assistent en beschrijf kort waarvoor je die zou gebruiken.",
+  "machine learning": "Zoek een voorbeeld van een applicatie die leert van jouw data (bv. Spotify, Netflix) en leg uit hoe dit machine learning is.",
+  "deep learning": "Zoek een voorbeeld van deep learning (bv. gezichtsherkenning) en leg uit waarom het nuttig is.",
+  "sociaal welzijn": "Bedenk een situatie op school of stage waar het sociale welzijn van een leerling/cliënt verbetering nodig heeft.",
+  "pedagogisch werk": "Beschrijf een concrete begeleidingsactiviteit die je zou uitvoeren in het kader van pedagogisch werk.",
+  "ethiek": "Geef een voorbeeld van een ethische vraag die je je stelt bij het gebruik van sociale media.",
+  "ethiek in het onderwijs": "Welke ethische overweging maak je bij het beoordelen van werkstukken die (deels) door AI zijn gemaakt?",
+  "natuur": "Zoek een natuurgebied in jouw regio en beschrijf drie kenmerken.",
+  "industrieel": "Zoek een industrieterrein in de buurt en beschrijf de functie ervan.",
+  "landelijk": "Wat zijn de voor- en nadelen van wonen in een landelijke omgeving?",
+  "stedelijk": "Welke invloed heeft de hoge bevolkingsdichtheid in een stedelijke omgeving op het verkeer?",
+  "toeristisch": "Noem een toeristische trekpleister in Vlaanderen en leg uit waarom mensen die plaats bezoeken.",
+  "cognitieve vermogens": "Noem twee cognitieve vermogens die je nodig hebt om een moeilijke puzzel op te lossen.",
+  "autonoom": "Wat is het verschil tussen een traditionele auto en een autonome auto in termen van bestuurdersinput?",
+  "ethisch dilemma": "Formuleer een ethisch dilemma dat kan ontstaan bij het gebruik van AI in de gezondheidszorg.",
+  "privacy": "Wat zijn twee concrete stappen die je kunt nemen om je online privacy te verbeteren?",
+  "deepfake": "Zoek een nieuwsartikel over het misbruik van deepfake-technologie en vat de kern samen.",
+  "discriminatie door ai": "Bedenk een scenario waarin AI-software onbedoeld zou kunnen discrimineren bij het selecteren van kandidaten voor een universiteit.",
+  "energieverbruik van ai": "Zoek op hoeveel stroom (ongeveer) één keer een afbeelding genereren met een populaire AI-tool kost, en vergelijk dit met een alledaagse activiteit.",
+  "agi": "Wat is het grootste ethische risico als AGI ooit zou bestaan?",
+  "ava technologie": "Leg uit waarom de keuze van een 'beste thumbnail' belangrijk is voor een YouTuber.",
+  "zelfrijdende auto": "Welke sensoren (bv. camera's, lidar) zijn essentieel voor een zelfrijdende auto om veilig te kunnen functioneren?",
+  "voorbeeld zelfrijdende auto": "Vergelijk de mate van autonomie tussen een Tesla in 'Autopilot' en de 'autonome shuttle' in Leuven.",
+  "autonome shuttle": "Wat is het grootste voordeel van een autonome shuttle in een afgesloten, vaste route?",
+  "senaat lek": "Welke maatregel had het datalek bij de Belgische Senaat vrijwel zeker kunnen voorkomen?",
+  "infostealer": "Leg in eigen woorden uit hoe een 'infostealer' aan je gegevens komt en wat er daarna mee gebeurt.",
+  "multifactorauthenticatie": "Geef twee voorbeelden van een tweede factor die je kunt gebruiken bij multifactorauthenticatie.",
+  "wachtwoord hygiëne": "Waarom is het gebruik van een wachtwoordmanager een belangrijk onderdeel van 'wachtwoord hygiëne'?",
+  "datingfraude ai": "Op welke twee manieren (naast gegenereerde berichten) maakt een louche datingsite gebruik van de kwetsbaarheid van singles?",
+  "jump4love": "Leg uit waarom sites zoals 'Jump4Love' hun chatmodellen vaak emoties laten simuleren.",
+  "ai en emotie": "Waarom is het nabootsen van menselijke emoties door AI riskant in de context van online fraude?",
+  "kwetsbare singles": "Wat maakt oudere, eenzame mensen extra kwetsbaar voor emotionele manipulatie door fraudeurs?",
+  "internationale fraude": "Wat is de belangrijkste reden waarom het moeilijk is om de daders van 'internationale fraude' te vervolgen?",
+  "peter opgelicht crypto": "Beschrijf de belangrijkste stap in de oplichtingsmethode die leidde tot het financiële verlies van 'Peter'.",
+  "pig butchering": "Wat is het cruciale psychologische element in de 'pig butchering'-methode om het slachtoffer te overtuigen?",
+  "oplichting gevolgen": "Welke niet-financiële gevolgen kunnen slachtoffers van fraude ondervinden (bv. naast geldverlies)?",
+  "fraude psychologie": "Geef een voorbeeld van hoe fraudeurs 'tijdsdruk' kunnen gebruiken als een psychologische truc.",
+  "rode vlaggen fraude": "Noem één 'rode vlag' in een online conversatie die je onmiddellijk zou doen stoppen met chatten.",
+  "ruimtelijk bewustzijn": "Welke van de vier sleutelcompetenties (bv. in MAVO/PAV) vind je persoonlijk het belangrijkst en waarom?",
+  "ruimtelijk relationeel denken": "Geef een voorbeeld van een relatie tussen een natuurlijk proces (bv. een rivier) en een menselijk proces (bv. de locatie van een stad).",
+  "aardrijkskunde": "Wat is het verschil in focus tussen de oude, louter beschrijvende aardrijkskunde en de moderne, analytische aardrijkskunde?",
+  "fysische geografie": "Noem een proces dat bestudeerd wordt door de fysische geografie (bv. erosie of klimaatverandering).",
+  "sociale geografie": "Noem een onderwerp dat bestudeerd wordt door de sociale geografie (bv. migratiepatronen of verstedelijking).",
+  "lokaliseren": "Zoek een coördinaat (bv. GPS-coördinaat) van je school en leg uit waarom dit 'absoluut situeren' is.",
+  "oriënteren": "Leg uit hoe je je met behulp van de zon en een horloge zou kunnen oriënteren.",
+  "situeren": "Leg het verband tussen 'lokaliseren' en 'oriënteren' in de context van 'situeren'.",
+  "windroos": "Teken een windroos en benoem alle vier de hoofdrichtingen en de vier tussenrichtingen.",
+  "geografische hulpbronnen": "Noem drie voorbeelden van 'geografische hulpbronnen' die je in de klas zou kunnen gebruiken.",
+  "atlas": "Hoe helpt de structuur van een atlas (bv. de indeling) je bij het vinden van informatie over verschillende 'schaalniveaus'?",
+  "legende": "Waarom is de 'legende' essentieel voor het correct begrijpen en interpreteren van een kaart?",
+  "GIS-viewers": "Geef twee concrete voorbeelden van hoe een 'GIS-viewer' (bv. Geopunt Vlaanderen) het ruimtelijk bewustzijn kan vergroten.",
+  "schaal": "Als de 'schaal' van een kaart 1:50.000 is, hoeveel centimeter in werkelijkheid is 2 centimeter op de kaart?",
+  "breukschaal": "Wat betekent de 'breukschaal' 1:250 in de context van een plattegrond van een gebouw?",
+  "lijnschaal": "Wat is het voordeel van een 'lijnschaal' ten opzichte van een 'breukschaal' als je een kaart vergroot of verkleint?",
+  "staatkundige kaarten": "Waarvoor gebruik je een 'staatkundige kaart' (bv. een overzicht van een continent) in vergelijking met een 'reliëfkaart'?",
+  "reliëfkaarten": "Welke kleur wordt op een 'reliëfkaart' vaak gebruikt om bergachtige gebieden aan te duiden?",
+  "thematische kaarten": "Welk specifiek onderwerp zou je terugvinden op een thematische kaart van België over de bevolking?",
+  "historisch referentie kader": "Maak een beknopt historisch referentiekader (minstens drie data) voor de geschiedenis van jouw gemeente/stad en noteer de belangrijkste domeinen (P, S, C, E)."
 
+}
+
+// --------------------------
 // STATE
+// --------------------------
 let isChatActive = false;
 let escalation = Number(localStorage.getItem('chattie_escalation') || 0);
 let memory = JSON.parse(localStorage.getItem('chattie_memory') || '{}');
@@ -436,84 +494,70 @@ async function chattieAnswer(rawInput){
   }
 
   if (awaitingExampleConfirmation){
-    if (lowerInput === 'ja'){
-      const exampleText = giveExample(awaitingExampleConfirmation);
-      memory[`voorbeeld ${awaitingExampleConfirmation}`] = exampleText;
-      saveState(); updateUI();
-      appendMessage(exampleText);
-      awaitingExampleConfirmation = null;
-    } else if (lowerInput === 'nee'){
-      appendMessage("Oké, we slaan het voorbeeld over.");
-      awaitingExampleConfirmation = null;
-    } else {
-      appendMessage("Typ 'ja' om een voorbeeld te zien of 'nee' om verder te gaan.");
-    }
+    appendMessage(`Hier is een voorbeeld van "${awaitingExampleConfirmation}":\n${giveExample(awaitingExampleConfirmation)}`);
+    awaitingExampleConfirmation = null;
     return;
   }
 
-  if (lowerInput === 'start') { isChatActive = true; updateUI(); appendMessage("Welkom! 👋 Ik ben Chattie — stel me vragen over AI, geschiedenis of andere onderwerpen. Typ 'help' voor suggesties."); return; }
-  if (!isChatActive) { appendMessage("Typ eerst 'start' om te beginnen."); return; }
-  if (lowerInput === 'einde' || lowerInput === 'stop') { isChatActive = false; updateUI(); appendMessage("Bedankt voor het gesprek! 💬"); return; }
-  if (lowerInput.includes('help')) { appendMessage("Voorbeelden: 'Wat is AI?', 'Wat is historisch referentie kader', of gebruik de knoppen hieronder."); return; }
-  if (lowerInput.includes('opdracht')) { const a = ASSIGNMENTS[Math.floor(Math.random()*ASSIGNMENTS.length)]; appendMessage("Opdracht: " + a); return; }
-  if (lowerInput.startsWith('voorbeeld ')){ const subject = lowerInput.replace('voorbeeld ','').trim(); appendMessage(giveExample(subject)); return; }
-
-  let simplified = false;
-  let textToSearch = lowerInput;
-  if (lowerInput.startsWith('leg uit ')){ simplified = true; textToSearch = lowerInput.replace('leg uit ','').trim(); }
-
-  const knowledge = currentKnowledge();
-  let answered = false;
-  for (const key of Object.keys(knowledge)){
-    if (textToSearch.includes(key)){
-      memory[key] = knowledge[key];
-      saveState(); updateUI();
-      let reply = knowledge[key];
-      if (simplified){ reply = "Eenvoudig uitgelegd: " + reply.replace(/\([^\)]*\)/g,'').replace(/(AI|ML|AGI)/gi,'[begrip]'); }
-      appendMessage(reply);
-      if (knowledge[`voorbeeld ${key}`]){
-        appendMessage(`Wil je dat ik een voorbeeld geef van "${key}"?`);
-        awaitingExampleConfirmation = key;
-      }
-      answered = true;
-      break;
-    }
+  if (lowerInput === "start") {
+    isChatActive = true; updateUI();
+    appendMessage("Hallo! Ik ben Chattie, je AI-leerbuddy. Typ een onderwerp of kies een knop voor meer info.");
+    return;
   }
-  if (!answered){
-    appendMessage(simplified ? "Hmm, ik ken dit niet exact, maar eenvoudig uitgelegd: probeer het onderwerp in andere woorden te formuleren." : "Daar weet ik niet direct het antwoord op 🤔. Wil je dat ik een voorbeeld geef?");
+
+  if (lowerInput === "einde") {
+    isChatActive = false; updateUI();
+    appendMessage("Oké, we beëindigen het gesprek. Tot de volgende keer!");
+    return;
   }
+
+  const k = currentKnowledge();
+
+  // check of input een kennisitem bevat
+  let found = Object.keys(k).find(key => lowerInput.includes(key));
+  if (found){
+    appendMessage(`${k[found]}`);
+    if (TOPIC_ASSIGNMENTS[found]) appendMessage(`Opdracht: ${TOPIC_ASSIGNMENTS[found]}`);
+    awaitingExampleConfirmation = found;
+    return;
+  }
+
+  // fallback
+  appendMessage("Sorry, ik weet daar (nog) niet genoeg over. Probeer een ander onderwerp of 'start'/'einde'.");
 }
 
 // --------------------------
 // EVENTS
 // --------------------------
-sendBtn.onclick = ()=>{ chattieAnswer(inputEl.value); inputEl.value=''; };
-inputEl.onkeydown = e=>{ if(e.key==='Enter'){ chattieAnswer(inputEl.value); inputEl.value=''; } };
+sendBtn.addEventListener('click', ()=>{chattieAnswer(inputEl.value); inputEl.value='';});
+inputEl.addEventListener('keyup', e=>{if(e.key==='Enter'){sendBtn.click();}});
 
-chips.forEach(c=>{
-  c.onclick = ()=>{
-    const action = c.dataset.action;
-    if(action==='more') appendMessage("Je kunt Chattie alles vragen over AI, maatschappijleer of geschiedenis!");
-    else if(action==='example') appendMessage("Typ 'voorbeeld <onderwerp>' om een voorbeeld te zien.");
-    else if(action==='dontget') appendMessage("Probeer het onderwerp in andere woorden te vragen of typ 'leg uit <onderwerp>'.");
-    else if(action==='assignment') appendMessage("Typ 'opdracht' om een nieuwe oefening te krijgen.");
-  };
+chips.forEach(chip=>{
+  chip.addEventListener('click', e=>{
+    const action = chip.dataset.action;
+    if(action==='more') appendMessage("Meer uitleg volgt over het gekozen onderwerp...");
+    if(action==='example'){
+      if(awaitingExampleConfirmation) appendMessage(`Voorbeeld: ${giveExample(awaitingExampleConfirmation)}`);
+      else appendMessage("Klik eerst op een onderwerp of typ er één in.");
+    }
+    if(action==='dontget') appendMessage("Geen zorgen, laten we het stap voor stap bekijken.");
+    if(action==='assignment') appendMessage(awaitingExampleConfirmation ? `Opdracht: ${TOPIC_ASSIGNMENTS[awaitingExampleConfirmation]}` : "Typ eerst een onderwerp om een opdracht te krijgen.");
+  });
 });
 
-howBtn.onclick = ()=>appendMessage("De lessen werken via korte opdrachten, voorbeelden en uitleg. Begin met 'start' en stel vragen. Gebruik 'leg uit <onderwerp>' voor eenvoudige uitleg.");
+howBtn.addEventListener('click', ()=>appendMessage("Chattie legt onderwerpen uit, geeft voorbeelden en opdrachten. Gebruik de knoppen of typ een onderwerp. Begin met 'start' en beëindig met 'einde'."));
 
-hackToggleBtn.onclick = ()=>{
+hackToggleBtn.addEventListener('click', ()=>{
   hackModeActive = !hackModeActive;
   if(hackModeActive) enableSandboxForStudents();
   updateUI();
-};
+});
 
-// --------------------------
-// INIT
-// --------------------------
+// init
 updateUI();
-appendMessage("Welkom! Typ 'start' om te beginnen met Chattie.", 'bot');
+appendMessage("Welkom! Typ 'start' om te beginnen met je leerbuddy.");
 </script>
 </body>
 </html>
+
 
